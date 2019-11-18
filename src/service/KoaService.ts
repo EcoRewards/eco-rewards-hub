@@ -14,10 +14,13 @@ export class KoaService {
     private readonly logger: Logger
   ) {}
 
+  /**
+   * Start the API on the configured port, set up cors and compression.
+   */
   public start(): void {
     this.app
       .use(compress())
-      .use(cors({ origin: '*' }))
+      .use(cors({ origin: "*" }))
       .listen(this.port);
 
     this.logger.info(`Started on ${this.port}`);
