@@ -31,6 +31,7 @@
     "@types/chai": "^4.2.4",
     "@types/koa": "^2.0.52",
     "@types/koa-compress": "^2.0.9",
+    "@types/koa-router": "^7.0.42",
     "@types/mocha": "^5.2.7",
     "@types/mysql": "^2.15.7",
     "@types/node": "^12.11.7",
@@ -46,11 +47,14 @@
   },
   "dependencies": {
     "@koa/cors": "^3.0.0",
+    "autobind-decorator": "^2.4.0",
     "bcrypt": "^3.0.7",
     "db-migrate": "^0.11.6",
     "db-migrate-mysql": "^1.1.10",
     "koa": "^2.11.0",
     "koa-compress": "^3.0.0",
+    "koa-router": "^7.4.0",
+    "memoized-class-decorator": "^1.6.1",
     "mysql2": "^1.7.0",
     "pino": "^5.13.6",
     "pino-pretty": "^3.4.0"

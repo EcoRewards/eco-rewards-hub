@@ -5,12 +5,13 @@ import * as pino from "pino";
 describe("KoaService", () => {
 
   it("starts on the configured port", () => {
-    const mock = new MockApp() as any;
-    const koa = new KoaService(8080, mock, pino({ level: "fatal" }));
+    const mockKoa = new MockApp() as any;
+    const mockRouter = new MockRouter() as any;
+    const koa = new KoaService(8080, mockKoa, mockRouter, pino({ level: "fatal" }));
 
     koa.start();
 
-    chai.expect(mock.port).to.equal(8080);
+    chai.expect(mockKoa.port).to.equal(8080);
   });
 
 });
@@ -26,4 +27,14 @@ class MockApp {
     this.port = port;
   }
 
+}
+
+class MockRouter {
+  public routes() {
+
+  }
+
+  public allowedMethods() {
+
+  }
 }
