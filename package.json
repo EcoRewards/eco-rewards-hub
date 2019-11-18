@@ -70,7 +70,8 @@
       "src/**/*.ts"
     ],
     "exclude": [
-      "src/*.ts"
+      "src/*.ts",
+      "src/Container.ts"
     ]
   }
 }
