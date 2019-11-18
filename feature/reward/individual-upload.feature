@@ -1,7 +1,7 @@
 @Pending
 Feature:
   As a member
-  I want to be able report my usage (self reporting via web page)
+  I want to be able to report my usage (self reporting via web page)
   So I can get eco-rewards
 
   Background:

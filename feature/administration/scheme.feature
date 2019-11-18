@@ -1,6 +1,6 @@
 Feature:
   As an admin user
-  I want to be able set up a scheme
+  I want to be able to set up a scheme
   So that I can set up organisations under that scheme
 
   Background:

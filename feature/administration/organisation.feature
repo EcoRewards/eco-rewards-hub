@@ -1,6 +1,6 @@
 Feature:
   As an admin user
-  I want to be able set up an organisation
+  I want to be able to set up an organisation
   So that I can allow organisations to report data
 
   Background:
