@@ -2,22 +2,20 @@
   "name": "eco-rewards-hub",
   "version": "1.0.0",
   "description": "Eco Rewards Hub",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "./dist/start.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ecorewards/eco-rewards-hub.git"
   },
   "scripts": {
     "test": "npm run lint && mocha --require ts-node/register **/*.spec.ts",
-    "prepublishOnly": "npm run generate-barrels && rm -rf ./dist/ && tsc -p ./ --outDir dist/",
+    "prepublishOnly": "rm -rf ./dist/ && tsc -p ./ --outDir dist/",
     "lint-raw": "tslint --project tsconfig.json",
     "lint": "npm run lint-raw -- -t stylish",
     "coverage": "nyc --reporter=text npm test",
     "report-coverage": "npm run coverage && nyc report --reporter=text-lcov > coverage.lcov && codecov",
     "start": "NODE_OPTIONS=$NODE_DEBUG_OPTION ts-node src/start.ts",
     "cli": "NODE_OPTIONS=$NODE_DEBUG_OPTION ts-node src/cli.ts",
-    "generate-barrels": "barrelsby --delete -d src/ -e .spec.ts -e start.ts",
     "migrate": "db-migrate --config config/database.json up",
     "create-migration": "db-migrate --sql-file --config config/database.json create"
   },
@@ -37,7 +35,6 @@
     "@types/mysql": "^2.15.7",
     "@types/node": "^12.11.7",
     "@types/pino": "^5.8.13",
-    "barrelsby": "^2.2.0",
     "chai": "^4.2.0",
     "codecov": "^3.6.1",
     "mocha": "^6.2.2",
