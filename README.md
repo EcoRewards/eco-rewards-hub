@@ -29,7 +29,7 @@ See [features](/feature).
 ## Non-functional requirements
 
 - Swagger documentation
-- Secure API access using JWTs
+- Secure API access
 - Continuous integration with automated tests
 
 ## Decision log
