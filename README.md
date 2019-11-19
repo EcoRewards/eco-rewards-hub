@@ -47,6 +47,7 @@ See [features](/feature).
 | 2019-11-18 | Use db-migrate | Most widely used database migration tool |
 | 2019-11-18 | Do not use an ORM | Seems like overkill when there are so few models |
 | 2019-11-18 | Bcrypt passwords | Most secure, widely used method to salt passwords |
+| 2019-11-19 | No OAuth for API access | oauth server library in midst of re-write, KISS for now |
 
 ## Release notes
 
