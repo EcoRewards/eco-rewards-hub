@@ -9,9 +9,9 @@ import { Logger } from "pino";
 import * as memoize from "memoized-class-decorator";
 
 /**
- * Dependency container
+ * Dependency container for the API
  */
-export class Container {
+export class ApiContainer {
 
   public getKoaService(): KoaService {
     return new KoaService(

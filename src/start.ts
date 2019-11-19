@@ -1,6 +1,6 @@
-import { Container } from "./service/Container";
+import { ApiContainer } from "./service/ApiContainer";
 
-const container = new Container();
+const container = new ApiContainer();
 
 container
   .getKoaService()

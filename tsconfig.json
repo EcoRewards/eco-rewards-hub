@@ -8,9 +8,9 @@
     "noImplicitAny": false,
     "strict": true,
     "declaration": true,
+    "resolveJsonModule": true,
     "lib": [
-      "esnext",
-      "dom"
+      "esnext"
     ]
   },
   "exclude": [
