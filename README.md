@@ -13,6 +13,13 @@ npm run migrate
 npm start
 ``` 
 
+## CLI commands
+
+```
+npm run cli -- create-scheme [name]
+npm run cli -- create-organisation [name] [schemeId] [apiKey]
+``` 
+
 ## Functional requirements
 
 The scope of the API is defined by a number of user stories in cucumber format. 
