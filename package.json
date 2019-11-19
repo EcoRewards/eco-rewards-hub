@@ -72,6 +72,7 @@
     ],
     "exclude": [
       "src/*.ts",
+      "src/**/*.spec.ts",
       "src/service/ApiContainer.ts",
       "src/cli/CliContainer.ts"
     ]
