@@ -14,7 +14,7 @@ describe("OrganisationFactory", () => {
   it("hashes the API key", async () => {
     const organisation = await factory.create("my org", 1, "key");
 
-    chai.expect(organisation.oauth_secret).to.not.equal("key");
+    chai.expect(organisation.api_key).to.not.equal("key");
   });
 
 });

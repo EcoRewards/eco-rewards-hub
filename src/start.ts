@@ -4,4 +4,5 @@ const container = new ApiContainer();
 
 container
   .getKoaService()
-  .start();
+  .then(service => service.start())
+  .catch(e => console.error(e));

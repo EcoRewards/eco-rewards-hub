@@ -26,6 +26,7 @@
   "author": "Linus Norton <linusnorton@gmail.com>",
   "license": "GPL-3.0",
   "devDependencies": {
+    "@types/basic-auth": "^1.1.2",
     "@types/bcrypt": "^3.0.0",
     "@types/chai": "^4.2.4",
     "@types/koa": "^2.0.52",
@@ -46,6 +47,7 @@
   "dependencies": {
     "@koa/cors": "^3.0.0",
     "autobind-decorator": "^2.4.0",
+    "basic-auth": "^2.0.1",
     "bcrypt": "^3.0.7",
     "db-migrate": "^0.11.6",
     "db-migrate-mysql": "^1.1.10",
@@ -55,7 +57,8 @@
     "memoized-class-decorator": "^1.6.1",
     "mysql2": "^1.7.0",
     "pino": "^5.13.6",
-    "pino-pretty": "^3.4.0"
+    "pino-pretty": "^3.4.0",
+    "ts-array-utils": "^0.5.0"
   },
   "nyc": {
     "extends": "@istanbul/nyc-config-typescript",

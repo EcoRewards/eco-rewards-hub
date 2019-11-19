@@ -19,7 +19,7 @@ export class OrganisationFactory {
       id: null,
       name: name,
       scheme_id: schemeId,
-      oauth_secret: await this.crypto.hash(apiKey)
+      api_key: await this.crypto.hash(apiKey)
     };
   }
 
