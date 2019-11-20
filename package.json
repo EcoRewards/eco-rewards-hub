@@ -10,7 +10,7 @@
   "scripts": {
     "test": "npm run lint && mocha --require ts-node/register **/*.spec.ts",
     "prepublishOnly": "rm -rf ./dist/ && tsc -p ./ --outDir dist/",
-    "lint-raw": "tslint --project tsconfig.json",
+    "lint-raw": "rm -rf node_modules/swagger2-koa/src/*.spec.ts; rm -rf node_modules/swagger2/src/*.spec.ts; tslint --project tsconfig.json",
     "lint": "npm run lint-raw -- -t stylish",
     "coverage": "nyc --reporter=text npm test",
     "report-coverage": "npm run coverage && nyc report --reporter=text-lcov > coverage.lcov && codecov",
@@ -60,6 +60,8 @@
     "mysql2": "^1.7.0",
     "pino": "^5.13.6",
     "pino-pretty": "^3.4.0",
+    "swagger2": "^2.0.0",
+    "swagger2-koa": "^2.0.0",
     "ts-array-utils": "^0.5.0"
   },
   "nyc": {
