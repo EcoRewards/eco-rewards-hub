@@ -4,7 +4,7 @@ export interface Organisation {
   id: OrganisationId | null,
   name: string,
   scheme_id: SchemeId,
-  oauth_secret: string
+  api_key: string
 }
 
 export type OrganisationId = number;

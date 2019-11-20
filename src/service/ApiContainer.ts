@@ -7,17 +7,22 @@ import { HealthController } from "../health/HealthController";
 import { ParameterizedContext } from "koa";
 import { Logger } from "pino";
 import * as memoize from "memoized-class-decorator";
+import * as databaseConfiguration from "../../config/database.json";
+import { BasicAuthenticationMiddleware } from "./authentication/BasicAuthenticationMiddleware";
+import { AuthenticationCredentialsRepository } from "./authentication/AuthenticationCredentialsRepository";
+import { Cryptography } from "../cryptography/Cryptography";
 
 /**
  * Dependency container for the API
  */
 export class ApiContainer {
 
-  public getKoaService(): KoaService {
+  public async getKoaService(): Promise<KoaService> {
     return new KoaService(
       config.port,
       new Koa(),
       this.getRoutes(),
+      await this.getAuthenticationMiddleware(),
       this.getLogger()
     );
   }
@@ -55,5 +60,33 @@ export class ApiContainer {
   @memoize
   private getLogger(): Logger {
     return pino({ prettyPrint: { translateTime: true } });
+  }
+
+  private async getAuthenticationMiddleware(): Promise<BasicAuthenticationMiddleware> {
+    const db = await this.getDatabase();
+    const repository = new AuthenticationCredentialsRepository(db);
+    const index = await repository.getPasswordIndex();
+
+    return new BasicAuthenticationMiddleware(index, this.getCryptography());
+  }
+
+  @memoize
+  private getDatabase(): Promise<any> {
+    const env = process.env.NODE_ENV || databaseConfiguration.defaultEnv;
+    const envConfig = databaseConfiguration[env];
+
+    return require("mysql2/promise").createPool({
+      host: envConfig.host,
+      user: envConfig.user,
+      password: envConfig.password,
+      database: envConfig.database,
+      dateStrings: true,
+      // debug: ["ComQueryPacket", "RowDataPacket"]
+    });
+  }
+
+  @memoize
+  private getCryptography(): Cryptography {
+    return new Cryptography();
   }
 }

@@ -10,7 +10,7 @@ CREATE TABLE organisation (
   id int(11) unsigned NOT NULL AUTO_INCREMENT,
   name varchar(50) NOT NULL,
   scheme_id int(11) unsigned NOT NULL,
-  oauth_secret binary(60) NOT NULL,
+  api_key binary(60) NOT NULL,
   PRIMARY KEY (id),
   UNIQUE KEY organisation_name_and_scheme (scheme_id, name)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -43,11 +43,4 @@ CREATE TABLE admin_user (
   UNIQUE KEY admin_email (email)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE api_token (
-  id int(11) unsigned NOT NULL AUTO_INCREMENT,
-  organisation_id int(11) unsigned NOT NULL,
-  created DATETIME NOT NULL,
-  expires DATETIME NOT NULL,
-  PRIMARY KEY (id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
