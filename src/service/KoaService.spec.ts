@@ -1,14 +1,17 @@
 import * as chai from "chai";
 import { KoaService } from "./KoaService";
 import * as pino from "pino";
+import * as swagger from "swagger2";
+import { Document } from "swagger2/dist/schema";
 
 describe("KoaService", () => {
+  const document = swagger.loadDocumentSync("documentation/swagger/api.yaml") as Document;
 
   it("starts on the configured port", () => {
     const mockKoa = new MockApp() as any;
     const mockRouter = new MockRouter() as any;
     const mockAuth = new MockAuth() as any;
-    const koa = new KoaService(8080, mockKoa, mockRouter, mockAuth, pino({ level: "fatal" }));
+    const koa = new KoaService(8080, mockKoa, mockRouter, mockAuth, document,  pino({ level: "fatal" }));
 
     koa.start();
 

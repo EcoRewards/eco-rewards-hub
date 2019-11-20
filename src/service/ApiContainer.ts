@@ -4,13 +4,16 @@ import * as Koa from "koa";
 import * as pino from "pino";
 import * as Router from "koa-router";
 import { HealthController } from "../health/HealthController";
-import { ParameterizedContext } from "koa";
+import { Context, Middleware, Next, ParameterizedContext } from "koa";
 import { Logger } from "pino";
 import * as memoize from "memoized-class-decorator";
 import * as databaseConfiguration from "../../config/database.json";
 import { BasicAuthenticationMiddleware } from "./authentication/BasicAuthenticationMiddleware";
 import { AuthenticationCredentialsRepository } from "./authentication/AuthenticationCredentialsRepository";
 import { Cryptography } from "../cryptography/Cryptography";
+import { Document } from "swagger2/dist/schema";
+import * as swagger from "swagger2";
+import doc = Mocha.reporters.doc;
 
 /**
  * Dependency container for the API
@@ -23,6 +26,7 @@ export class ApiContainer {
       new Koa(),
       this.getRoutes(),
       await this.getAuthenticationMiddleware(),
+      this.getSwaggerDocument(),
       this.getLogger()
     );
   }
@@ -34,8 +38,8 @@ export class ApiContainer {
       .get("/health", this.wrap(this.getHealthController().get));
   }
 
-  private wrap(controller: Function) {
-    return async (ctx: ParameterizedContext, next: () => Promise<any>) => {
+  private wrap(controller: Function): Middleware {
+    return async (ctx: Context, next: Next) => {
       try {
         const input = ctx.request.query ? ctx.response.body : ctx.request.query;
         ctx.body = await controller(input, ctx);
@@ -89,4 +93,10 @@ export class ApiContainer {
   private getCryptography(): Cryptography {
     return new Cryptography();
   }
+
+  @memoize
+  private getSwaggerDocument(): Document {
+    return swagger.loadDocumentSync("documentation/swagger/api.yaml") as Document;
+  }
+
 }
