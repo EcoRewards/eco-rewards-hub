@@ -9,7 +9,7 @@ import { Logger } from "pino";
 import * as memoize from "memoized-class-decorator";
 import * as databaseConfiguration from "../../config/database.json";
 import { BasicAuthenticationMiddleware } from "./authentication/BasicAuthenticationMiddleware";
-import { OrganisationAuthenticationRepository } from "./authentication/OrganisationAuthenticationRepository";
+import { AuthenticationCredentialsRepository } from "./authentication/AuthenticationCredentialsRepository";
 import { Cryptography } from "../cryptography/Cryptography";
 
 /**
@@ -64,7 +64,7 @@ export class ApiContainer {
 
   private async getAuthenticationMiddleware(): Promise<BasicAuthenticationMiddleware> {
     const db = await this.getDatabase();
-    const repository = new OrganisationAuthenticationRepository(db);
+    const repository = new AuthenticationCredentialsRepository(db);
     const index = await repository.getPasswordIndex();
 
     return new BasicAuthenticationMiddleware(index, this.getCryptography());
@@ -73,13 +73,13 @@ export class ApiContainer {
   @memoize
   private getDatabase(): Promise<any> {
     const env = process.env.NODE_ENV || databaseConfiguration.defaultEnv;
-    const config = databaseConfiguration[env];
+    const envConfig = databaseConfiguration[env];
 
     return require("mysql2/promise").createPool({
-      host: config.host,
-      user: config.user,
-      password: config.password,
-      database: config.database,
+      host: envConfig.host,
+      user: envConfig.user,
+      password: envConfig.password,
+      database: envConfig.database,
       dateStrings: true,
       // debug: ["ComQueryPacket", "RowDataPacket"]
     });

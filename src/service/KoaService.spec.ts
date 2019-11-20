@@ -7,7 +7,8 @@ describe("KoaService", () => {
   it("starts on the configured port", () => {
     const mockKoa = new MockApp() as any;
     const mockRouter = new MockRouter() as any;
-    const koa = new KoaService(8080, mockKoa, mockRouter, pino({ level: "fatal" }));
+    const mockAuth = new MockAuth() as any;
+    const koa = new KoaService(8080, mockKoa, mockRouter, mockAuth, pino({ level: "fatal" }));
 
     koa.start();
 
@@ -35,6 +36,12 @@ class MockRouter {
   }
 
   public allowedMethods() {
+
+  }
+}
+
+class MockAuth {
+  public auth() {
 
   }
 }

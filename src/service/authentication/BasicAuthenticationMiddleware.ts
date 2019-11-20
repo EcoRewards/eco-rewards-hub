@@ -10,6 +10,11 @@ import autobind from "autobind-decorator";
 @autobind
 export class BasicAuthenticationMiddleware {
 
+  // todo add the user auth endpoint
+  private readonly whitelist = [
+    "/health"
+  ];
+
   // todo reload / mutate this when adding new orgs otherwise they won't authenticate
   constructor(
     private readonly userCredentials: PasswordIndex,
@@ -20,6 +25,10 @@ export class BasicAuthenticationMiddleware {
    * Authenticate a request
    */
   public async auth(ctx: Context, next: Next) {
+    if (this.whitelist.includes(ctx.request.path)) {
+      return next();
+    }
+
     const user = auth(ctx.req);
 
     if (user && this.userCredentials[user.name]) {
@@ -42,4 +51,3 @@ export class BasicAuthenticationMiddleware {
 }
 
 export type PasswordIndex = Record<OrganisationId, string>;
-
