@@ -33,6 +33,19 @@ describe("GenericRepository", () => {
     chai.expect(savedRecord.id).to.not.equal(null);
   });
 
+  it("selects all records and returns them", async () => {
+    const records = [
+      { id: 1, name: "text1" },
+      { id: 2, name: "text2" },
+      { id: 3, name: "text3" }
+    ];
+    const db = new MockSelectDb(records);
+    const repository = new GenericRepository(db);
+    const results = await repository.selectAll("table");
+
+    chai.expect(results).to.deep.equal(records);
+  });
+
 });
 
 class MockDb {
@@ -42,6 +55,17 @@ class MockDb {
     this.sqlQueries.push(sql);
 
     return [{ insertId: 1 }];
+  }
+}
+
+class MockSelectDb<T> {
+
+  constructor(
+    private readonly results: T
+  ) {}
+
+  public async query(sql: string, values: any[]): Promise<[T]> {
+    return [this.results];
   }
 }
 
