@@ -7,6 +7,8 @@ import { GenericRepository } from "../database/GenericRepository";
 import { OrganisationFactory } from "../organisation/OrganisationFactory";
 import { CreateOrganisationCommand } from "../organisation/command/CreateOrganisationCommand";
 import { Cryptography } from "../cryptography/Cryptography";
+import { CreateAdminUserCommand } from "../user/command/CreateAdminUserCommand";
+import { AdminFactory } from "../user/AdminFactory";
 
 /**
  * Container for the CLI commands
@@ -17,6 +19,7 @@ export class CliContainer {
     switch (command) {
       case "create-scheme": return this.getCreateScheme();
       case "create-organisation": return this.getCreateOrganisation();
+      case "create-user": return this.getCreateUser();
       default: throw command + " not found.";
     }
   }
@@ -56,6 +59,15 @@ export class CliContainer {
 
     return new CreateOrganisationCommand(
       new OrganisationFactory(new Cryptography()),
+      new GenericRepository(db)
+    );
+  }
+
+  private async getCreateUser(): Promise<CreateAdminUserCommand> {
+    const db = await this.getDatabase();
+
+    return new CreateAdminUserCommand(
+      new AdminFactory(new Cryptography()),
       new GenericRepository(db)
     );
   }

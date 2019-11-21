@@ -16,6 +16,7 @@
     "report-coverage": "npm run coverage && nyc report --reporter=text-lcov > coverage.lcov && codecov",
     "start": "NODE_OPTIONS=$NODE_DEBUG_OPTION ts-node src/start.ts",
     "bdd": "cucumber-js",
+    "add-test-user": "npm run cli -- create-user Test test@test.com password",
     "cli": "NODE_OPTIONS=$NODE_DEBUG_OPTION ts-node src/cli.ts",
     "migrate": "db-migrate --config config/database.json up",
     "create-migration": "db-migrate --sql-file --config config/database.json create"
@@ -33,6 +34,7 @@
     "@types/cucumber": "^6.0.0",
     "@types/js-base64": "^2.3.1",
     "@types/koa": "^2.0.52",
+    "@types/koa-bodyparser": "^4.3.0",
     "@types/koa-compress": "^2.0.9",
     "@types/koa-router": "^7.0.42",
     "@types/mocha": "^5.2.7",
@@ -59,6 +61,7 @@
     "db-migrate": "^0.11.6",
     "db-migrate-mysql": "^1.1.10",
     "koa": "^2.11.0",
+    "koa-bodyparser": "^4.2.1",
     "koa-compress": "^3.0.0",
     "koa-router": "^7.4.0",
     "memoized-class-decorator": "^1.6.1",

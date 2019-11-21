@@ -16,6 +16,7 @@ import * as swagger from "swagger2";
 import { OrganisationsController } from "../organisation/controller/OrganisationsController";
 import { GenericRepository } from "../database/GenericRepository";
 import { SchemeRepository } from "../scheme/SchemeRepository";
+import { LoginController } from "../user/controller/LoginController";
 
 /**
  * Dependency container for the API
@@ -40,21 +41,25 @@ export class ApiContainer {
 
   private async getRoutes(): Promise<Router> {
     const router = new Router();
-    const [health, organisations] = await Promise.all([
+    const [health, login, organisations] = await Promise.all([
       this.getHealthController(),
+      this.getLoginController(),
       this.getOrganisationsController()
     ]);
 
     return router
-    .get("/health", this.wrap(health.get))
-    .get("/organisations", this.wrap(organisations.get));
+      .get("/health", this.wrap(health.get))
+      .post("/login", this.wrap(login.post))
+      .get("/organisations", this.wrap(organisations.get));
   }
 
   private wrap(controller: Function): Middleware {
     return async (ctx: Context, next: Next) => {
       try {
-        const input = ctx.request.query ? ctx.response.body : ctx.request.query;
-        ctx.body = await controller(input, ctx);
+        const input = ctx.request.body || ctx.request.query;
+        const { data, links, code } = await controller(input, ctx);
+        ctx.body = { data, links};
+        ctx.status = code || 200;
         await next();
       }
       catch (err) {
@@ -80,6 +85,12 @@ export class ApiContainer {
     ]);
 
     return new OrganisationsController(genericRepository, schemeRepository);
+  }
+
+  private async getLoginController(): Promise<LoginController> {
+    const genericRepository = await this.getGenericRepository();
+
+    return new LoginController(genericRepository, this.getCryptography());
   }
 
   @memoize

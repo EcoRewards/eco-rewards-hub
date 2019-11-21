@@ -1,3 +1,4 @@
+@skipped
 Feature:
   As an organisation or admin user
   I want to report a members usage (member, mode, distance) in bulk

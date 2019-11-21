@@ -1,9 +1,13 @@
 import { setWorldConstructor } from "cucumber";
 import { config } from "../../config/service";
 
-class World {
-  private host = process.env.TEST_URL || `http://localhost:${config.port}/`;
-  private token?: string;
+/**
+ * World state for test execution
+ */
+export class World {
+  static token?: string;
+
+  readonly host = process.env.TEST_URL || `http://localhost:${config.port}/`;
 }
 
 setWorldConstructor(World);
