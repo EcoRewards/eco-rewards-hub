@@ -24,7 +24,7 @@ npm run cli -- create-organisation [name] [schemeId] [apiKey]
 
 The scope of the API is defined by a number of user stories in cucumber format. 
 
-See [features](/feature).
+See [features](/bdd/feature).
 
 ## Non-functional requirements
 

@@ -1,3 +1,4 @@
+@skipped
 Feature:
   As an organisation
   I want to view my members eco-rewards and carbon savings balance

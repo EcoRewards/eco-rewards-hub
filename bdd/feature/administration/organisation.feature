@@ -1,11 +1,11 @@
+@skipped
 Feature:
   As an admin user
   I want to be able to set up an organisation
   So that I can allow organisations to report data
 
   Background:
-    Given an administrator named "John"
-    And I am logged in as "John"
+    Given I am logged in as an administrator
     And a scheme "Norfolk"
     And a scheme "Suffolk"
     And a scheme "Essex"
@@ -25,12 +25,3 @@ Feature:
     When I create an organisation "Another Org" in the scheme "Essex"
     And I should see "School Org" in the list of "Norfolk" organisations "1" times
     And I should see "School Org" in the list of "Essex" organisations "1" times
-
-  @NotRequired
-  Scenario: Edit an organisation's name
-
-  @NotRequired
-  Scenario: Edit an organisation's scheme
-
-  @NotRequired
-  Scenario: An organisation belonging to multiple schemes

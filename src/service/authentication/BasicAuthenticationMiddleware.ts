@@ -12,7 +12,8 @@ export class BasicAuthenticationMiddleware {
 
   // todo add the user auth endpoint
   private readonly whitelist = [
-    "/health"
+    "/health",
+    "/login"
   ];
 
   // todo reload / mutate this when adding new orgs otherwise they won't authenticate

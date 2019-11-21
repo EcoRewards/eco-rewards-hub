@@ -1,4 +1,4 @@
-@Pending
+@pending
 Feature:
   As a member
   I want to be able to report my usage (self reporting via web page)

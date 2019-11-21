@@ -23,6 +23,45 @@ paths:
           description: "successful operation"
           schema:
             $ref: "#/definitions/Health"
+  /login:
+    post:
+      summary: "Authenticate an admin user"
+      description: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          description: "Username and password to authenticate"
+          required: true
+          schema:
+            $ref: "#/definitions/LoginRequest"
+      responses:
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "object"
+            properties:
+              data:
+                type: "object"
+                properties:
+                  error:
+                    type: "string"
+              links:
+                type: "object"
+        201:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              data:
+                type: "object"
+                properties:
+                  token:
+                    type: "string"
+              links:
+                type: "object"
   /organisations:
     get:
       summary: "Return all the organisations"
@@ -58,6 +97,13 @@ definitions:
         enum:
           - "UP"
           - "DOWN"
+  LoginRequest:
+    type: "object"
+    properties:
+      username:
+        type: "string"
+      password:
+        type: "string"
   Organisation:
     type: "object"
     properties:

@@ -1,8 +1,16 @@
 language: node_js
 node_js:
   - 12
-
+services:
+  - mysql
+before_install:
+  - mysql -e 'CREATE DATABASE ecorewards;'
 install: npm install
+before_script:
+  - npm start &
 scripts:
   - npm test
   - npm run report-coverage
+  - npm run migrate
+  - npm run add-test-user
+  - npm run bdd
