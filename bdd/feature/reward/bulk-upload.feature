@@ -14,8 +14,7 @@ Feature:
       | 1005   | 0       |
 
   Scenario: Upload by admin
-    Given an administrator named "John"
-    And I am logged in as "John"
+    Given I am logged in as an administrator
     When I upload a file named "org-file":
       | member | mode  | distance
       | 1001   | walk  | 1000

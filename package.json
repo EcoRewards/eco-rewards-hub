@@ -15,6 +15,7 @@
     "coverage": "nyc --reporter=text npm test",
     "report-coverage": "npm run coverage && nyc report --reporter=text-lcov > coverage.lcov && codecov",
     "start": "NODE_OPTIONS=$NODE_DEBUG_OPTION ts-node src/start.ts",
+    "bdd": "cucumber-js",
     "cli": "NODE_OPTIONS=$NODE_DEBUG_OPTION ts-node src/cli.ts",
     "migrate": "db-migrate --config config/database.json up",
     "create-migration": "db-migrate --sql-file --config config/database.json create"
@@ -29,6 +30,7 @@
     "@types/basic-auth": "^1.1.2",
     "@types/bcrypt": "^3.0.0",
     "@types/chai": "^4.2.4",
+    "@types/cucumber": "^6.0.0",
     "@types/js-base64": "^2.3.1",
     "@types/koa": "^2.0.52",
     "@types/koa-compress": "^2.0.9",
@@ -37,8 +39,11 @@
     "@types/mysql": "^2.15.7",
     "@types/node": "^12.11.7",
     "@types/pino": "^5.8.13",
+    "axios": "^0.19.0",
     "chai": "^4.2.0",
     "codecov": "^3.6.1",
+    "cucumber": "^6.0.5",
+    "cucumber-pretty": "^6.0.0",
     "js-base64": "^2.5.1",
     "mocha": "^6.2.2",
     "nyc": "^14.1.1",
@@ -78,7 +83,8 @@
       "src/*.ts",
       "src/**/*.spec.ts",
       "src/service/ApiContainer.ts",
-      "src/cli/CliContainer.ts"
+      "src/cli/CliContainer.ts",
+      "bdd/**/*.ts"
     ]
   }
 }

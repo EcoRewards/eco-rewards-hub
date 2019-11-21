@@ -4,8 +4,7 @@ Feature:
   So I can see what my members are doing
 
   Background:
-    Given an administrator named "John"
-    And I am logged in as "John"
+    Given I am logged in as an administrator
     And a scheme "Warwickshire"
     And the scheme "Warwickshire" contains members:
       | member | rewards |

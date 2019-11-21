@@ -4,8 +4,7 @@ Feature:
   So that members and organisations can report data
 
   Background:
-    Given an administrator named "John"
-    And I am logged in as "John"
+    Given I am logged in as an administrator
     And a scheme "East Sussex"
 
   Scenario: Bulk create members
