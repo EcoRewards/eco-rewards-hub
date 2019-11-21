@@ -13,7 +13,9 @@ import { AuthenticationCredentialsRepository } from "./authentication/Authentica
 import { Cryptography } from "../cryptography/Cryptography";
 import { Document } from "swagger2/dist/schema";
 import * as swagger from "swagger2";
-import doc = Mocha.reporters.doc;
+import { OrganisationsController } from "../organisation/controller/OrganisationsController";
+import { GenericRepository } from "../database/GenericRepository";
+import { SchemeRepository } from "../scheme/SchemeRepository";
 
 /**
  * Dependency container for the API
@@ -21,21 +23,31 @@ import doc = Mocha.reporters.doc;
 export class ApiContainer {
 
   public async getKoaService(): Promise<KoaService> {
+    const [router, authenticationMiddleware] = await Promise.all([
+      this.getRoutes(),
+      this.getAuthenticationMiddleware()
+    ]);
+
     return new KoaService(
       config.port,
       new Koa(),
-      this.getRoutes(),
-      await this.getAuthenticationMiddleware(),
+      router,
+      authenticationMiddleware,
       this.getSwaggerDocument(),
       this.getLogger()
     );
   }
 
-  private getRoutes(): Router {
+  private async getRoutes(): Promise<Router> {
     const router = new Router();
+    const [health, organisations] = await Promise.all([
+      this.getHealthController(),
+      this.getOrganisationsController()
+    ]);
 
     return router
-      .get("/health", this.wrap(this.getHealthController().get));
+    .get("/health", this.wrap(health.get))
+    .get("/organisations", this.wrap(organisations.get));
   }
 
   private wrap(controller: Function): Middleware {
@@ -59,6 +71,15 @@ export class ApiContainer {
 
   private getHealthController(): HealthController {
     return new HealthController();
+  }
+
+  private async getOrganisationsController(): Promise<OrganisationsController> {
+    const [genericRepository, schemeRepository] = await Promise.all([
+      this.getGenericRepository(),
+      this.getSchemeRepository()
+    ]);
+
+    return new OrganisationsController(genericRepository, schemeRepository);
   }
 
   @memoize
@@ -87,6 +108,16 @@ export class ApiContainer {
       dateStrings: true,
       // debug: ["ComQueryPacket", "RowDataPacket"]
     });
+  }
+
+  @memoize
+  private async getGenericRepository(): Promise<GenericRepository> {
+    return new GenericRepository(await this.getDatabase());
+  }
+
+  @memoize
+  private async getSchemeRepository(): Promise<SchemeRepository> {
+    return new SchemeRepository(await this.getDatabase());
   }
 
   @memoize

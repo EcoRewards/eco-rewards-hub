@@ -28,8 +28,23 @@ export class GenericRepository {
     return { ...record, id };
   }
 
+  /**
+   * Select all rows from the given table
+   */
+  public async selectAll<T extends DatabaseRecord>(table: string): Promise<NonNullId<T>[]> {
+    const [rows] = await this.db.query(`SELECT * FROM ${table}`);
+
+    return rows;
+  }
+
 }
 
 export interface DatabaseRecord {
   id: number | null
 }
+
+export interface SavedDatabaseRecord {
+  id: number
+}
+
+export type NonNullId<T extends DatabaseRecord> = T & SavedDatabaseRecord;

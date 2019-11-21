@@ -47,7 +47,9 @@ See [features](/feature).
 | 2019-11-18 | Use db-migrate | Most widely used database migration tool |
 | 2019-11-18 | Do not use an ORM | Seems like overkill when there are so few models |
 | 2019-11-18 | Bcrypt passwords | Most secure, widely used method to salt passwords |
-| 2019-11-19 | No OAuth for API access | oauth server library in midst of re-write, KISS for now and us Basic auth |
+| 2019-11-19 | Basic auth for API access | Simple, widely used and easy to implement |
+| 2019-11-21 | Swagger documentation | Comes with a slick UI and package to validate requests and responses |
+| 2019-11-21 | Link based API responses | Reduces duplication in API responses. See [this post](https://cloud.google.com/blog/products/application-development/api-design-why-you-should-use-links-not-keys-to-represent-relationships-in-apis) |
 
 ## Release notes
 
