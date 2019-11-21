@@ -14,7 +14,7 @@ export class CreateOrganisationCommand {
   ) {}
 
   public async run(name: string, schemeId: SchemeId, apiKey: string): Promise<Organisation> {
-    // better validation library?
+    // todo better validation library?
     if (name.length < 3) {
       throw "Organisation name must be longer than 2 characters";
     }
