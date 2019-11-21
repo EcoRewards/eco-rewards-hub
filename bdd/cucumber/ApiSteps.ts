@@ -7,13 +7,6 @@ Given("I am logged in as an administrator", async function() {
     return;
   }
 
-  console.log(this.host + "login");
-
-  try {
-    const result = await axios.post(this.host + "login", { username: "test@test.com", password: "password" });
-    World.token = result.data.token;
-  }
-  catch (e) {
-    console.log(e);
-  }
+  const result = await axios.post(this.host + "login", { username: "test@test.com", password: "password" });
+  World.token = result.data.token;
 });
