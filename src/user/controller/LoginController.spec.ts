@@ -6,10 +6,10 @@ import { HttpResponse } from "../../service/HttpResponse";
 class MockAdminUserRepository {
   crpyto = new Cryptography();
 
-  public async selectAll(table: string) {
-    return [
-      { id: 1, email: "test@test.com", password: await this.crpyto.hash("password") },
-    ];
+  public async getUserIndex() {
+    return {
+      "test@test.com": { id: 1, email: "test@test.com", password: await this.crpyto.hash("password") },
+    };
   }
 }
 

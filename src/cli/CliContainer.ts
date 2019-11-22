@@ -4,11 +4,10 @@ import * as memoize from "memoized-class-decorator";
 import * as databaseConfiguration from "../../config/database.json";
 import { SchemeFactory } from "../scheme/SchemeFactory";
 import { GenericRepository } from "../database/GenericRepository";
-import { OrganisationFactory } from "../organisation/OrganisationFactory";
 import { CreateOrganisationCommand } from "../organisation/command/CreateOrganisationCommand";
 import { Cryptography } from "../cryptography/Cryptography";
 import { CreateAdminUserCommand } from "../user/command/CreateAdminUserCommand";
-import { AdminFactory } from "../user/AdminFactory";
+import { AdminUserFactory } from "../user/AdminUserFactory";
 
 /**
  * Container for the CLI commands
@@ -58,7 +57,6 @@ export class CliContainer {
     const db = await this.getDatabase();
 
     return new CreateOrganisationCommand(
-      new OrganisationFactory(new Cryptography()),
       new GenericRepository(db)
     );
   }
@@ -67,7 +65,7 @@ export class CliContainer {
     const db = await this.getDatabase();
 
     return new CreateAdminUserCommand(
-      new AdminFactory(new Cryptography()),
+      new AdminUserFactory(new Cryptography()),
       new GenericRepository(db)
     );
   }

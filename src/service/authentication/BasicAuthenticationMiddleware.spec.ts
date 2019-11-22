@@ -2,14 +2,18 @@ import * as chai from "chai";
 import { Cryptography } from "../../cryptography/Cryptography";
 import { BasicAuthenticationMiddleware } from "./BasicAuthenticationMiddleware";
 import { Base64 } from "js-base64";
-import toBase64 = Base64.toBase64;
 import { Context } from "koa";
+import toBase64 = Base64.toBase64;
+import { AdminRole } from "../../user/AdminUser";
 
 describe("BasicAuthenticationMiddleware", async () => {
   const cryptography = new Cryptography();
 
   it("authorizes valid requests", async () => {
-    const index = { "1": await cryptography.hash("password1") };
+    const index = {
+      "1": { id: 1, email: "1", name: "user1", role: "provider" as AdminRole, password: await cryptography.hash("password1") },
+    };
+
     const middleware = new BasicAuthenticationMiddleware(index, cryptography);
     let hasBeenCalled = false;
     const next = () => hasBeenCalled = true;
@@ -21,7 +25,10 @@ describe("BasicAuthenticationMiddleware", async () => {
   });
 
   it("rejects invalid requests", async () => {
-    const index = { "1": await cryptography.hash("password1") };
+    const index = {
+      "1": { id: 1, email: "1", name: "user1", role: "provider" as AdminRole, password: await cryptography.hash("password1") },
+    };
+
     const middleware = new BasicAuthenticationMiddleware(index, cryptography);
     let hasBeenCalled = false;
     const next = () => hasBeenCalled = true;
@@ -38,7 +45,10 @@ describe("BasicAuthenticationMiddleware", async () => {
   });
 
   it("rejects requests where the user doesn't exist", async () => {
-    const index = { "1": await cryptography.hash("password1") };
+    const index = {
+      "1": { id: 1, email: "1", name: "user1", role: "provider" as AdminRole, password: await cryptography.hash("password1") },
+    };
+
     const middleware = new BasicAuthenticationMiddleware(index, cryptography);
     let hasBeenCalled = false;
     const next = () => hasBeenCalled = true;
@@ -55,7 +65,10 @@ describe("BasicAuthenticationMiddleware", async () => {
   });
 
   it("does not validate whitelisted requests", async () => {
-    const index = { "1": await cryptography.hash("password1") };
+    const index = {
+      "1": { id: 1, email: "1", name: "user1", role: "provider" as AdminRole, password: await cryptography.hash("password1") },
+    };
+
     const middleware = new BasicAuthenticationMiddleware(index, cryptography);
     let hasBeenCalled = false;
     const next = () => hasBeenCalled = true;

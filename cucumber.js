@@ -4,7 +4,7 @@ let common = [
     '--require bdd/cucumber/**/*.ts',
     '--format progress-bar',
     '--format node_modules/cucumber-pretty',
-    '--tags ~skipped ~pending',
+    '--tags "not @skipped and not @pending"',
     '--parallel 2'
 ].join(' ');
 

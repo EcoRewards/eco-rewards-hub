@@ -1,15 +1,15 @@
 import { KoaService } from "./KoaService";
 import { config } from "../../config/service";
 import * as Koa from "koa";
+import { Context, Middleware, Next } from "koa";
 import * as pino from "pino";
+import { Logger } from "pino";
 import * as Router from "koa-router";
 import { HealthController } from "../health/HealthController";
-import { Context, Middleware, Next, ParameterizedContext } from "koa";
-import { Logger } from "pino";
 import * as memoize from "memoized-class-decorator";
 import * as databaseConfiguration from "../../config/database.json";
 import { BasicAuthenticationMiddleware } from "./authentication/BasicAuthenticationMiddleware";
-import { AuthenticationCredentialsRepository } from "./authentication/AuthenticationCredentialsRepository";
+import { AdminUserRepository } from "../user/AdminUserRepository";
 import { Cryptography } from "../cryptography/Cryptography";
 import { Document } from "swagger2/dist/schema";
 import * as swagger from "swagger2";
@@ -87,10 +87,15 @@ export class ApiContainer {
     return new OrganisationsController(genericRepository, schemeRepository);
   }
 
-  private async getLoginController(): Promise<LoginController> {
-    const genericRepository = await this.getGenericRepository();
+  @memoize
+  private async getAdminUserRepository(): Promise<AdminUserRepository> {
+    return new AdminUserRepository(await this.getDatabase());
+  }
 
-    return new LoginController(genericRepository, this.getCryptography());
+  private async getLoginController(): Promise<LoginController> {
+    const repository = await this.getAdminUserRepository();
+
+    return new LoginController(repository, this.getCryptography());
   }
 
   @memoize
@@ -99,9 +104,8 @@ export class ApiContainer {
   }
 
   private async getAuthenticationMiddleware(): Promise<BasicAuthenticationMiddleware> {
-    const db = await this.getDatabase();
-    const repository = new AuthenticationCredentialsRepository(db);
-    const index = await repository.getPasswordIndex();
+    const repository = await this.getAdminUserRepository();
+    const index = await repository.getUserIndex();
 
     return new BasicAuthenticationMiddleware(index, this.getCryptography());
   }

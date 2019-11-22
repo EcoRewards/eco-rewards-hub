@@ -6,6 +6,7 @@ import { AdminUser } from "../AdminUser";
 import { keyValue } from "ts-array-utils";
 import { Base64 } from "js-base64";
 import toBase64 = Base64.toBase64;
+import { AdminUserRepository } from "../AdminUserRepository";
 
 /**
  * Controller that checks a users login. This is a convenience method for the front end, it just checks the credentials
@@ -15,7 +16,7 @@ import toBase64 = Base64.toBase64;
 export class LoginController {
 
   constructor(
-    private readonly repository: GenericRepository,
+    private readonly repository: AdminUserRepository,
     private readonly crypto: Cryptography
   ) {}
 
@@ -27,11 +28,10 @@ export class LoginController {
    */
   public async post(request: LoginRequest): Promise<LoginResponse> {
     const links = {};
-    const users = await this.repository.selectAll<AdminUser>("admin_user");
-    const userIndex = users.reduce(keyValue(u => [u.email, u.password.toString()]), {});
+    const userIndex = await this.repository.getUserIndex();
 
     if (userIndex[request.username]) {
-      const isValid = await this.crypto.compare(request.password, userIndex[request.username]);
+      const isValid = await this.crypto.compare(request.password, userIndex[request.username].password);
 
       if (isValid) {
         const data = {

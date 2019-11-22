@@ -1,17 +1,18 @@
 @skipped
 Feature:
-  As an organisation
-  I want to view my members eco-rewards and carbon savings balance
-  So they my customers can see their rewards
+  As a member
+  I want to view my eco-rewards and carbon savings balance
+  So I can track my usage
 
   Background:
-    Given a scheme "Yorkshire"
-    And the scheme "Yorkshire" contains members:
+    Given I am logged in as an administrator
+    And a scheme "Yorkshire"
+    And an organisation "Yorkshire School" in scheme "Yorkshire"
+    And a group "Class of 2017" in organisation "Yorkshire School"
+    And the group "Class of 2017" contains members:
       | member | rewards |
       | 1001   | 150     |
-    And an organisation "Some Org" in the scheme "Yorkshire"
 
   Scenario: Upload by a member via an organisation
-    And I am logged in as "Some Org"
     When I view the rewards for member "1001"
     Then I should see "150"

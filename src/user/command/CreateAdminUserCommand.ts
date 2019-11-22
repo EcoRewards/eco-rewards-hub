@@ -1,6 +1,6 @@
-import { AdminFactory } from "../AdminFactory";
+import { AdminUserFactory } from "../AdminUserFactory";
 import { SchemeId } from "../../scheme/Scheme";
-import { AdminUser } from "../AdminUser";
+import { AdminRole, AdminUser } from "../AdminUser";
 import { GenericRepository } from "../../database/GenericRepository";
 
 /**
@@ -9,11 +9,11 @@ import { GenericRepository } from "../../database/GenericRepository";
 export class CreateAdminUserCommand {
 
   constructor(
-    private readonly factory: AdminFactory,
+    private readonly factory: AdminUserFactory,
     private readonly repository: GenericRepository
   ) {}
 
-  public async run(name: string, email: string, password: string): Promise<AdminUser> {
+  public async run(name: string, email: string, password: string, role: AdminRole): Promise<AdminUser> {
     if (name.length < 3) {
       throw "User name must be longer than 2 characters";
     }
@@ -24,7 +24,7 @@ export class CreateAdminUserCommand {
       throw "Password must be exactly 86 characters";
     }
 
-    const user = await this.factory.create(name, email, password);
+    const user = await this.factory.create(name, email, password, role);
 
     return await this.repository.save("admin_user", user);
   }
