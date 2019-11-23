@@ -16,9 +16,10 @@
     "report-coverage": "npm run coverage && nyc report --reporter=text-lcov > coverage.lcov && codecov",
     "start": "NODE_OPTIONS=$NODE_DEBUG_OPTION ts-node src/start.ts",
     "bdd": "cucumber-js",
-    "add-test-user": "npm run cli -- create-user Test test@test.com password",
+    "add-test-user": "npm run cli -- create-user Test test@test.com password admin",
     "cli": "NODE_OPTIONS=$NODE_DEBUG_OPTION ts-node src/cli.ts",
     "migrate": "db-migrate --config config/database.json up",
+    "migrate-down": "db-migrate --config config/database.json down",
     "create-migration": "db-migrate --sql-file --config config/database.json create"
   },
   "keywords": [

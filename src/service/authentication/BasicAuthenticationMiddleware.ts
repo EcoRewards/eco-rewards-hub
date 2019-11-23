@@ -1,8 +1,8 @@
 import { Context, Next } from "koa";
 import * as auth from "basic-auth";
 import { Cryptography } from "../../cryptography/Cryptography";
-import { OrganisationId } from "../../organisation/Organisation";
 import autobind from "autobind-decorator";
+import { AdminUserIndex } from "../../user/AdminUserRepository";
 
 /**
  * Implementation of RFC7617, Basic HTTP authentication as a Koa middleware
@@ -18,7 +18,7 @@ export class BasicAuthenticationMiddleware {
 
   // todo reload / mutate this when adding new orgs otherwise they won't authenticate
   constructor(
-    private readonly userCredentials: PasswordIndex,
+    private readonly userCredentials: AdminUserIndex,
     private readonly crypto: Cryptography
   ) {}
 
@@ -33,7 +33,7 @@ export class BasicAuthenticationMiddleware {
     const user = auth(ctx.req);
 
     if (user && this.userCredentials[user.name]) {
-      const isValid = await this.crypto.compare(user.pass, this.userCredentials[user.name]);
+      const isValid = await this.crypto.compare(user.pass, this.userCredentials[user.name].password);
 
       if (isValid) {
         return next();
@@ -50,5 +50,3 @@ export class BasicAuthenticationMiddleware {
     );
   }
 }
-
-export type PasswordIndex = Record<OrganisationId, string>;
