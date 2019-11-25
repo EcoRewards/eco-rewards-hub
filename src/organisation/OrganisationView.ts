@@ -1,7 +1,7 @@
-import { View } from "../../service/controller/GenericController";
-import { Organisation, OrganisationJsonView } from "../Organisation";
-import { Scheme } from "../../scheme/Scheme";
-import { NonNullId } from "../../database/GenericRepository";
+import { View } from "../service/controller/GenericGetController";
+import { Organisation, OrganisationJsonView } from "./Organisation";
+import { Scheme } from "../scheme/Scheme";
+import { NonNullId } from "../database/GenericRepository";
 
 /**
  * Creates organisation view models

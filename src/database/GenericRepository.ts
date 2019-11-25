@@ -13,7 +13,7 @@ export class GenericRepository<T extends DatabaseRecord> {
   /**
    * Save the given record using an UPSERT. If the record is inserted it will be returned with an id.
    */
-  public async save(record: T): Promise<T> {
+  public async save(record: T): Promise<NonNullId<T>> {
     const keysWithoutId = Object.keys(record).filter(k => k !== "id");
     const updateSql = keysWithoutId.map(k => k + " = ?").join();
     const updateValues = keysWithoutId.map(k => record[k]);

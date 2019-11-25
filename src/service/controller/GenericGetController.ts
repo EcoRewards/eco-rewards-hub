@@ -6,7 +6,7 @@ import { DatabaseRecord, GenericRepository, NonNullId } from "../../database/Gen
  * Controller that provides access to organisations
  */
 @autobind
-export class GenericController<M extends DatabaseRecord, V> {
+export class GenericGetController<M extends DatabaseRecord, V> {
 
   constructor(
     private readonly repository: GenericRepository<M>,
@@ -14,7 +14,7 @@ export class GenericController<M extends DatabaseRecord, V> {
   ) {}
 
   /**
-   * Return an organisation or a 404 if one cannot be found
+   * Return an item or a 404 if one cannot be found
    */
   public async get(id: number): Promise<GetResponse<V>> {
     const links = {};
@@ -33,7 +33,7 @@ export class GenericController<M extends DatabaseRecord, V> {
   }
 
   /**
-   * Return a list of organisations
+   * Return a list of items
    */
   public async getAll(): Promise<GetAllResponse<V>> {
     const links = {};

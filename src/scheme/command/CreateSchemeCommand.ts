@@ -1,6 +1,6 @@
 import { Scheme } from "../Scheme";
-import { SchemeFactory } from "../SchemeFactory";
 import { GenericRepository } from "../../database/GenericRepository";
+import { SchemeModelFactory } from "../SchemeModelFactory";
 
 /**
  * Command to create a Scheme and save it in the database
@@ -8,7 +8,6 @@ import { GenericRepository } from "../../database/GenericRepository";
 export class CreateSchemeCommand {
 
   constructor(
-    private readonly factory: SchemeFactory,
     private readonly repository: GenericRepository<Scheme>
   ) {}
 
@@ -16,9 +15,11 @@ export class CreateSchemeCommand {
    * Create and save the new scheme
    */
   public async run(name: string): Promise<Scheme> {
-    const scheme = this.factory.create(name);
+    if (name.length < 3) {
+      throw Error("Scheme name must be at least 3 characters long");
+    }
 
-    return this.repository.save(scheme);
+    return this.repository.save({ id: null, name });
   }
 
 }

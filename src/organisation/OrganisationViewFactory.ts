@@ -1,8 +1,8 @@
-import { ViewFactory } from "../../service/controller/GenericController";
-import { Organisation, OrganisationJsonView } from "../Organisation";
+import { ViewFactory } from "../service/controller/GenericGetController";
+import { Organisation, OrganisationJsonView } from "./Organisation";
 import { OrganisationView } from "./OrganisationView";
-import { GenericRepository } from "../../database/GenericRepository";
-import { Scheme } from "../../scheme/Scheme";
+import { GenericRepository } from "../database/GenericRepository";
+import { Scheme } from "../scheme/Scheme";
 
 /**
  * Creates an OrganisationViewFactory

@@ -1,3 +1,4 @@
+import { NonNullId } from "../database/GenericRepository";
 
 export interface Scheme {
   id: SchemeId | null,
@@ -5,3 +6,5 @@ export interface Scheme {
 }
 
 export type SchemeId = number;
+
+export type SchemeJsonView = NonNullId<Scheme>;

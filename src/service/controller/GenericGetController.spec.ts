@@ -1,5 +1,5 @@
 import * as chai from "chai";
-import { GenericController, ViewFactory } from "./GenericController";
+import { GenericGetController, ViewFactory } from "./GenericGetController";
 import { GenericRepository } from "../../database/GenericRepository";
 import { Organisation, OrganisationJsonView } from "../../organisation/Organisation";
 
@@ -41,8 +41,8 @@ class MockViewFactory<Model, View> {
   }
 }
 
-describe("GenericController", () => {
-  const controller = new GenericController(
+describe("GenericGetController", () => {
+  const controller = new GenericGetController(
     new MockRepository() as GenericRepository<Organisation>,
     new MockViewFactoryFactory() as ViewFactory<Organisation, OrganisationJsonView>
   );

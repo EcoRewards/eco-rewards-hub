@@ -2,7 +2,6 @@ import { CliCommand } from "./CliCommand";
 import { CreateSchemeCommand } from "../scheme/command/CreateSchemeCommand";
 import * as memoize from "memoized-class-decorator";
 import * as databaseConfiguration from "../../config/database.json";
-import { SchemeFactory } from "../scheme/SchemeFactory";
 import { GenericRepository } from "../database/GenericRepository";
 import { CreateOrganisationCommand } from "../organisation/command/CreateOrganisationCommand";
 import { Cryptography } from "../cryptography/Cryptography";
@@ -48,7 +47,6 @@ export class CliContainer {
     const db = await this.getDatabase();
 
     return new CreateSchemeCommand(
-      new SchemeFactory(),
       new GenericRepository(db, "scheme")
     );
   }
