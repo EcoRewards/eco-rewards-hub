@@ -17,6 +17,9 @@ import { OrganisationsController } from "../organisation/controller/Organisation
 import { GenericRepository } from "../database/GenericRepository";
 import { SchemeRepository } from "../scheme/SchemeRepository";
 import { LoginController } from "../user/controller/LoginController";
+import { SchemeController } from "../scheme/controller/SchemeController";
+import {CreateSchemeCommand} from "../scheme/command/CreateSchemeCommand";
+import {SchemeFactory} from "../scheme/SchemeFactory";
 
 /**
  * Dependency container for the API
@@ -41,16 +44,18 @@ export class ApiContainer {
 
   private async getRoutes(): Promise<Router> {
     const router = new Router();
-    const [health, login, organisations] = await Promise.all([
+    const [health, login, organisations, scheme] = await Promise.all([
       this.getHealthController(),
       this.getLoginController(),
-      this.getOrganisationsController()
+      this.getOrganisationsController(),
+      this.getSchemeController(),
     ]);
 
     return router
       .get("/health", this.wrap(health.get))
       .post("/login", this.wrap(login.post))
-      .get("/organisations", this.wrap(organisations.get));
+      .get("/organisations", this.wrap(organisations.get))
+      .post("/scheme", this.wrap(scheme.post));
   }
 
   private wrap(controller: Function): Middleware {
@@ -85,6 +90,15 @@ export class ApiContainer {
     ]);
 
     return new OrganisationsController(genericRepository, schemeRepository);
+  }
+
+  private async getSchemeController(): Promise<SchemeController> {
+    const [schemeRepository, schemeCmd] = await Promise.all([
+      this.getSchemeRepository(),
+      this.getSchemeCmd()
+    ]);
+
+    return new SchemeController(schemeRepository, schemeCmd);
   }
 
   @memoize
@@ -133,6 +147,16 @@ export class ApiContainer {
   @memoize
   private async getSchemeRepository(): Promise<SchemeRepository> {
     return new SchemeRepository(await this.getDatabase());
+  }
+
+  @memoize
+  private async getSchemeCmd(): Promise<CreateSchemeCommand> {
+    return new CreateSchemeCommand(this.getSchemeFactory(), await this.getGenericRepository());
+  }
+
+  @memoize
+  private getSchemeFactory(): SchemeFactory {
+    return new SchemeFactory();
   }
 
   @memoize
