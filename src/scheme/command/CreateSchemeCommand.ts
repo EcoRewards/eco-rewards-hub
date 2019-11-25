@@ -9,7 +9,7 @@ export class CreateSchemeCommand {
 
   constructor(
     private readonly factory: SchemeFactory,
-    private readonly repository: GenericRepository
+    private readonly repository: GenericRepository<Scheme>
   ) {}
 
   /**
@@ -18,7 +18,7 @@ export class CreateSchemeCommand {
   public async run(name: string): Promise<Scheme> {
     const scheme = this.factory.create(name);
 
-    return this.repository.save("scheme", scheme);
+    return this.repository.save(scheme);
   }
 
 }

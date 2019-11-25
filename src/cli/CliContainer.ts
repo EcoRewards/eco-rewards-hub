@@ -49,7 +49,7 @@ export class CliContainer {
 
     return new CreateSchemeCommand(
       new SchemeFactory(),
-      new GenericRepository(db)
+      new GenericRepository(db, "scheme")
     );
   }
 
@@ -57,7 +57,7 @@ export class CliContainer {
     const db = await this.getDatabase();
 
     return new CreateOrganisationCommand(
-      new GenericRepository(db)
+      new GenericRepository(db, "organisation")
     );
   }
 
@@ -66,7 +66,7 @@ export class CliContainer {
 
     return new CreateAdminUserCommand(
       new AdminUserFactory(new Cryptography()),
-      new GenericRepository(db)
+      new GenericRepository(db, "admin_user")
     );
   }
 

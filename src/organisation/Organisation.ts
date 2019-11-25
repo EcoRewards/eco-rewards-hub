@@ -7,3 +7,9 @@ export interface Organisation {
 }
 
 export type OrganisationId = number;
+
+export interface OrganisationJsonView {
+  id: OrganisationId,
+  name: string,
+  scheme: string
+}

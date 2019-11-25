@@ -1,7 +1,7 @@
 import * as chai from "chai";
 import { LoginController } from "./LoginController";
 import { Cryptography } from "../../cryptography/Cryptography";
-import { HttpResponse } from "../../service/HttpResponse";
+import { HttpResponse } from "../../service/controller/HttpResponse";
 
 class MockAdminUserRepository {
   crpyto = new Cryptography();

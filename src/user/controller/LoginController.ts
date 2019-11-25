@@ -1,5 +1,5 @@
 import autobind from "autobind-decorator";
-import { HttpError, HttpResponse } from "../../service/HttpResponse";
+import { HttpError, HttpResponse } from "../../service/controller/HttpResponse";
 import { GenericRepository } from "../../database/GenericRepository";
 import { Cryptography } from "../../cryptography/Cryptography";
 import { AdminUser } from "../AdminUser";

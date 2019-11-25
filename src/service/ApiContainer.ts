@@ -13,10 +13,12 @@ import { AdminUserRepository } from "../user/AdminUserRepository";
 import { Cryptography } from "../cryptography/Cryptography";
 import { Document } from "swagger2/dist/schema";
 import * as swagger from "swagger2";
-import { OrganisationsController } from "../organisation/controller/OrganisationsController";
-import { GenericRepository } from "../database/GenericRepository";
-import { SchemeRepository } from "../scheme/SchemeRepository";
+import { GenericController } from "./controller/GenericController";
+import { DatabaseRecord, GenericRepository } from "../database/GenericRepository";
 import { LoginController } from "../user/controller/LoginController";
+import { OrganisationViewFactory } from "../organisation/controller/OrganisationViewFactory";
+import { Organisation, OrganisationJsonView } from "../organisation/Organisation";
+import { Scheme } from "../scheme/Scheme";
 
 /**
  * Dependency container for the API
@@ -50,7 +52,7 @@ export class ApiContainer {
     return router
       .get("/health", this.wrap(health.get))
       .post("/login", this.wrap(login.post))
-      .get("/organisations", this.wrap(organisations.get));
+      .get("/organisations", this.wrap(organisations.getAll));
   }
 
   private wrap(controller: Function): Middleware {
@@ -78,13 +80,14 @@ export class ApiContainer {
     return new HealthController();
   }
 
-  private async getOrganisationsController(): Promise<OrganisationsController> {
-    const [genericRepository, schemeRepository] = await Promise.all([
-      this.getGenericRepository(),
-      this.getSchemeRepository()
-    ]);
+  private async getOrganisationsController(): Promise<GenericController<Organisation, OrganisationJsonView>> {
+    const [genericRepository, schemeRepository] = await Promise
+      .all<GenericRepository<Organisation>, GenericRepository<Scheme>>([
+        this.getGenericRepository("organisation"),
+        this.getGenericRepository("scheme")
+      ]);
 
-    return new OrganisationsController(genericRepository, schemeRepository);
+    return new GenericController(genericRepository, new OrganisationViewFactory(schemeRepository));
   }
 
   @memoize
@@ -126,13 +129,8 @@ export class ApiContainer {
   }
 
   @memoize
-  private async getGenericRepository(): Promise<GenericRepository> {
-    return new GenericRepository(await this.getDatabase());
-  }
-
-  @memoize
-  private async getSchemeRepository(): Promise<SchemeRepository> {
-    return new SchemeRepository(await this.getDatabase());
+  private async getGenericRepository<T extends DatabaseRecord>(table: string): Promise<GenericRepository<T>> {
+    return new GenericRepository(await this.getDatabase(), "table");
   }
 
   @memoize

@@ -3,7 +3,6 @@ info:
   description: ""
   version: "1.0.0"
   title: "Eco Rewards Hub API"
-  termsOfService: "http://swagger.io/terms/"
   contact:
     email: "linusnorton@gmail.com"
 schemes:
@@ -23,10 +22,11 @@ paths:
           description: "successful operation"
           schema:
             $ref: "#/definitions/Health"
+
   /login:
     post:
       summary: "Authenticate an admin user"
-      description: ""
+      description: "This endpoint allows users generate a token so they can login to the admin user interface"
       consumes:
         - "application/json"
       produces:
@@ -63,9 +63,10 @@ paths:
                     type: "string"
               links:
                 type: "object"
-  /organisations:
+
+  /schemes:
     get:
-      summary: "Return all the organisations"
+      summary: "Return all the schemes"
       description: ""
       consumes:
         - "application/json"
@@ -80,13 +81,132 @@ paths:
               data:
                 type: "array"
                 items:
+                  $ref: "#/definitions/Scheme"
+              links:
+                type: "object"
+      security:
+        - basicAuth: []
+
+  /scheme/{schemeId}:
+    get:
+      summary: "Return a scheme"
+      description: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "schemeId"
+          in: "path"
+          description: "ID of scheme to return"
+          required: true
+          type: "integer"
+          format: "int64"
+      responses:
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "object"
+            properties:
+              data:
+                type: "object"
+                properties:
+                  error:
+                    type: "string"
+              links:
+                type: "object"
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              data:
+                type: "array"
+                items:
+                  $ref: "#/definitions/Scheme"
+              links:
+                type: "object"
+      security:
+        - basicAuth: []
+
+  /organisations:
+    get:
+      summary: "Return all the organisations"
+      description: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      responses:
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "object"
+            properties:
+              data:
+                type: "object"
+                properties:
+                  error:
+                    type: "string"
+              links:
+                type: "object"
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              data:
+                type: "array"
+                items:
                   $ref: "#/definitions/Organisation"
               links:
                 type: "object"
       security:
         - basicAuth: []
 
-  /member-groups:
+  /organisation/{organsiationId}:
+    get:
+      summary: "Return an organisation"
+      description: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "organisationId"
+          in: "path"
+          description: "ID of organisation to return"
+          required: true
+          type: "integer"
+          format: "int64"
+      responses:
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "object"
+            properties:
+              data:
+                type: "object"
+                properties:
+                  error:
+                    type: "string"
+              links:
+                type: "object"
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              data:
+                type: "array"
+                items:
+                  $ref: "#/definitions/Organisation"
+              links:
+                type: "object"
+      security:
+        - basicAuth: []
+
+  /groups:
     get:
       summary: "Return all the member groups"
       description: ""
@@ -103,7 +223,49 @@ paths:
               data:
                 type: "array"
                 items:
-                  $ref: "#/definitions/MemberGroup"
+                  $ref: "#/definitions/Group"
+              links:
+                type: "object"
+      security:
+        - basicAuth: []
+
+  /group/{groupId}:
+    get:
+      summary: "Return a group"
+      description: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "groupId"
+          in: "path"
+          description: "ID of group to return"
+          required: true
+          type: "integer"
+          format: "int64"
+      responses:
+        401:
+          description: "Unauthorized"
+          schema:
+            type: "object"
+            properties:
+              data:
+                type: "object"
+                properties:
+                  error:
+                    type: "string"
+              links:
+                type: "object"
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              data:
+                type: "array"
+                items:
+                  $ref: "#/definitions/Group"
               links:
                 type: "object"
       security:
@@ -112,7 +274,9 @@ paths:
 securityDefinitions:
   basicAuth:
     type: basic
+
 definitions:
+
   Health:
     type: "object"
     properties:
@@ -121,6 +285,7 @@ definitions:
         enum:
           - "UP"
           - "DOWN"
+
   LoginRequest:
     type: "object"
     properties:
@@ -128,6 +293,7 @@ definitions:
         type: "string"
       password:
         type: "string"
+
   Organisation:
     type: "object"
     properties:
@@ -138,7 +304,8 @@ definitions:
         type: "string"
       name:
         type: "string"
-  MemberGroup:
+
+  Group:
     type: "object"
     properties:
       id:
@@ -148,6 +315,7 @@ definitions:
         type: "string"
       name:
         type: "string"
+
   Scheme:
     type: "object"
     properties:
