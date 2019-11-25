@@ -10,17 +10,8 @@ export class SchemeController {
                 private readonly schemeCmd: CreateSchemeCommand) {}
 
     public async post(request: SchemeRequest): Promise<SchemeResponse> {
-        let data: SchemeView = {
-            id: null,
-            name: ""
-        };
-        let links = {};
-
-        const scheme = this.schemeCmd.run(request.name);
-        await scheme.then(res => {
-            data.id = res.id;
-            data.name = res.name;
-        });
+        const links = {};
+        const data = await this.schemeCmd.run(request.name);
 
         return { data, links, code: 201 };
     }
