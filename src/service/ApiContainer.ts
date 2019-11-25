@@ -19,6 +19,9 @@ import { LoginController } from "../user/controller/LoginController";
 import { OrganisationViewFactory } from "../organisation/controller/OrganisationViewFactory";
 import { Organisation, OrganisationJsonView } from "../organisation/Organisation";
 import { Scheme } from "../scheme/Scheme";
+import { SchemeController } from "../scheme/controller/SchemeController";
+import { CreateSchemeCommand } from "../scheme/command/CreateSchemeCommand";
+import { SchemeFactory } from "../scheme/SchemeFactory";
 
 /**
  * Dependency container for the API
@@ -43,16 +46,18 @@ export class ApiContainer {
 
   private async getRoutes(): Promise<Router> {
     const router = new Router();
-    const [health, login, organisations] = await Promise.all([
+    const [health, login, organisations, scheme] = await Promise.all([
       this.getHealthController(),
       this.getLoginController(),
-      this.getOrganisationsController()
+      this.getOrganisationsController(),
+      this.getSchemeController(),
     ]);
 
     return router
       .get("/health", this.wrap(health.get))
       .post("/login", this.wrap(login.post))
-      .get("/organisations", this.wrap(organisations.getAll));
+      .get("/organisations", this.wrap(organisations.getAll))
+      .post("/scheme", this.wrap(scheme.post));
   }
 
   private wrap(controller: Function): Middleware {
@@ -88,6 +93,16 @@ export class ApiContainer {
       ]);
 
     return new GenericController(genericRepository, new OrganisationViewFactory(schemeRepository));
+  }
+
+  private async getSchemeController(): Promise<SchemeController> {
+    const [schemeRepository, schemeCmd] = await Promise
+      .all<GenericRepository<Scheme>, CreateSchemeCommand>([
+        this.getGenericRepository("scheme"),
+        this.getSchemeCmd()
+      ]);
+
+    return new SchemeController(schemeRepository, schemeCmd);
   }
 
   @memoize
@@ -130,7 +145,17 @@ export class ApiContainer {
 
   @memoize
   private async getGenericRepository<T extends DatabaseRecord>(table: string): Promise<GenericRepository<T>> {
-    return new GenericRepository(await this.getDatabase(), "table");
+    return new GenericRepository(await this.getDatabase(), table);
+  }
+
+  @memoize
+  private async getSchemeCmd(): Promise<CreateSchemeCommand> {
+    return new CreateSchemeCommand(this.getSchemeFactory(), await this.getGenericRepository("scheme"));
+  }
+
+  @memoize
+  private getSchemeFactory(): SchemeFactory {
+    return new SchemeFactory();
   }
 
   @memoize
