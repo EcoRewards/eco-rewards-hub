@@ -1,5 +1,4 @@
 import { AdminUserFactory } from "../AdminUserFactory";
-import { SchemeId } from "../../scheme/Scheme";
 import { AdminRole, AdminUser } from "../AdminUser";
 import { GenericRepository } from "../../database/GenericRepository";
 
@@ -10,7 +9,7 @@ export class CreateAdminUserCommand {
 
   constructor(
     private readonly factory: AdminUserFactory,
-    private readonly repository: GenericRepository
+    private readonly repository: GenericRepository<AdminUser>
   ) {}
 
   public async run(name: string, email: string, password: string, role: AdminRole): Promise<AdminUser> {
@@ -26,7 +25,7 @@ export class CreateAdminUserCommand {
 
     const user = await this.factory.create(name, email, password, role);
 
-    return await this.repository.save("admin_user", user);
+    return await this.repository.save(user);
   }
 
 }
