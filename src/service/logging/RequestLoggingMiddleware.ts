@@ -1,9 +1,11 @@
 import { Context, Next } from "koa";
 import { Logger } from "pino";
+import autobind from "autobind-decorator";
 
 /**
  * Koa middleware to log requests with pino
  */
+@autobind
 export class RequestLoggingMiddleware {
 
   constructor(
