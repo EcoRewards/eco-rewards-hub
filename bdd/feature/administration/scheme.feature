@@ -1,4 +1,3 @@
-@skipped
 Feature:
   As an admin user
   I want to be able to set up a scheme

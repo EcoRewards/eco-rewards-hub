@@ -8,7 +8,7 @@ import { GenericRepository } from "../../database/GenericRepository";
 export class CreateOrganisationCommand {
 
   constructor(
-    private readonly repository: GenericRepository
+    private readonly repository: GenericRepository<Organisation>
   ) {}
 
   public async run(name: string, schemeId: SchemeId): Promise<Organisation> {
@@ -22,7 +22,7 @@ export class CreateOrganisationCommand {
       scheme_id: schemeId
     };
 
-    return await this.repository.save("organisation", organisation);
+    return await this.repository.save(organisation);
   }
 
 }
