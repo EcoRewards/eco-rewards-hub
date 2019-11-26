@@ -9,7 +9,7 @@ export interface Organisation {
 export type OrganisationId = number;
 
 export interface OrganisationJsonView {
-  id: string,
+  id?: string,
   name: string,
   scheme: string
 }

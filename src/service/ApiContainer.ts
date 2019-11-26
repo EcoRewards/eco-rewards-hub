@@ -23,6 +23,8 @@ import { SchemeViewFactory } from "../scheme/SchemeViewFactory";
 import { GenericPostController } from "./controller/GenericPostController";
 import { SchemeModelFactory } from "../scheme/SchemeModelFactory";
 import { OrganisationModelFactory } from "../organisation/OrganisationModelFactory";
+import { ErrorLoggingMiddleware } from "./logging/ErrorLoggingMiddleware";
+import { RequestLoggingMiddleware } from "./logging/RequestLoggingMiddleware";
 
 /**
  * Dependency container for the API
@@ -41,6 +43,8 @@ export class ApiContainer {
       router,
       authenticationMiddleware,
       this.getSwaggerDocument(),
+      new ErrorLoggingMiddleware(this.getLogger()),
+      new RequestLoggingMiddleware(this.getLogger()),
       this.getLogger()
     );
   }

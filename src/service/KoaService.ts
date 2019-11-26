@@ -7,8 +7,9 @@ import { BasicAuthenticationMiddleware } from "./authentication/BasicAuthenticat
 import { ui, validate } from "swagger2-koa";
 import { Document } from "swagger2/dist/schema";
 import * as bodyParser from "koa-bodyparser";
-import { Context, Next } from "koa";
 import autobind from "autobind-decorator";
+import { ErrorLoggingMiddleware } from "./logging/ErrorLoggingMiddleware";
+import { RequestLoggingMiddleware } from "./logging/RequestLoggingMiddleware";
 
 /**
  * Koa Wrapper that starts the API.
@@ -22,6 +23,8 @@ export class KoaService {
     private readonly router: Router,
     private readonly authentication: BasicAuthenticationMiddleware,
     private readonly swaggerDocument: Document,
+    private readonly errorLogger: ErrorLoggingMiddleware,
+    private readonly requestLogger: RequestLoggingMiddleware,
     private readonly logger: Logger
   ) {}
 
@@ -29,10 +32,9 @@ export class KoaService {
    * Start the API on the configured port, set up cors and compression.
    */
   public start(): void {
-    // todo add exception logging
     this.app
-      .use(this.errorHandler)
-      .use(this.requestLogger)
+      .use(this.errorLogger.errorHandler)
+      .use(this.requestLogger.requestLogger)
       .use(compress())
       .use(ui(this.swaggerDocument, "/swagger"))
       .use(cors({ origin: "*" }))
@@ -44,37 +46,6 @@ export class KoaService {
       .listen(this.port);
 
     this.logger.info(`Started on ${this.port}`);
-  }
-
-  /**
-   * Log the request info and response time
-   */
-  private async requestLogger(ctx: Context, next: Next) {
-    const start = Date.now();
-    await next();
-    const ms = Date.now() - start;
-
-    this.logger.info(`${ctx.status} ${ctx.method} ${ctx.url} - ${ms}ms`);
-    ctx.set("X-Response-Time", `${ms}ms`);
-  }
-
-  private async errorHandler(ctx: Context, next: Next) {
-    try {
-      await next();
-
-      if (ctx.status === 500) {
-        this.logger.error(ctx.body);
-      }
-    }
-    catch (err) {
-      this.logger.error(err);
-
-      if (err.httpCode) {
-        ctx.throw(err.httpCode, err.message);
-      } else {
-        ctx.throw(500, err);
-      }
-    }
   }
 
 }

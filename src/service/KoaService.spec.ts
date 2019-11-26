@@ -3,15 +3,20 @@ import { KoaService } from "./KoaService";
 import * as pino from "pino";
 import * as swagger from "swagger2";
 import { Document } from "swagger2/dist/schema";
+import { ErrorLoggingMiddleware } from "./logging/ErrorLoggingMiddleware";
+import { RequestLoggingMiddleware } from "./logging/RequestLoggingMiddleware";
 
 describe("KoaService", () => {
+  const logger = pino({ level: "fatal" });
   const document = swagger.loadDocumentSync("documentation/swagger/api.yaml") as Document;
+  const errorLogger = new ErrorLoggingMiddleware(logger);
+  const requestLogger = new RequestLoggingMiddleware(logger);
 
   it("starts on the configured port", () => {
     const mockKoa = new MockApp() as any;
     const mockRouter = new MockRouter() as any;
     const mockAuth = new MockAuth() as any;
-    const koa = new KoaService(8080, mockKoa, mockRouter, mockAuth, document,  pino({ level: "fatal" }));
+    const koa = new KoaService(8080, mockKoa, mockRouter, mockAuth, document, errorLogger, requestLogger, logger);
 
     koa.start();
 

@@ -9,7 +9,7 @@ export interface Scheme {
 export type SchemeId = number;
 
 export type SchemeJsonView = {
-  id: string,
+  id?: string,
   name: string
 };
 

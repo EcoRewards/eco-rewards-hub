@@ -16,7 +16,9 @@ describe("GenericRepository", () => {
 
     const sql = db.sqlQueries[0];
 
-    chai.expect(sql).to.equal("INSERT INTO table VALUES (?,?,?) ON DUPLICATE KEY UPDATE field1 = ?,field2 = ?");
+    chai.expect(sql).to.equal(
+      "INSERT INTO table (id,field1,field2) VALUES (?,?,?) ON DUPLICATE KEY UPDATE field1 = ?,field2 = ?"
+    );
   });
 
   it("sets the id on records", async () => {
