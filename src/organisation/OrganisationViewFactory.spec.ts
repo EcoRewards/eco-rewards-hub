@@ -1,5 +1,4 @@
 import * as chai from "chai";
-import { OrganisationView } from "./OrganisationView";
 import { OrganisationViewFactory } from "./OrganisationViewFactory";
 
 class MockRepository {

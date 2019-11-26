@@ -290,6 +290,33 @@ paths:
                 type: "object"
       security:
         - basicAuth: []
+  /group:
+    post:
+      summary: "Create an group"
+      description: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Name of Organisation"
+          required: true
+          schema:
+            $ref: "#/definitions/Organisation"
+      responses:
+        201:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              data:
+                $ref: "#/definitions/Group"
+              links:
+                type: "object"
+      security:
+        - basicAuth: []
 
 
 securityDefinitions:

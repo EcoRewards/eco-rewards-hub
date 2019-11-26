@@ -1,6 +1,3 @@
-import { NonNullId } from "../database/GenericRepository";
-import { OrganisationId } from "../organisation/Organisation";
-
 export interface Scheme {
   id: SchemeId | null,
   name: string

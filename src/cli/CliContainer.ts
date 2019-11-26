@@ -7,6 +7,7 @@ import { CreateOrganisationCommand } from "../organisation/command/CreateOrganis
 import { Cryptography } from "../cryptography/Cryptography";
 import { CreateAdminUserCommand } from "../user/command/CreateAdminUserCommand";
 import { AdminUserFactory } from "../user/AdminUserFactory";
+import { CreateGroupCommand } from "../group/command/CreateGroupCommand";
 
 /**
  * Container for the CLI commands
@@ -17,6 +18,7 @@ export class CliContainer {
     switch (command) {
       case "create-scheme": return this.getCreateScheme();
       case "create-organisation": return this.getCreateOrganisation();
+      case "create-group": return this.getCreateGroup();
       case "create-user": return this.getCreateUser();
       default: throw command + " not found.";
     }
@@ -56,6 +58,14 @@ export class CliContainer {
 
     return new CreateOrganisationCommand(
       new GenericRepository(db, "organisation")
+    );
+  }
+
+  private async getCreateGroup(): Promise<CreateGroupCommand> {
+    const db = await this.getDatabase();
+
+    return new CreateGroupCommand(
+        new GenericRepository(db, "member_group")
     );
   }
 
