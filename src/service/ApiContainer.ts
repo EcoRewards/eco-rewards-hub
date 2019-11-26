@@ -22,6 +22,7 @@ import { Scheme, SchemeJsonView } from "../scheme/Scheme";
 import { SchemeViewFactory } from "../scheme/SchemeViewFactory";
 import { GenericPostController } from "./controller/GenericPostController";
 import { SchemeModelFactory } from "../scheme/SchemeModelFactory";
+import { OrganisationModelFactory } from "../organisation/OrganisationModelFactory";
 
 /**
  * Dependency container for the API
@@ -46,43 +47,34 @@ export class ApiContainer {
 
   private async getRoutes(): Promise<Router> {
     const router = new Router();
-    const [health, login, organisations, scheme, schemeGet] = await Promise.all([
+    const [health, login, organisationGet, organisationPost, schemePost, schemeGet] = await Promise.all([
       this.getHealthController(),
       this.getLoginController(),
-      this.getOrganisationsController(),
-      this.getSchemeController(),
+      this.getOrganisationGetController(),
+      this.getOrganisationPostController(),
+      this.getSchemePostController(),
       this.getSchemeGetController()
     ]);
 
     return router
       .get("/health", this.wrap(health.get))
       .post("/login", this.wrap(login.post))
-      .get("/organisations", this.wrap(organisations.getAll))
-      .get("/organisation/:id", this.wrap(organisations.get))
+      .get("/organisations", this.wrap(organisationGet.getAll))
+      .get("/organisation/:id", this.wrap(organisationGet.get))
+      .post("/organisation", this.wrap(organisationPost.post))
       .get("/schemes", this.wrap(schemeGet.getAll))
       .get("/scheme/:id", this.wrap(schemeGet.get))
-      .post("/scheme", this.wrap(scheme.post));
+      .post("/scheme", this.wrap(schemePost.post));
   }
 
   // todo this needs a home and a test
   private wrap(controller: Function): Middleware {
     return async (ctx: Context, next: Next) => {
-      try {
-        const input = ctx.request.body || ctx.request.query;
-        const { data, links, code } = await controller(input, ctx);
-        ctx.body = { data, links};
-        ctx.status = code || 200;
-        await next();
-      }
-      catch (err) {
-        this.getLogger().error(err);
-
-        if (err.httpCode) {
-          ctx.throw(err.httpCode, err.message);
-        } else {
-          ctx.throw(500, err);
-        }
-      }
+      const input = ctx.request.body || ctx.request.query;
+      const { data, links, code } = await controller(input, ctx);
+      ctx.body = { data, links};
+      ctx.status = code || 200;
+      return next();
     };
   }
 
@@ -90,27 +82,41 @@ export class ApiContainer {
     return new HealthController();
   }
 
-  private async getOrganisationsController(): Promise<GenericGetController<Organisation, OrganisationJsonView>> {
-    const [genericRepository, schemeRepository] = await Promise
-      .all<GenericRepository<Organisation>, GenericRepository<Scheme>>([
+  private async getOrganisationGetController(): Promise<GenericGetController<Organisation, OrganisationJsonView>> {
+    const [organisationRepository, viewFactory] = await Promise
+      .all<GenericRepository<Organisation>, OrganisationViewFactory>([
         this.getGenericRepository("organisation"),
-        this.getGenericRepository("scheme")
+        this.getOrganisationViewFactory()
       ]);
 
-    return new GenericGetController(genericRepository, new OrganisationViewFactory(schemeRepository));
+    return new GenericGetController(organisationRepository, viewFactory);
   }
 
-  private async getSchemeController(): Promise<GenericPostController<SchemeJsonView, Scheme>> {
+  private async getOrganisationPostController(): Promise<GenericPostController<OrganisationJsonView, Organisation>> {
+    const [organisationRepository, viewFactory] = await Promise
+      .all<GenericRepository<Organisation>, OrganisationViewFactory>([
+        this.getGenericRepository("organisation"),
+        this.getOrganisationViewFactory()
+      ]);
+
+    return new GenericPostController(
+      organisationRepository,
+      new OrganisationModelFactory(),
+      viewFactory
+    );
+  }
+
+  private async getSchemePostController(): Promise<GenericPostController<SchemeJsonView, Scheme>> {
     return new GenericPostController(
       await this.getGenericRepository("scheme"),
-      this.getSchemeModelFactory(),
-      this.getSchemeViewFactory()
+      new SchemeModelFactory(),
+      new SchemeViewFactory()
     );
   }
 
   private async getSchemeGetController(): Promise<GenericGetController<Scheme, SchemeJsonView>> {
     return new GenericGetController(
-      await this.getGenericRepository("organisation"),
+      await this.getGenericRepository("scheme"),
       new SchemeViewFactory()
     );
   }
@@ -159,13 +165,10 @@ export class ApiContainer {
   }
 
   @memoize
-  private getSchemeModelFactory(): SchemeModelFactory {
-    return new SchemeModelFactory();
-  }
-
-  @memoize
-  private getSchemeViewFactory(): SchemeViewFactory {
-    return new SchemeViewFactory();
+  private async getOrganisationViewFactory(): Promise<OrganisationViewFactory> {
+    return new OrganisationViewFactory(
+      await this.getGenericRepository("scheme")
+    );
   }
 
   @memoize

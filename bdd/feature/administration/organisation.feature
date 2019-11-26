@@ -1,4 +1,3 @@
-@skipped
 Feature:
   As an admin user
   I want to be able to set up an organisation
@@ -6,7 +5,7 @@ Feature:
 
   Background:
     Given I am logged in as an administrator
-    And a scheme "Norfolk"
+    And I create a scheme "Norfolk"
 
   Scenario: Create a organisation
     When I create an organisation "Norfolk School" in scheme "Norfolk"

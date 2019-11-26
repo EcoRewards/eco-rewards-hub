@@ -14,14 +14,15 @@ export class GenericRepository<T extends DatabaseRecord> {
    * Save the given record using an UPSERT. If the record is inserted it will be returned with an id.
    */
   public async save(record: T): Promise<NonNullId<T>> {
-    const keysWithoutId = Object.keys(record).filter(k => k !== "id");
+    const keys = Object.keys(record);
+    const keysWithoutId = keys.filter(k => k !== "id");
     const updateSql = keysWithoutId.map(k => k + " = ?").join();
     const updateValues = keysWithoutId.map(k => record[k]);
     const insertValues = Object.values(record);
     const insertSql = new Array(insertValues.length).fill("?").map(() => "?").join();
 
     const [result] = await this.db.query(
-      `INSERT INTO ${this.table} VALUES (${insertSql}) ON DUPLICATE KEY UPDATE ${updateSql}`,
+      `INSERT INTO ${this.table} (${keys.join()}) VALUES (${insertSql}) ON DUPLICATE KEY UPDATE ${updateSql}`,
       [...insertValues, ...updateValues]
     );
 

@@ -1,5 +1,5 @@
 import { View } from "../service/controller/GenericGetController";
-import { Scheme, SchemeJsonView } from "./Scheme";
+import { fromSchemeId, Scheme, SchemeJsonView } from "./Scheme";
 import { NonNullId } from "../database/GenericRepository";
 
 /**
@@ -11,7 +11,10 @@ export class SchemeView implements View<Scheme, SchemeJsonView> {
    * The model and the view are the same for a scheme
    */
   public create(links: object, record: NonNullId<Scheme>): SchemeJsonView {
-    return record;
+    return {
+      id: fromSchemeId(record.id),
+      name: record.name
+    };
   }
 
 }

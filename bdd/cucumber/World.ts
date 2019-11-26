@@ -1,19 +1,14 @@
 import { setWorldConstructor } from "cucumber";
-import { config } from "../../config/service";
+import { AxiosInstance } from "axios";
+import { SchemeJsonView } from "../../src/scheme/Scheme";
 
 /**
  * World state for test execution
  */
 export class World {
-  static token?: string;
-  static scheme: Scheme;
+  static api: AxiosInstance;
 
-  readonly host = process.env.TEST_URL || `http://localhost:${config.port}/`;
-}
-
-interface Scheme {
-  id: number | null,
-  name: string
+  schemes: Record<string, SchemeJsonView> = {};
 }
 
 setWorldConstructor(World);

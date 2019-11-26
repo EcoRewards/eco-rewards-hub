@@ -7,9 +7,8 @@ before_install:
   - mysql -e 'CREATE DATABASE ecorewards;'
 install: npm install
 before_script:
-  - npm run migrate
+  - npm run bdd-setup
   - npm start &
 scripts:
   - npm run report-coverage
-  - npm run add-test-user
   - npm run bdd

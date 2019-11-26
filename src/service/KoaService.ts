@@ -31,6 +31,7 @@ export class KoaService {
   public start(): void {
     // todo add exception logging
     this.app
+      .use(this.errorHandler)
       .use(this.requestLogger)
       .use(compress())
       .use(ui(this.swaggerDocument, "/swagger"))
@@ -53,8 +54,27 @@ export class KoaService {
     await next();
     const ms = Date.now() - start;
 
-    this.logger.info(`${ctx.method} ${ctx.url} - ${ms}ms`);
+    this.logger.info(`${ctx.status} ${ctx.method} ${ctx.url} - ${ms}ms`);
     ctx.set("X-Response-Time", `${ms}ms`);
+  }
+
+  private async errorHandler(ctx: Context, next: Next) {
+    try {
+      await next();
+
+      if (ctx.status === 500) {
+        this.logger.error(ctx.body);
+      }
+    }
+    catch (err) {
+      this.logger.error(err);
+
+      if (err.httpCode) {
+        ctx.throw(err.httpCode, err.message);
+      } else {
+        ctx.throw(500, err);
+      }
+    }
   }
 
 }

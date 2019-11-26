@@ -1,6 +1,6 @@
 import { View } from "../service/controller/GenericGetController";
-import { Organisation, OrganisationJsonView } from "./Organisation";
-import { Scheme } from "../scheme/Scheme";
+import { fromOrganisationId, Organisation, OrganisationJsonView } from "./Organisation";
+import { fromSchemeId, Scheme } from "../scheme/Scheme";
 import { NonNullId } from "../database/GenericRepository";
 
 /**
@@ -16,12 +16,12 @@ export class OrganisationView implements View<Organisation, OrganisationJsonView
    * Return the organisation ViewModel and add the scheme to the links
    */
   public create(links: object, organisation: NonNullId<Organisation>): OrganisationJsonView {
-    const schemeId = "/scheme/" + organisation.scheme_id;
+    const schemeId = fromSchemeId(organisation.scheme_id);
 
     links[schemeId] = links[schemeId] || this.schemes[organisation.scheme_id];
 
     return {
-      id: organisation.id,
+      id: fromOrganisationId(organisation.id),
       name: organisation.name,
       scheme: schemeId
     };

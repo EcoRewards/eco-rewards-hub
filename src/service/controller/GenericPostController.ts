@@ -35,13 +35,4 @@ export interface ModelFactory<V, M> {
   create(view: V): Promise<M>
 }
 
-interface SchemeRequest {
-  name: string
-}
-
-interface SchemeView {
-  id: number | null,
-  name: string
-}
-
 export type PostResponse<V> = HttpResponse<V | HttpError>;
