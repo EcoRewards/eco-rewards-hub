@@ -4,7 +4,7 @@ import { fromOrganisationId, Organisation } from "../organisation/Organisation";
 import { NonNullId } from "../database/GenericRepository";
 
 /**
- * Creates organisation view models
+ * Creates group view models
  */
 export class GroupView implements View<Group, GroupJsonView> {
 
@@ -13,7 +13,7 @@ export class GroupView implements View<Group, GroupJsonView> {
     ) { }
 
     /**
-     * Return the organisation ViewModel and add the scheme to the links
+     * Return the group ViewModel and add the scheme to the links
      */
     public create(links: object, group: NonNullId<Group>): GroupJsonView {
         const organisationId = fromOrganisationId(group.organisation_id);

@@ -3,7 +3,7 @@ import { Group } from "../Group";
 import { OrganisationId } from "../../organisation/Organisation";
 
 /**
- * Command that will create an organisation
+ * Command that will create an group
  */
 export class CreateGroupCommand {
 

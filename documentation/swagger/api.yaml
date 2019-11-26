@@ -212,10 +212,10 @@ paths:
       parameters:
         - in: "body"
           name: "body"
-          description: "Name of Scheme"
+          description: "Name of Organisation"
           required: true
           schema:
-            $ref: "#/definitions/Scheme"
+            $ref: "#/definitions/Organisation"
       responses:
         201:
           description: "successful operation"
@@ -301,10 +301,10 @@ paths:
       parameters:
         - in: "body"
           name: "body"
-          description: "Name of Organisation"
+          description: "Name of Group"
           required: true
           schema:
-            $ref: "#/definitions/Organisation"
+            $ref: "#/definitions/Group"
       responses:
         201:
           description: "successful operation"

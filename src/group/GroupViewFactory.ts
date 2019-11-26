@@ -5,7 +5,7 @@ import { Organisation } from "../organisation/Organisation";
 import { GroupView } from "./GroupView";
 
 /**
- * Creates an OrganisationViewFactory
+ * Creates an GroupViewFactory
  */
 export class GroupViewFactory implements ViewFactory<Group, GroupJsonView> {
 
