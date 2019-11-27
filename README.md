@@ -3,15 +3,26 @@
 
 API to ingest and process passenger travel transactions and calculate eco rewards.
 
-## Usage
+## Installation
 
-Node +12 and a MySQL compatible database are required.
+Node +12 and a MySQL compatible database are required. The Ubuntu set up is:
 
 ```
+curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
+sudo apt-get install -y nodejs mariadb-server
+# warning this will blank your root mysql password
+sudo mysql -u root mysql -e "update user set authentication_string=password(''), plugin='mysql_native_password' where user='root'; flush privileges;"
+```
+
+Installing and running the service:
+
+```
+git clone git@github.com:EcoRewards/eco-rewards-hub.git
 npm install --save eco-rewards-hub
 npm run migrate
 npm start
-``` 
+```
+ 
 
 ## CLI commands
 
