@@ -5,9 +5,7 @@ services:
 - mysql
 before_install:
 - openssl aes-256-cbc -K $encrypted_ad8ca1f2b447_key -iv $encrypted_ad8ca1f2b447_iv
-  -in deploy.enc -out ~\/.ssh/deploy -d
-- openssl aes-256-cbc -K $encrypted_ad8ca1f2b447_key -iv $encrypted_ad8ca1f2b447_iv
-  -in deploy.enc -out ./deploy -d
+  -in deploy.enc -out deploy -d
 - mysql -e 'CREATE DATABASE ecorewards;'
 install: npm install
 before_script:
