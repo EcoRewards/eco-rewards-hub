@@ -17,6 +17,6 @@ scripts:
 after_success:
 - eval "$(ssh-agent -s)"
 - chmod 600 ./deploy
-- echo -e "Host $SERVER_IP_ADDRESS\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+- echo -e "Host 35.178.27.220\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
 - ssh-add ./deploy
-- test $TRAVIS_BRANCH = "master" && ssh -i ./deploy ubuntu@$SERVER_IP_ADDRESS pwd
+- test $TRAVIS_BRANCH = "master" && ssh -i ./deploy ubuntu@35.178.27.220 pwd
