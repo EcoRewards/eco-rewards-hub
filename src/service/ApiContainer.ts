@@ -75,8 +75,8 @@ export class ApiContainer {
   private wrap(controller: Function): Middleware {
     return async (ctx: Context, next: Next) => {
       const input = ctx.request.body || ctx.request.query;
-      const { data, links, code } = await controller(input, ctx);
-      ctx.body = { data, links};
+      const { code, ...rest } = await controller(input, ctx);
+      ctx.body = rest;
       ctx.status = code || 200;
       return next();
     };
