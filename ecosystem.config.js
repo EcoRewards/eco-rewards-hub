@@ -1,7 +1,7 @@
 module.exports = {
     apps : [{
         name: "eco-rewards-hub",
-        script: "ts-node",
+        script: "./node_modules/.bin/ts-node",
         args: "src/start.ts",
         env: {
             NODE_ENV: "development",
@@ -19,7 +19,7 @@ module.exports = {
             "ref": "origin/master",
             "repo": "git@github.com:EcoRewards/eco-rewards-hub.git",
             "path": "/home/ubuntu/eco-rewards-hub",
-            "post-deploy": "npm install && npm run migrate && cd /home/ubuntu/eco-rewards-hub/current && npx pm2 startOrRestart ecosystem.config.js --env production",
+            "post-deploy": "npm install && npm run migrate && npx pm2 startOrRestart ecosystem.config.js --env production",
             "env"  : {
                 "NODE_ENV": "production"
             }
