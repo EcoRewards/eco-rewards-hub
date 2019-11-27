@@ -1,7 +1,7 @@
 module.exports = {
     apps : [{
         name: "eco-rewards-hub",
-        script: "dist/src/start.js",
+        script: "npm start",
         env: {
             NODE_ENV: "development",
         },
@@ -18,7 +18,7 @@ module.exports = {
             "ref": "origin/master",
             "repo": "git@github.com:EcoRewards/eco-rewards-hub.git",
             "path": "/home/ubuntu/eco-rewards-hub",
-            "post-deploy": "npm install && npm run migrate && npm run prepublishOnly && pm2 startOrRestart ecosystem.config.js --env production",
+            "post-deploy": "npm install && npm install --only=dev && npm run migrate && pm2 startOrRestart ecosystem.config.js --env production",
             "env"  : {
                 "NODE_ENV": "production"
             }
