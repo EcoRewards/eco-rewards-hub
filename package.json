@@ -19,7 +19,7 @@
     "bdd-setup": "mysql -u root -e 'drop database if exists ecorewards; create database ecorewards' && npm run migrate && npm run add-test-user",
     "add-test-user": "npm run cli -- create-user Test test@test.com password admin",
     "cli": "NODE_OPTIONS=$NODE_DEBUG_OPTION ts-node src/cli.ts",
-    "migrate": "db-migrate --config config/database.json up",
+    "migrate": "mysql -u root -e 'CREATE DATABASE IF NOT EXISTS ecorewards'; db-migrate --config config/database.json up",
     "migrate-down": "db-migrate --config config/database.json down",
     "create-migration": "db-migrate --sql-file --config config/database.json create"
   },
