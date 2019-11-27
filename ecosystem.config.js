@@ -19,7 +19,7 @@ module.exports = {
             "ref": "origin/master",
             "repo": "git@github.com:EcoRewards/eco-rewards-hub.git",
             "path": "/home/ubuntu/eco-rewards-hub",
-            "post-deploy": "npm install && npm run migrate && pm2 startOrRestart ecosystem.json --env production",
+            "post-deploy": "npm install && npm run migrate && npx pm2 startOrRestart ecosystem.json --env production",
             "env"  : {
                 "NODE_ENV": "production"
             }
