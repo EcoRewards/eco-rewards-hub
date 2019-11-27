@@ -1,6 +1,14 @@
 {
-  "defaultEnv": "local",
-  "local": {
+  "defaultEnv": "development",
+  "development": {
+    "driver": "mysql",
+    "user": "root",
+    "password": null,
+    "host": "localhost",
+    "database": "ecorewards",
+    "multipleStatements": true
+  },
+  "production": {
     "driver": "mysql",
     "user": "root",
     "password": null,

@@ -52,6 +52,7 @@
     "mocha": "^6.2.2",
     "nyc": "^14.1.1",
     "tslint": "^5.20.0",
+    "ts-node": "^8.4.1",
     "typescript": "^3.7.2"
   },
   "dependencies": {
@@ -71,7 +72,6 @@
     "pino-pretty": "^3.4.0",
     "swagger2": "^2.0.0",
     "swagger2-koa": "^2.0.0",
-    "ts-node": "^8.4.1",
     "ts-array-utils": "^0.5.0"
   },
   "nyc": {
