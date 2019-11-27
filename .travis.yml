@@ -21,5 +21,4 @@ after_success:
 - ssh-add ./deploy
 - test $TRAVIS_BRANCH = "master" && ssh -i ./deploy ubuntu@35.178.27.220 pwd
 - npm install pm2 -g
-- pm2 deploy ecosystem.config.js production setup
 - pm2 deploy ecosystem.config.js production update
