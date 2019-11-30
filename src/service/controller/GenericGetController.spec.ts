@@ -59,14 +59,14 @@ describe("GenericGetController", () => {
   });
 
   it("return a single result", async () => {
-    const result = await controller.get(1);
+    const result = await controller.get({ id: 1 });
     const expected = { id: 1, name: "admin", scheme: "/scheme/1" };
 
     chai.expect(result.data).to.deep.equal(expected);
   });
 
   it("return a 404 if the record does not exist", async () => {
-    const result = await controller.get(4);
+    const result = await controller.get({ id: 4 });
 
     chai.expect(result.code).to.deep.equal(404);
   });
