@@ -2,6 +2,7 @@ import autobind from "autobind-decorator";
 import { DatabaseRecord, GenericRepository } from "../../database/GenericRepository";
 import { HttpError, HttpResponse } from "./HttpResponse";
 import { ViewFactory } from "./GenericGetController";
+import { Context } from "koa";
 
 /**
  * Generic POST controller that creates resources
@@ -19,8 +20,8 @@ export class GenericPostController<V, M extends DatabaseRecord> {
    * Create the model from a view, save it in the database then convert it back to a view and return it with the links
    * populated.
    */
-  public async post(request: V): Promise<PostResponse<V>> {
-    const model = await this.modelFactory.create(request);
+  public async post(request: Context): Promise<PostResponse<V>> {
+    const model = await this.modelFactory.create(request.request.body);
     const savedModel = await this.repository.save(model);
 
     const links = {};

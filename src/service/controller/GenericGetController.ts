@@ -1,6 +1,7 @@
 import autobind from "autobind-decorator";
 import { HttpError, HttpResponse } from "./HttpResponse";
 import { DatabaseRecord, GenericRepository, NonNullId } from "../../database/GenericRepository";
+import { Context } from "koa";
 
 /**
  * Controller that provides access to organisations
@@ -16,10 +17,10 @@ export class GenericGetController<M extends DatabaseRecord, V> {
   /**
    * Return an item or a 404 if one cannot be found
    */
-  public async get({ id }: GetRequest): Promise<GetResponse<V>> {
+  public async get(request: Context): Promise<GetResponse<V>> {
     const links = {};
     const [model, view] = await Promise.all<OneModel<M>, View<M, V>>([
-      this.repository.selectOne(+id),
+      this.repository.selectOne(request.params.id),
       this.viewFactory.create()
     ]);
 
@@ -50,10 +51,6 @@ export class GenericGetController<M extends DatabaseRecord, V> {
 }
 
 type OneModel<T extends DatabaseRecord> = undefined | NonNullId<T>;
-
-interface GetRequest {
-  id: string | number
-}
 
 export interface ViewFactory<T extends DatabaseRecord, U> {
   create(): Promise<View<T, U>>;

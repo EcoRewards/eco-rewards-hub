@@ -7,6 +7,7 @@ import { keyValue } from "ts-array-utils";
 import { Base64 } from "js-base64";
 import toBase64 = Base64.toBase64;
 import { AdminUserRepository } from "../AdminUserRepository";
+import { Context } from "koa";
 
 /**
  * Controller that checks a users login. This is a convenience method for the front end, it just checks the credentials
@@ -26,16 +27,17 @@ export class LoginController {
    * A token and a 201 are returned if the credentials are valid
    * A 401 error is return if the credentials are not valid
    */
-  public async post(request: LoginRequest): Promise<LoginResponse> {
+  public async post(request: Context): Promise<LoginResponse> {
     const links = {};
+    const login: LoginRequest = request.request.body;
     const userIndex = await this.repository.getUserIndex();
 
-    if (userIndex[request.username]) {
-      const isValid = await this.crypto.compare(request.password, userIndex[request.username].password);
+    if (userIndex[login.username]) {
+      const isValid = await this.crypto.compare(login.password, userIndex[login.username].password);
 
       if (isValid) {
         const data = {
-          token: toBase64(request.username + ":" + request.password)
+          token: toBase64(login.username + ":" + login.password)
         };
 
         return { data, links, code: 201 };
