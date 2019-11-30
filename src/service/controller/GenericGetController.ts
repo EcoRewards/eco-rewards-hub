@@ -17,10 +17,10 @@ export class GenericGetController<M extends DatabaseRecord, V> {
   /**
    * Return an item or a 404 if one cannot be found
    */
-  public async get(request: Context): Promise<GetResponse<V>> {
+  public async get(ctx: Context): Promise<GetResponse<V>> {
     const links = {};
     const [model, view] = await Promise.all<OneModel<M>, View<M, V>>([
-      this.repository.selectOne(request.params.id),
+      this.repository.selectOne(ctx.params.id),
       this.viewFactory.create()
     ]);
 

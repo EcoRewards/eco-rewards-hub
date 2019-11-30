@@ -27,9 +27,9 @@ export class LoginController {
    * A token and a 201 are returned if the credentials are valid
    * A 401 error is return if the credentials are not valid
    */
-  public async post(request: Context): Promise<LoginResponse> {
+  public async post(ctx: Context): Promise<LoginResponse> {
     const links = {};
-    const login: LoginRequest = request.request.body;
+    const login: LoginRequest = ctx.request.body;
     const userIndex = await this.repository.getUserIndex();
 
     if (userIndex[login.username]) {

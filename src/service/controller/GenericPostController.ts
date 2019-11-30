@@ -20,8 +20,8 @@ export class GenericPostController<V, M extends DatabaseRecord> {
    * Create the model from a view, save it in the database then convert it back to a view and return it with the links
    * populated.
    */
-  public async post(request: Context): Promise<PostResponse<V>> {
-    const model = await this.modelFactory.create(request.request.body);
+  public async post(ctx: Context): Promise<PostResponse<V>> {
+    const model = await this.modelFactory.create(ctx.request.body);
     const savedModel = await this.repository.save(model);
 
     const links = {};
