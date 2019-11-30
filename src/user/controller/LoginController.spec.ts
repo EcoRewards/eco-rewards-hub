@@ -20,28 +20,31 @@ describe("LoginController", () => {
   );
 
   it("returns a token for valid requests", async () => {
-    const result = await controller.post({
+    const body = {
       username: "test@test.com",
       password: "password"
-    }) as any;
+    };
+    const result = await controller.post({request: { body: body }}) as any;
 
     chai.expect(result.data.token).to.not.equal(undefined);
   });
 
   it("returns a 401 for unknown users", async () => {
-    const result = await controller.post({
+    const body = {
       username: "test2@test.com",
       password: "password"
-    }) as any;
+    };
+    const result = await controller.post({request: { body: body }}) as any;
 
     chai.expect(result.code).to.equal(401);
   });
 
   it("returns a 401 for incorrect passwords", async () => {
-    const result = await controller.post({
+    const body = {
       username: "test@test.com",
       password: "derp"
-    }) as any;
+    };
+    const result = await controller.post({request: { body: body }}) as any;
 
     chai.expect(result.code).to.equal(401);
   });

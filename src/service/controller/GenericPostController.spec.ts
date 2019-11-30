@@ -38,7 +38,11 @@ describe("GenericPostController", () => {
   );
 
   it("should create a scheme", async () => {
-    const result = await controller.post({ id: null, name: "scheme" }) as any;
+    const body = {
+      id: null,
+      name: "scheme"
+    };
+    const result = await controller.post({ request: { body: body }}) as any;
 
     chai.expect(result.data.name).equal("scheme");
     chai.expect(result.data.id).equal(1);

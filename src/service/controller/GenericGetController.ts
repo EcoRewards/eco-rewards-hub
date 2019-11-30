@@ -17,10 +17,10 @@ export class GenericGetController<M extends DatabaseRecord, V> {
   /**
    * Return an item or a 404 if one cannot be found
    */
-  public async get(ctx: Context): Promise<GetResponse<V>> {
+  public async get({ params }: GetRequest): Promise<GetResponse<V>> {
     const links = {};
     const [model, view] = await Promise.all<OneModel<M>, View<M, V>>([
-      this.repository.selectOne(ctx.params.id),
+      this.repository.selectOne(+params.id),
       this.viewFactory.create()
     ]);
 
@@ -52,6 +52,11 @@ export class GenericGetController<M extends DatabaseRecord, V> {
 
 type OneModel<T extends DatabaseRecord> = undefined | NonNullId<T>;
 
+interface GetRequest {
+  params: {
+    id: string | number
+  }
+}
 export interface ViewFactory<T extends DatabaseRecord, U> {
   create(): Promise<View<T, U>>;
 }
