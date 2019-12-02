@@ -9,3 +9,8 @@ Feature:
   Scenario: Create a scheme
     When I create a scheme "West of England"
     Then I should see "West of England" in the list of schemes "1" times
+    When I rename a scheme from "West of England" to "England"
+    Then I should see "West of England" in the list of schemes "0" times
+    And I should see "England" in the list of schemes "1" times
+    When I delete the scheme "England"
+    Then I should see "England" in the list of schemes "0" times

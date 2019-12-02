@@ -58,6 +58,13 @@ export class GenericRepository<T extends DatabaseRecord> {
     return rows.reduce(indexBy(r => r.id), {});
   }
 
+  /**
+   * Get an index of scheme id to scheme
+   */
+  public async deleteOne(id: number): Promise<void> {
+    return this.db.query(`DELETE FROM ${this.table} WHERE id = ?`, [id]);
+  }
+
 }
 
 export interface DatabaseRecord {

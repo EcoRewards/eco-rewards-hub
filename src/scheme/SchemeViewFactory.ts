@@ -1,4 +1,4 @@
-import { ViewFactory } from "../service/controller/GenericGetController";
+import { ViewFactory } from "../service/controller/ReadController";
 import { Scheme, SchemeJsonView } from "./Scheme";
 import { SchemeView } from "./SchemeView";
 

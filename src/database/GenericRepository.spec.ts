@@ -74,6 +74,16 @@ describe("GenericRepository", () => {
     chai.expect(index[3]).to.not.equal(records[2]);
   });
 
+  it("deletes a record", async () => {
+    const db = new MockDb();
+    const repository = new GenericRepository(db, "table");
+    await repository.deleteOne(1);
+
+    const sql = db.sqlQueries[0];
+
+    chai.expect(sql).to.equal("DELETE FROM table WHERE id = ?");
+  });
+
 });
 
 class MockDb {

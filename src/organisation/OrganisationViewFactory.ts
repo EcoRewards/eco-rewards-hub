@@ -1,4 +1,4 @@
-import { ViewFactory } from "../service/controller/GenericGetController";
+import { ViewFactory } from "../service/controller/ReadController";
 import { Organisation, OrganisationJsonView } from "./Organisation";
 import { OrganisationView } from "./OrganisationView";
 import { GenericRepository } from "../database/GenericRepository";

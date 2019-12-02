@@ -108,6 +108,60 @@ paths:
                 type: "object"
       security:
         - basicAuth: []
+    put:
+      summary: "Edit a scheme"
+      description: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Name of Scheme"
+          required: true
+          schema:
+            $ref: "#/definitions/Scheme"
+      responses:
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Unauthorized"
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              data:
+                $ref: "#/definitions/Scheme"
+              links:
+                type: "object"
+      security:
+        - basicAuth: []
+    delete:
+      summary: "Delete a scheme"
+      description: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      responses:
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Unauthorized"
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              data:
+                type: "string"
+              links:
+                type: "object"
+      security:
+        - basicAuth: []
+
   /scheme:
     post:
       summary: "Create a scheme"
@@ -201,6 +255,60 @@ paths:
                 type: "object"
       security:
         - basicAuth: []
+    put:
+      summary: "Edit an organisation"
+      description: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Name of organisation"
+          required: true
+          schema:
+            $ref: "#/definitions/Organisation"
+      responses:
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Unauthorized"
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              data:
+                $ref: "#/definitions/Organisation"
+              links:
+                type: "object"
+      security:
+        - basicAuth: []
+    delete:
+      summary: "Delete an organisation"
+      description: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      responses:
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Unauthorized"
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              data:
+                type: "string"
+              links:
+                type: "object"
+      security:
+        - basicAuth: []
+
   /organisation:
     post:
       summary: "Create an organisation"
@@ -290,6 +398,60 @@ paths:
                 type: "object"
       security:
         - basicAuth: []
+    put:
+      summary: "Edit a group"
+      description: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Name of group"
+          required: true
+          schema:
+            $ref: "#/definitions/Group"
+      responses:
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Unauthorized"
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              data:
+                $ref: "#/definitions/Group"
+              links:
+                type: "object"
+      security:
+        - basicAuth: []
+    delete:
+      summary: "Delete a scheme"
+      description: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      responses:
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Unauthorized"
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              data:
+                type: "string"
+              links:
+                type: "object"
+      security:
+        - basicAuth: []
+
   /group:
     post:
       summary: "Create an group"
