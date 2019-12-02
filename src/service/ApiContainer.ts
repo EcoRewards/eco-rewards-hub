@@ -13,14 +13,14 @@ import { AdminUserRepository } from "../user/AdminUserRepository";
 import { Cryptography } from "../cryptography/Cryptography";
 import { Document } from "swagger2/dist/schema";
 import * as swagger from "swagger2";
-import { GenericGetController } from "./controller/GenericGetController";
+import { ReadController } from "./controller/ReadController";
 import { DatabaseRecord, GenericRepository } from "../database/GenericRepository";
 import { LoginController } from "../user/controller/LoginController";
 import { OrganisationViewFactory } from "../organisation/OrganisationViewFactory";
 import { Organisation, OrganisationJsonView } from "../organisation/Organisation";
 import { Scheme, SchemeJsonView } from "../scheme/Scheme";
 import { SchemeViewFactory } from "../scheme/SchemeViewFactory";
-import { GenericPostController } from "./controller/GenericPostController";
+import { WriteController } from "./controller/WriteController";
 import { SchemeModelFactory } from "../scheme/SchemeModelFactory";
 import { OrganisationModelFactory } from "../organisation/OrganisationModelFactory";
 import { ErrorLoggingMiddleware } from "./logging/ErrorLoggingMiddleware";
@@ -57,12 +57,12 @@ export class ApiContainer {
     const [
       health,
       login,
-      groupGet,
-      groupPost,
-      organisationGet,
-      organisationPost,
-      schemePost,
-      schemeGet
+      groupReadController,
+      groupWriteController,
+      organisationReadController,
+      organisationWriteController,
+      schemeWriteController,
+      schemeReadController
     ] = await Promise.all([
       this.getHealthController(),
       this.getLoginController(),
@@ -77,15 +77,21 @@ export class ApiContainer {
     return router
       .get("/health", this.wrap(health.get))
       .post("/login", this.wrap(login.post))
-      .get("/groups", this.wrap(groupGet.getAll))
-      .get("/group/:id", this.wrap(groupGet.get))
-      .post("/group", this.wrap(groupPost.post))
-      .get("/organisations", this.wrap(organisationGet.getAll))
-      .get("/organisation/:id", this.wrap(organisationGet.get))
-      .post("/organisation", this.wrap(organisationPost.post))
-      .get("/schemes", this.wrap(schemeGet.getAll))
-      .get("/scheme/:id", this.wrap(schemeGet.get))
-      .post("/scheme", this.wrap(schemePost.post));
+      .get("/groups", this.wrap(groupReadController.getAll))
+      .get("/group/:id", this.wrap(groupReadController.get))
+      .put("/group/:id", this.wrap(groupWriteController.put))
+      .delete("/group/:id", this.wrap(groupWriteController.delete))
+      .post("/group", this.wrap(groupWriteController.post))
+      .get("/organisations", this.wrap(organisationReadController.getAll))
+      .get("/organisation/:id", this.wrap(organisationReadController.get))
+      .put("/organisation/:id", this.wrap(organisationWriteController.put))
+      .delete("/organisation/:id", this.wrap(organisationWriteController.delete))
+      .post("/organisation", this.wrap(organisationWriteController.post))
+      .get("/schemes", this.wrap(schemeReadController.getAll))
+      .get("/scheme/:id", this.wrap(schemeReadController.get))
+      .put("/scheme/:id", this.wrap(schemeWriteController.put))
+      .delete("/scheme/:id", this.wrap(schemeWriteController.delete))
+      .post("/scheme", this.wrap(schemeWriteController.post));
   }
 
   // todo this needs a home and a test
@@ -103,64 +109,64 @@ export class ApiContainer {
     return new HealthController();
   }
 
-  private async getGroupGetController(): Promise<GenericGetController<Group, GroupJsonView>> {
+  private async getGroupGetController(): Promise<ReadController<Group, GroupJsonView>> {
     const [groupRepository, viewFactory] = await Promise
         .all<GenericRepository<Group>, GroupViewFactory>([
           this.getGenericRepository("member_group"),
           this.getGroupViewFactory()
         ]);
 
-    return new GenericGetController(groupRepository, viewFactory);
+    return new ReadController(groupRepository, viewFactory);
   }
 
-  private async getGroupPostController(): Promise<GenericPostController<GroupJsonView, Group>> {
+  private async getGroupPostController(): Promise<WriteController<GroupJsonView, Group>> {
     const [groupRepository, viewFactory] = await Promise
         .all<GenericRepository<Group>, GroupViewFactory>([
           this.getGenericRepository("member_group"),
           this.getGroupViewFactory()
         ]);
 
-    return new GenericPostController(
+    return new WriteController(
         groupRepository,
         new GroupModelFactory(),
         viewFactory
     );
   }
 
-  private async getOrganisationGetController(): Promise<GenericGetController<Organisation, OrganisationJsonView>> {
+  private async getOrganisationGetController(): Promise<ReadController<Organisation, OrganisationJsonView>> {
     const [organisationRepository, viewFactory] = await Promise
       .all<GenericRepository<Organisation>, OrganisationViewFactory>([
         this.getGenericRepository("organisation"),
         this.getOrganisationViewFactory()
       ]);
 
-    return new GenericGetController(organisationRepository, viewFactory);
+    return new ReadController(organisationRepository, viewFactory);
   }
 
-  private async getOrganisationPostController(): Promise<GenericPostController<OrganisationJsonView, Organisation>> {
+  private async getOrganisationPostController(): Promise<WriteController<OrganisationJsonView, Organisation>> {
     const [organisationRepository, viewFactory] = await Promise
       .all<GenericRepository<Organisation>, OrganisationViewFactory>([
         this.getGenericRepository("organisation"),
         this.getOrganisationViewFactory()
       ]);
 
-    return new GenericPostController(
+    return new WriteController(
       organisationRepository,
       new OrganisationModelFactory(),
       viewFactory
     );
   }
 
-  private async getSchemePostController(): Promise<GenericPostController<SchemeJsonView, Scheme>> {
-    return new GenericPostController(
+  private async getSchemePostController(): Promise<WriteController<SchemeJsonView, Scheme>> {
+    return new WriteController(
       await this.getGenericRepository("scheme"),
       new SchemeModelFactory(),
       new SchemeViewFactory()
     );
   }
 
-  private async getSchemeGetController(): Promise<GenericGetController<Scheme, SchemeJsonView>> {
-    return new GenericGetController(
+  private async getSchemeGetController(): Promise<ReadController<Scheme, SchemeJsonView>> {
+    return new ReadController(
       await this.getGenericRepository("scheme"),
       new SchemeViewFactory()
     );

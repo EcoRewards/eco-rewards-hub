@@ -1,4 +1,4 @@
-import { ModelFactory } from "../service/controller/GenericPostController";
+import { ModelFactory } from "../service/controller/WriteController";
 import { Scheme, SchemeJsonView, toSchemeId } from "./Scheme";
 
 /**

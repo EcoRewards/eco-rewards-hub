@@ -6,7 +6,7 @@ import { DatabaseRecord, GenericRepository, NonNullId } from "../../database/Gen
  * Controller that provides access to organisations
  */
 @autobind
-export class GenericGetController<M extends DatabaseRecord, V> {
+export class ReadController<M extends DatabaseRecord, V> {
 
   constructor(
     private readonly repository: GenericRepository<M>,

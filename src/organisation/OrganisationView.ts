@@ -1,4 +1,4 @@
-import { View } from "../service/controller/GenericGetController";
+import { View } from "../service/controller/ReadController";
 import { fromOrganisationId, Organisation, OrganisationJsonView } from "./Organisation";
 import { fromSchemeId, Scheme } from "../scheme/Scheme";
 import { NonNullId } from "../database/GenericRepository";
