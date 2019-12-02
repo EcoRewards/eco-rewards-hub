@@ -3,7 +3,7 @@ import axios from "axios";
 import { Given, Then, When } from "cucumber";
 import { World } from "./World";
 import { config } from "../../config/service";
-import { toSchemeId } from "../../src";
+import { toSchemeId } from "../../src/scheme/Scheme";
 
 Given("I am logged in as an administrator", async function() {
   if (World.api as any) {
@@ -37,13 +37,27 @@ Then("I should see {string} in the list of schemes {string} times", async functi
 
 When("I create an organisation {string} in scheme {string}", async function (organisation: string, scheme: string) {
   const schemeId = this.schemes[scheme].id;
+  const response = await World.api.post("organisation", { name: organisation, scheme: schemeId });
 
-  await World.api.post("organisation", { name: organisation, scheme: schemeId });
+  this.organisations[organisation] = response.data.data;
 });
 
 Then("I should see {string} in the list of organisations {string} times", async function (name: string, count: string) {
   const schemes = await World.api.get("organisations");
   const actual = schemes.data.data.filter(s => s.name === name).length;
+
+  chai.expect(actual).to.equal(+count);
+});
+
+When("I create a group {string} in the organisation {string}", async function (group: string, organisation: string) {
+  const organisationId = this.organisations[organisation].id;
+
+  await World.api.post("group", { name: group, organisation: organisationId });
+});
+
+Then("I should see {string} in the list of groups {string} times", async function (name: string, count: string) {
+  const groups = await World.api.get("groups");
+  const actual = groups.data.data.filter(s => s.name === name).length;
 
   chai.expect(actual).to.equal(+count);
 });

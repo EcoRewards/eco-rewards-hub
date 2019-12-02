@@ -9,6 +9,7 @@ export class World {
   static api: AxiosInstance;
 
   schemes: Record<string, SchemeJsonView> = {};
+  organisations: Record<string, SchemeJsonView> = {};
 }
 
 setWorldConstructor(World);

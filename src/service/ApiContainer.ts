@@ -25,6 +25,9 @@ import { SchemeModelFactory } from "../scheme/SchemeModelFactory";
 import { OrganisationModelFactory } from "../organisation/OrganisationModelFactory";
 import { ErrorLoggingMiddleware } from "./logging/ErrorLoggingMiddleware";
 import { RequestLoggingMiddleware } from "./logging/RequestLoggingMiddleware";
+import { Group, GroupJsonView } from "../group/Group";
+import { GroupViewFactory } from "../group/GroupViewFactory";
+import { GroupModelFactory } from "../group/GroupModelFactory";
 
 /**
  * Dependency container for the API
@@ -51,9 +54,20 @@ export class ApiContainer {
 
   private async getRoutes(): Promise<Router> {
     const router = new Router();
-    const [health, login, organisationGet, organisationPost, schemePost, schemeGet] = await Promise.all([
+    const [
+      health,
+      login,
+      groupGet,
+      groupPost,
+      organisationGet,
+      organisationPost,
+      schemePost,
+      schemeGet
+    ] = await Promise.all([
       this.getHealthController(),
       this.getLoginController(),
+      this.getGroupGetController(),
+      this.getGroupPostController(),
       this.getOrganisationGetController(),
       this.getOrganisationPostController(),
       this.getSchemePostController(),
@@ -63,6 +77,9 @@ export class ApiContainer {
     return router
       .get("/health", this.wrap(health.get))
       .post("/login", this.wrap(login.post))
+      .get("/groups", this.wrap(groupGet.getAll))
+      .get("/group/:id", this.wrap(groupGet.get))
+      .post("/group", this.wrap(groupPost.post))
       .get("/organisations", this.wrap(organisationGet.getAll))
       .get("/organisation/:id", this.wrap(organisationGet.get))
       .post("/organisation", this.wrap(organisationPost.post))
@@ -84,6 +101,30 @@ export class ApiContainer {
 
   private getHealthController(): HealthController {
     return new HealthController();
+  }
+
+  private async getGroupGetController(): Promise<GenericGetController<Group, GroupJsonView>> {
+    const [groupRepository, viewFactory] = await Promise
+        .all<GenericRepository<Group>, GroupViewFactory>([
+          this.getGenericRepository("member_group"),
+          this.getGroupViewFactory()
+        ]);
+
+    return new GenericGetController(groupRepository, viewFactory);
+  }
+
+  private async getGroupPostController(): Promise<GenericPostController<GroupJsonView, Group>> {
+    const [groupRepository, viewFactory] = await Promise
+        .all<GenericRepository<Group>, GroupViewFactory>([
+          this.getGenericRepository("member_group"),
+          this.getGroupViewFactory()
+        ]);
+
+    return new GenericPostController(
+        groupRepository,
+        new GroupModelFactory(),
+        viewFactory
+    );
   }
 
   private async getOrganisationGetController(): Promise<GenericGetController<Organisation, OrganisationJsonView>> {
@@ -173,6 +214,16 @@ export class ApiContainer {
     return new OrganisationViewFactory(
       await this.getGenericRepository("scheme")
     );
+  }
+
+  @memoize
+  private async getGroupViewFactory(): Promise<GroupViewFactory> {
+    const [organisationRepository, organisationViewFactory] = await Promise.all([
+      this.getGenericRepository<Organisation>("organisation"),
+      this.getOrganisationViewFactory()
+    ]);
+
+    return new GroupViewFactory(organisationRepository, organisationViewFactory);
   }
 
   @memoize

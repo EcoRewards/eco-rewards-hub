@@ -212,10 +212,10 @@ paths:
       parameters:
         - in: "body"
           name: "body"
-          description: "Name of Scheme"
+          description: "Name of Organisation"
           required: true
           schema:
-            $ref: "#/definitions/Scheme"
+            $ref: "#/definitions/Organisation"
       responses:
         201:
           description: "successful operation"
@@ -280,6 +280,33 @@ paths:
           schema:
             $ref: "#/definitions/NotFound"
         200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              data:
+                $ref: "#/definitions/Group"
+              links:
+                type: "object"
+      security:
+        - basicAuth: []
+  /group:
+    post:
+      summary: "Create an group"
+      description: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Name of Group"
+          required: true
+          schema:
+            $ref: "#/definitions/Group"
+      responses:
+        201:
           description: "successful operation"
           schema:
             type: "object"
