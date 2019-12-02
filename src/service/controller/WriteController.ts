@@ -1,13 +1,13 @@
 import autobind from "autobind-decorator";
 import { DatabaseRecord, GenericRepository } from "../../database/GenericRepository";
 import { HttpError, HttpResponse } from "./HttpResponse";
-import { ViewFactory } from "./GenericGetController";
+import { ViewFactory } from "./ReadController";
 
 /**
- * Generic POST controller that creates resources
+ * Controller that provides write access to a resource
  */
 @autobind
-export class GenericPostController<V, M extends DatabaseRecord> {
+export class WriteController<V, M extends DatabaseRecord> {
 
   constructor(
     private readonly repository: GenericRepository<M>,
@@ -29,6 +29,32 @@ export class GenericPostController<V, M extends DatabaseRecord> {
 
     return { data, links, code: 201 };
   }
+
+  /**
+   * Same as POST but returns a 200
+   */
+  public async put(request: V): Promise<PostResponse<V>> {
+    const model = await this.modelFactory.create(request);
+    const savedModel = await this.repository.save(model);
+
+    const links = {};
+    const view = await this.viewFactory.create();
+    const data = view.create(links, savedModel);
+
+    return { data, links };
+  }
+
+  /**
+   * Delete the given record
+   */
+  public async delete({ id }: DeleteRequest): Promise<DeleteResponse> {
+    await this.repository.deleteOne(+id);
+
+    return {
+      data: "success",
+      links: {}
+    }
+  }
 }
 
 export interface ModelFactory<V, M> {
@@ -36,3 +62,9 @@ export interface ModelFactory<V, M> {
 }
 
 export type PostResponse<V> = HttpResponse<V | HttpError>;
+
+export type DeleteResponse = HttpResponse<string>;
+
+export interface DeleteRequest {
+  id: string
+}

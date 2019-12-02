@@ -1,4 +1,4 @@
-import { ModelFactory } from "../service/controller/GenericPostController";
+import { ModelFactory } from "../service/controller/WriteController";
 import { Organisation, OrganisationJsonView, toOrganisationId } from "./Organisation";
 import { toSchemeId } from "../scheme/Scheme";
 
