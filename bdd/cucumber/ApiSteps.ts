@@ -65,7 +65,7 @@ Then("I should see {string} in the list of groups {string} times", async functio
   chai.expect(actual).to.equal(+count);
 });
 
-When('I rename a scheme from {string} to {string}', async function (from: string, to: string) {
+When("I rename a scheme from {string} to {string}", async function (from: string, to: string) {
   const scheme = this.schemes[from];
   const updatedScheme = { ...scheme, name: to };
   const response = await World.api.put(scheme.id, updatedScheme);
@@ -75,14 +75,14 @@ When('I rename a scheme from {string} to {string}', async function (from: string
   this.schemes[to] = updatedScheme;
 });
 
-When('I delete the scheme {string}', async function (name: string) {
+When("I delete the scheme {string}", async function (name: string) {
   const scheme = this.schemes[name];
   const response = await World.api.delete(scheme.id);
 
   chai.expect(response.data.data).to.equal("success");
 });
 
-When('I rename an organisation from {string} to {string}', async function (from: string, to: string) {
+When("I rename an organisation from {string} to {string}", async function (from: string, to: string) {
   const organisation = this.organisations[from];
   const updatedOrganisation = { ...organisation, name: to };
   const response = await World.api.put(organisation.id, updatedOrganisation);
@@ -92,14 +92,14 @@ When('I rename an organisation from {string} to {string}', async function (from:
   this.organisations[to] = updatedOrganisation;
 });
 
-When('I delete the organisation {string}', async function (name: string) {
+When("I delete the organisation {string}", async function (name: string) {
   const scheme = this.organisations[name];
   const response = await World.api.delete(scheme.id);
 
   chai.expect(response.data.data).to.equal("success");
 });
 
-When('I rename a group from {string} to {string}', async function (from: string, to: string) {
+When("I rename a group from {string} to {string}", async function (from: string, to: string) {
   const group = this.groups[from];
   const updatedGroup = { ...group, name: to };
   const response = await World.api.put(group.id, updatedGroup);
@@ -109,7 +109,7 @@ When('I rename a group from {string} to {string}', async function (from: string,
   this.groups[to] = updatedGroup;
 });
 
-When('I delete the group {string}', async function (name: string) {
+When("I delete the group {string}", async function (name: string) {
   const scheme = this.groups[name];
   const response = await World.api.delete(scheme.id);
 

@@ -53,7 +53,7 @@ export class WriteController<V, M extends DatabaseRecord> {
     return {
       data: "success",
       links: {}
-    }
+    };
   }
 }
 
