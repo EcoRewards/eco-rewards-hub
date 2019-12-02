@@ -91,9 +91,9 @@ export class ApiContainer {
   // todo this needs a home and a test
   private wrap(controller: Function): Middleware {
     return async (ctx: Context, next: Next) => {
-      const input = ctx.request.body || ctx.request.query;
-      const { data, links, code } = await controller(input, ctx);
-      ctx.body = { data, links};
+      const input = { ...ctx.request.body, ...ctx.request.query, ...ctx.params };
+      const { code, ...rest } = await controller(input, ctx);
+      ctx.body = rest;
       ctx.status = code || 200;
       return next();
     };

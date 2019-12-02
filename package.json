@@ -2,14 +2,16 @@
   "name": "eco-rewards-hub",
   "version": "1.0.0",
   "description": "Eco Rewards Hub",
-  "main": "./dist/start.js",
+  "main": "./dist/src/index.js",
+  "types": "./dist/src/index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ecorewards/eco-rewards-hub.git"
   },
   "scripts": {
     "test": "npm run lint && mocha --require ts-node/register **/*.spec.ts",
-    "prepublishOnly": "rm -rf ./dist/ && tsc -p ./ --outDir dist/",
+    "prepublishOnly": "rm -rf ./dist/ && npm run generate-barrels && tsc -p ./ --outDir dist/",
+    "generate-barrels": "barrelsby --delete -d src/ -e .spec.ts -e cli.ts",
     "lint-raw": "rm -rf node_modules/swagger2-koa/src/*.spec.ts; rm -rf node_modules/swagger2/src/*.spec.ts; tslint --project tsconfig.json",
     "lint": "npm run lint-raw -- -t stylish",
     "coverage": "nyc --reporter=text npm test",
@@ -19,7 +21,7 @@
     "bdd-setup": "mysql -u root -e 'drop database if exists ecorewards; create database ecorewards' && npm run migrate && npm run add-test-user",
     "add-test-user": "npm run cli -- create-user Test test@test.com password admin",
     "cli": "NODE_OPTIONS=$NODE_DEBUG_OPTION ts-node src/cli.ts",
-    "migrate": "db-migrate --config config/database.json up",
+    "migrate": "mysql -u root -e 'CREATE DATABASE IF NOT EXISTS ecorewards'; db-migrate --config config/database.json up",
     "migrate-down": "db-migrate --config config/database.json down",
     "create-migration": "db-migrate --sql-file --config config/database.json create"
   },
@@ -44,6 +46,7 @@
     "@types/node": "^12.12.12",
     "@types/pino": "^5.8.13",
     "axios": "^0.19.0",
+    "barrelsby": "^2.2.0",
     "chai": "^4.2.0",
     "codecov": "^3.6.1",
     "cucumber": "^6.0.5",
@@ -53,7 +56,7 @@
     "nyc": "^14.1.1",
     "ts-node": "^8.4.1",
     "tslint": "^5.20.0",
-    "typescript": "^3.6.4"
+    "typescript": "^3.7.2"
   },
   "dependencies": {
     "@koa/cors": "^3.0.0",

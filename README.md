@@ -3,15 +3,26 @@
 
 API to ingest and process passenger travel transactions and calculate eco rewards.
 
-## Usage
+## Installation
 
-Node +12 and a MySQL compatible database are required.
+Node +12 and a MySQL compatible database are required. The Ubuntu set up is:
 
 ```
+curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
+sudo apt-get install -y nodejs mariadb-server
+# warning this will blank your root mysql password
+sudo mysql -u root mysql -e "update user set authentication_string=password(''), plugin='mysql_native_password' where user='root'; flush privileges;"
+```
+
+Installing and running the service:
+
+```
+git clone git@github.com:EcoRewards/eco-rewards-hub.git
 npm install --save eco-rewards-hub
 npm run migrate
 npm start
-``` 
+```
+ 
 
 ## CLI commands
 
@@ -52,6 +63,8 @@ See [features](/bdd/feature).
 | 2019-11-19 | Basic auth for API access | Simple, widely used and easy to implement |
 | 2019-11-21 | Swagger documentation | Comes with a slick UI and package to validate requests and responses |
 | 2019-11-21 | Link based API responses | Reduces duplication in API responses. See [this post](https://cloud.google.com/blog/products/application-development/api-design-why-you-should-use-links-not-keys-to-represent-relationships-in-apis) |
+| 2019-11-27 | Travis deployment | Simple, easy, as seen [here](https://github.com/dwyl/learn-travis/blob/master/encrypted-ssh-keys-deployment.md) |
+| 2019-11-27 | PM2 process management | Makes the travis deployment easier |
 
 ## Release notes
 

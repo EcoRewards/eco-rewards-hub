@@ -3,6 +3,7 @@ import axios from "axios";
 import { Given, Then, When } from "cucumber";
 import { World } from "./World";
 import { config } from "../../config/service";
+import { toSchemeId } from "../../src";
 
 Given("I am logged in as an administrator", async function() {
   if (World.api as any) {
@@ -26,9 +27,12 @@ Given(/^I create a scheme "([^"]*)"$/, async function(name: string) {
 
 Then("I should see {string} in the list of schemes {string} times", async function (scheme: string, count: string) {
   const schemes = await World.api.get("schemes");
-  const actual = schemes.data.data.filter(s => s.name === scheme).length;
+  const actual = schemes.data.data.filter(s => s.name === scheme);
 
-  chai.expect(actual).to.equal(+count);
+  chai.expect(actual.length).to.equal(+count);
+  const response = await World.api.get("scheme/" + toSchemeId(actual[0].id));
+
+  chai.expect(response.data.data.name).to.equal(scheme);
 });
 
 When("I create an organisation {string} in scheme {string}", async function (organisation: string, scheme: string) {
