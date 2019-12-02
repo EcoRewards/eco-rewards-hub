@@ -218,9 +218,12 @@ export class ApiContainer {
 
   @memoize
   private async getGroupViewFactory(): Promise<GroupViewFactory> {
-    return new GroupViewFactory(
-        await this.getGenericRepository("organisation")
-    );
+    const [organisationRepository, organisationViewFactory] = await Promise.all([
+      this.getGenericRepository<Organisation>("organisation"),
+      this.getOrganisationViewFactory()
+    ]);
+
+    return new GroupViewFactory(organisationRepository, organisationViewFactory);
   }
 
   @memoize

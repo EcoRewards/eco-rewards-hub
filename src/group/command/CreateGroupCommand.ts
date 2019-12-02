@@ -7,22 +7,22 @@ import { OrganisationId } from "../../organisation/Organisation";
  */
 export class CreateGroupCommand {
 
-    constructor(
-        private readonly repository: GenericRepository<Group>
-    ) {}
+  constructor(
+    private readonly repository: GenericRepository<Group>
+  ) { }
 
-    public async run(name: string, organisationId: OrganisationId): Promise<Group> {
-        if (name.length < 3) {
-            throw "Group name must be longer than 2 characters";
-        }
-
-        const group = {
-            id: null,
-            name: name,
-            organisation_id: organisationId
-        };
-
-        return await this.repository.save(group);
+  public async run(name: string, organisationId: OrganisationId): Promise<Group> {
+    if (name.length < 3) {
+      throw "Group name must be longer than 2 characters";
     }
+
+    const group = {
+      id: null,
+      name: name,
+      organisation_id: organisationId
+    };
+
+    return await this.repository.save(group);
+  }
 
 }

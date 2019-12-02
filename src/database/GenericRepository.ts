@@ -52,7 +52,7 @@ export class GenericRepository<T extends DatabaseRecord> {
   /**
    * Get an index of scheme id to scheme
    */
-  public async getIndexedById(): Promise<Record<number, T>> {
+  public async getIndexedById(): Promise<Record<number, NonNullId<T>>> {
     const rows = await this.selectAll();
 
     return rows.reduce(indexBy(r => r.id), {});

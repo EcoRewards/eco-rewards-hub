@@ -18,6 +18,7 @@
     "report-coverage": "npm run coverage && nyc report --reporter=text-lcov > coverage.lcov && codecov",
     "start": "NODE_OPTIONS=$NODE_DEBUG_OPTION ts-node src/start.ts",
     "bdd": "cucumber-js",
+    "bdd-wip": "npm run bdd-setup && cucumber-js --tags '@wip'",
     "bdd-setup": "mysql -u root -e 'drop database if exists ecorewards; create database ecorewards' && npm run migrate && npm run add-test-user",
     "add-test-user": "npm run cli -- create-user Test test@test.com password admin",
     "cli": "NODE_OPTIONS=$NODE_DEBUG_OPTION ts-node src/cli.ts",

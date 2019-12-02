@@ -2,30 +2,31 @@ import * as chai from "chai";
 import { GroupViewFactory } from "./GroupViewFactory";
 
 class MockRepository {
-    called = false;
-    constructor(
-        private readonly results: object
-    ) { }
+  called = false;
 
-    public async getIndexedById() {
-        this.called = true;
+  public async getIndexedById() {
+    this.called = true;
+  }
+}
 
-        return this.results;
-    }
+class MockViewFactory {
+  called = false;
+
+  public async create() {
+    this.called = true;
+  }
 }
 
 describe("GroupViewFactory", () => {
-    const repository = new MockRepository({
-        1: { id: 1, name: "org", scheme_id: 1 },
-        2: { id: 2, name: "org2", scheme_id: 2 }
-    }) as any;
+  const repository = new MockRepository() as any;
+  const viewFactory = new MockViewFactory() as any;
+  const view = new GroupViewFactory(repository, viewFactory);
 
-    const view = new GroupViewFactory(repository);
+  it("creates a view", async () => {
+    await view.create();
 
-    it("creates a view", async () => {
-        await view.create();
-
-        chai.expect(repository.called).to.equal(true);
-    });
+    chai.expect(repository.called).to.equal(true);
+    chai.expect(viewFactory.called).to.equal(true);
+  });
 
 });
