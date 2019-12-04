@@ -35,6 +35,56 @@ describe("GenericRepository", () => {
     chai.expect(savedRecord.id).to.not.equal(null);
   });
 
+  it("abandons a bulk insert if the number of records is 0", async () => {
+    const db = new MockDb();
+    const repository = new GenericRepository(db, "table");
+    const records = [];
+    await repository.insertAll(records);
+
+    const sql = db.sqlQueries[0];
+
+    chai.expect(sql).to.equal(undefined);
+  });
+
+  it("generates an a bulk insert", async () => {
+    const db = new MockDb();
+    const repository = new GenericRepository(db, "table");
+    const records = [{
+      id: null,
+      field1: "value1",
+      field2: 2
+    }, {
+      id: null,
+      field1: "value2",
+      field2: 3
+    }];
+
+    await repository.insertAll(records);
+
+    const sql = db.sqlQueries[0];
+
+    chai.expect(sql).to.equal("INSERT INTO table (id,field1,field2) VALUES (?,?,?),(?,?,?)");
+  });
+
+  it("generates ids for a bulk insert", async () => {
+    const db = new MockDb();
+    const repository = new GenericRepository(db, "table");
+    const records = [{
+      id: null,
+      field1: "value1",
+      field2: 2
+    }, {
+      id: null,
+      field1: "value2",
+      field2: 3
+    }];
+
+    const savedRecords = await repository.insertAll(records);
+
+    chai.expect(savedRecords[0].id).to.equal(1);
+    chai.expect(savedRecords[1].id).to.equal(2);
+  });
+
   it("selects all records and returns them", async () => {
     const records = [
       { id: 1, name: "text1" },

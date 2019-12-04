@@ -19,7 +19,7 @@ export class GenericRepository<T extends DatabaseRecord> {
     const updateSql = keysWithoutId.map(k => k + " = ?").join();
     const updateValues = keysWithoutId.map(k => record[k]);
     const insertValues = Object.values(record);
-    const insertSql = new Array(insertValues.length).fill("?").map(() => "?").join();
+    const insertSql = new Array(insertValues.length).fill("?").join();
 
     const [result] = await this.db.query(
       `INSERT INTO ${this.table} (${keys.join()}) VALUES (${insertSql}) ON DUPLICATE KEY UPDATE ${updateSql}`,
@@ -29,6 +29,31 @@ export class GenericRepository<T extends DatabaseRecord> {
     const id = record.id || result.insertId;
 
     return { ...record, id };
+  }
+
+  /**
+   * Insert a number of records
+   */
+  public async insertAll(records: T[]): Promise<NonNullId<T>[]> {
+    if (records.length === 0) {
+      return [];
+    }
+
+    const record = records[0];
+    const keys = Object.keys(record);
+    const insertValues = records.flatMap(r => Object.values(r));
+    const insertOneRow = new Array(keys.length).fill("?").join();
+    const insertMultipleRows = new Array(records.length).fill("(" + insertOneRow + ")").join();
+
+    const [result] = await this.db.query(
+      `INSERT INTO ${this.table} (${keys.join()}) VALUES ${insertMultipleRows}`, insertValues
+    );
+
+    // assuming that the id field is an auto_increment we can calculate the new ids
+    return records.map((originalRecord, i) => ({
+      ...originalRecord,
+      id: result.insertId + i
+    }));
   }
 
   /**
