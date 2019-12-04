@@ -28,6 +28,10 @@ import { RequestLoggingMiddleware } from "./logging/RequestLoggingMiddleware";
 import { Group, GroupJsonView } from "../group/Group";
 import { GroupViewFactory } from "../group/GroupViewFactory";
 import { GroupModelFactory } from "../group/GroupModelFactory";
+import { Member, MemberJsonView } from "../member/Member";
+import { MemberViewFactory } from "../member/MemberViewFactory";
+import { MembersController } from "../member/controller/MembersController";
+import { MemberModelFactory } from "../member/MemberModelFactory";
 
 /**
  * Dependency container for the API
@@ -57,6 +61,8 @@ export class ApiContainer {
     const [
       health,
       login,
+      memberReadController,
+      membersController,
       groupReadController,
       groupWriteController,
       organisationReadController,
@@ -66,6 +72,8 @@ export class ApiContainer {
     ] = await Promise.all([
       this.getHealthController(),
       this.getLoginController(),
+      this.getMemberGetController(),
+      this.getMembersController(),
       this.getGroupGetController(),
       this.getGroupPostController(),
       this.getOrganisationGetController(),
@@ -77,6 +85,9 @@ export class ApiContainer {
     return router
       .get("/health", this.wrap(health.get))
       .post("/login", this.wrap(login.post))
+      .get("/members", this.wrap(memberReadController.getAll))
+      .get("/members/:id", this.wrap(memberReadController.get))
+      .post("/members", this.wrap(membersController.post))
       .get("/groups", this.wrap(groupReadController.getAll))
       .get("/group/:id", this.wrap(groupReadController.get))
       .put("/group/:id", this.wrap(groupWriteController.put))
@@ -169,6 +180,41 @@ export class ApiContainer {
     return new ReadController(
       await this.getGenericRepository("scheme"),
       new SchemeViewFactory()
+    );
+  }
+
+  private async getMemberGetController(): Promise<ReadController<Member, MemberJsonView>> {
+    const [groupRepository, memberRepository, viewFactory] = await Promise
+      .all<GenericRepository<Group>, GenericRepository<Member>, GroupViewFactory>([
+        this.getGenericRepository("member_group"),
+        this.getGenericRepository("member"),
+        this.getGroupViewFactory()
+      ]);
+
+    return new ReadController(
+      memberRepository,
+      new MemberViewFactory(
+        groupRepository,
+        viewFactory
+      )
+    );
+  }
+
+  private async getMembersController(): Promise<MembersController> {
+    const [groupRepository, memberRepository, viewFactory] = await Promise
+      .all<GenericRepository<Group>, GenericRepository<Member>, GroupViewFactory>([
+        this.getGenericRepository("member_group"),
+        this.getGenericRepository("member"),
+        this.getGroupViewFactory()
+      ]);
+
+    return new MembersController(
+      memberRepository,
+      new MemberViewFactory(
+        groupRepository,
+        viewFactory
+      ),
+      new MemberModelFactory()
     );
   }
 

@@ -6,7 +6,12 @@ import { Member, MemberJsonView } from "../Member";
 import { MemberViewFactory } from "../MemberViewFactory";
 import { HttpResponse } from "../../service/controller/HttpResponse";
 import { MemberModelFactory } from "../MemberModelFactory";
+import autobind from "autobind-decorator";
 
+/**
+ * Controller for bulk creation of members
+ */
+@autobind
 export class MembersController {
 
   constructor(
