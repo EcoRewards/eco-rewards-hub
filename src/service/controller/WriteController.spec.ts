@@ -48,7 +48,7 @@ describe("WriteController", () => {
     chai.expect(result.data.id).equal(1);
   });
 
-  it("should create a scheme", async () => {
+  it("should update a scheme", async () => {
     const result = await controller.put({ id: 1, name: "newScheme" }) as any;
 
     chai.expect(result.data.name).equal("newScheme");

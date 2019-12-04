@@ -161,7 +161,6 @@ paths:
                 type: "object"
       security:
         - basicAuth: []
-
   /scheme:
     post:
       summary: "Create a scheme"
@@ -308,7 +307,6 @@ paths:
                 type: "object"
       security:
         - basicAuth: []
-
   /organisation:
     post:
       summary: "Create an organisation"
@@ -451,10 +449,9 @@ paths:
                 type: "object"
       security:
         - basicAuth: []
-
   /group:
     post:
-      summary: "Create an group"
+      summary: "Create n group"
       description: ""
       consumes:
         - "application/json"
@@ -480,6 +477,167 @@ paths:
       security:
         - basicAuth: []
 
+  /members:
+    get:
+      summary: "Return all members"
+      description: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      responses:
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Unauthorized"
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              data:
+                type: "array"
+                items:
+                  $ref: "#/definitions/Member"
+              links:
+                type: "object"
+      security:
+        - basicAuth: []
+    post:
+      summary: "Create a number of members"
+      description: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Member details"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              group:
+                type: "string"
+                example: "/group/1"
+                required: true
+              defaultTransportMode:
+                type: "string"
+                example: "bus"
+              defaultDistance:
+                type: "number"
+                description: "Distance in miles"
+                example: 1.2
+              quantity:
+                type: "integer"
+                example: 100
+                required: true
+                description: "Number to create"
+
+      responses:
+        201:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              data:
+                type: "array"
+                items:
+                  $ref: "#/definitions/Member"
+              links:
+                type: "object"
+      security:
+        - basicAuth: []
+
+  /member/{memberId}:
+    get:
+      summary: "Return a member"
+      description: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "memberId"
+          in: "path"
+          description: "ID of member to return"
+          required: true
+          type: "integer"
+          format: "int64"
+      responses:
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Unauthorized"
+        404:
+          description: "Not found"
+          schema:
+            $ref: "#/definitions/NotFound"
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              data:
+                $ref: "#/definitions/Member"
+              links:
+                type: "object"
+      security:
+        - basicAuth: []
+    put:
+      summary: "Edit a group"
+      description: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Name of group"
+          required: true
+          schema:
+            $ref: "#/definitions/Group"
+      responses:
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Unauthorized"
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              data:
+                $ref: "#/definitions/Group"
+              links:
+                type: "object"
+      security:
+        - basicAuth: []
+    delete:
+      summary: "Delete a scheme"
+      description: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      responses:
+        401:
+          description: "Unauthorized"
+          schema:
+            $ref: "#/definitions/Unauthorized"
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              data:
+                type: "string"
+              links:
+                type: "object"
+      security:
+        - basicAuth: []
 
 securityDefinitions:
   basicAuth:
@@ -537,30 +695,67 @@ definitions:
       links:
         type: "object"
 
+  Scheme:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        example: "/scheme/1"
+      name:
+        type: "string"
+        required: true
+        example: "Norfolk County Council"
+
   Organisation:
     type: "object"
     properties:
       id:
         type: "string"
+        example: "/organisation/2"
       scheme:
         type: "string"
+        required: true
+        example: "/scheme/1"
       name:
         type: "string"
+        required: true
+        example: "Notre Dame High School"
 
   Group:
     type: "object"
     properties:
       id:
         type: "string"
+        example: "/group/1"
       organisation:
         type: "string"
+        required: true
+        example: "/organisation/2"
       name:
         type: "string"
+        required: true
+        example: "Class of 2019"
 
-  Scheme:
+  Member:
     type: "object"
     properties:
       id:
         type: "string"
-      name:
+        example: "/member/5"
+      group:
         type: "string"
+        example: "/group/1"
+        required: true
+      rewards:
+        type: "integer"
+        example: 100
+      carbonSaving:
+        type: "number"
+        example: 604.24
+      defaultTransportMode:
+        type: "string"
+        example: "train"
+      defaultDistance:
+        type: "number"
+        example: 4.2
+
