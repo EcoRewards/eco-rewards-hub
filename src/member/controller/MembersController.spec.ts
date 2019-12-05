@@ -55,9 +55,9 @@ describe("MembersController", () => {
     chai.expect(result.data[0].defaultTransportMode).equal("bus");
     chai.expect(result.data[1].defaultTransportMode).equal("bus");
     chai.expect(result.data[2].defaultTransportMode).equal("bus");
-    chai.expect(result.data[0].id).equal("/member/1");
-    chai.expect(result.data[1].id).equal("/member/2");
-    chai.expect(result.data[2].id).equal("/member/3");
+    chai.expect(result.data[0].id).equal("/member/3023110000000012");
+    chai.expect(result.data[1].id).equal("/member/3023110000000020");
+    chai.expect(result.data[2].id).equal("/member/3023110000000038");
   });
 
 });
