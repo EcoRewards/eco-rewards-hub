@@ -4,9 +4,9 @@ import { fromMemberId, toMemberId } from "./Member";
 describe("toMemberId", () => {
 
   it("extracts a numeric ID from the resource ID", () => {
-    const actual = toMemberId("/member/1");
+    const actual = toMemberId("/member/3023110001112220");
 
-    chai.expect(actual).to.equal(1);
+    chai.expect(actual).to.equal(111222);
   });
 
 });
@@ -14,9 +14,9 @@ describe("toMemberId", () => {
 describe("fromMemberId", () => {
 
   it("extracts creates a resource ID from the numeric ID", () => {
-    const actual = fromMemberId(1);
+    const actual = fromMemberId(111222);
 
-    chai.expect(actual).to.equal("/member/1");
+    chai.expect(actual).to.equal("/member/3023110001112220");
   });
 
 });

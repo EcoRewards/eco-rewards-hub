@@ -1,4 +1,5 @@
 import { GroupId } from "../group/Group";
+import * as luhn from "luhn-generator";
 
 export interface Member {
   id: MemberId | null,
@@ -21,9 +22,9 @@ export interface MemberJsonView {
 }
 
 export function fromMemberId(id: MemberId): string {
-  return "/member/" + id;
+  return "/member/" + luhn.generate("302311" + (id + "").padStart(9, "0"));
 }
 
 export function toMemberId(id: string): MemberId {
-  return +(id.substring(id.lastIndexOf("/") + 1));
+  return +(id.substr(14, 9));
 }
