@@ -4,14 +4,14 @@ import { World } from "./World";
 import { indexBy } from "ts-array-utils";
 import { MemberJsonView } from "../../src/member/Member";
 
-async function memberCheck(quantity: string, group: string) {
-  const allMembers = await World.api.get("/members");
-  const groupMembers = allMembers.data.data.filter(m => m.group === group);
+Given("there are {string} members in the group {string}", async function(quantity: string, group: string) {
+    const allMembers = await World.api.get("/members");
+    const groupId = this.groups[group].id;
+    const groupMembers = allMembers.data.data.filter(m => m.group === groupId);
 
-  chai.expect(groupMembers.length).to.equal(+quantity);
-}
-
-Given("there are {string} members in the group {string}", memberCheck);
+    chai.expect(groupMembers.length).to.equal(+quantity);
+  }
+);
 
 When("I create {string} members in the group {string}", async function (quantity: string, group: string) {
   const request = {
@@ -31,6 +31,11 @@ Then("I should get {string} unique IDs back", function (quantity: string) {
   chai.expect(Object.keys(indexedMembers).length).to.equal(+quantity);
 });
 
-Then("the group {string} should contain {string} members", async function (group: string, quantity: string) {
-  memberCheck(quantity, group);
-});
+Then("the group {string} should contain {string} members", async function(group: string, quantity: string) {
+    const allMembers = await World.api.get("/members");
+    const groupId = this.groups[group].id;
+    const groupMembers = allMembers.data.data.filter(m => m.group === groupId);
+
+    chai.expect(groupMembers.length).to.equal(+quantity);
+  }
+);
