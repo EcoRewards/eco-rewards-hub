@@ -38,14 +38,16 @@ paths:
           schema:
             $ref: "#/definitions/LoginRequest"
       responses:
-        401:
-          description: "Unauthorized"
-          schema:
-            $ref: "#/definitions/Unauthorized"
         201:
           description: "successful operation"
           schema:
             $ref: "#/definitions/LoginResponse"
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        500:
+          $ref: '#/responses/500'
 
   /schemes:
     get:
@@ -56,10 +58,6 @@ paths:
       produces:
         - "application/json"
       responses:
-        401:
-          description: "Unauthorized"
-          schema:
-            $ref: "#/definitions/Unauthorized"
         200:
           description: "successful operation"
           schema:
@@ -71,6 +69,12 @@ paths:
                   $ref: "#/definitions/Scheme"
               links:
                 type: "object"
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        500:
+          $ref: '#/responses/500'
       security:
         - basicAuth: []
   /scheme/{schemeId}:
@@ -89,14 +93,6 @@ paths:
           type: "integer"
           format: "int64"
       responses:
-        401:
-          description: "Unauthorized"
-          schema:
-            $ref: "#/definitions/Unauthorized"
-        404:
-          description: "Not found"
-          schema:
-            $ref: "#/definitions/NotFound"
         200:
           description: "successful operation"
           schema:
@@ -106,6 +102,14 @@ paths:
                 $ref: "#/definitions/Scheme"
               links:
                 type: "object"
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        404:
+          $ref: '#/responses/404'
+        500:
+          $ref: '#/responses/500'
       security:
         - basicAuth: []
     put:
@@ -123,10 +127,6 @@ paths:
           schema:
             $ref: "#/definitions/Scheme"
       responses:
-        401:
-          description: "Unauthorized"
-          schema:
-            $ref: "#/definitions/Unauthorized"
         200:
           description: "successful operation"
           schema:
@@ -136,6 +136,12 @@ paths:
                 $ref: "#/definitions/Scheme"
               links:
                 type: "object"
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        500:
+          $ref: '#/responses/500'
       security:
         - basicAuth: []
     delete:
@@ -146,10 +152,6 @@ paths:
       produces:
         - "application/json"
       responses:
-        401:
-          description: "Unauthorized"
-          schema:
-            $ref: "#/definitions/Unauthorized"
         200:
           description: "successful operation"
           schema:
@@ -159,6 +161,12 @@ paths:
                 type: "string"
               links:
                 type: "object"
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        500:
+          $ref: '#/responses/500'
       security:
         - basicAuth: []
   /scheme:
@@ -177,10 +185,6 @@ paths:
           schema:
             $ref: "#/definitions/Scheme"
       responses:
-        401:
-          description: "Unauthorized"
-          schema:
-            $ref: "#/definitions/Unauthorized"
         201:
           description: "successful operation"
           schema:
@@ -190,6 +194,12 @@ paths:
                 $ref: "#/definitions/Scheme"
               links:
                 type: "object"
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        500:
+          $ref: '#/responses/500'
       security:
         - basicAuth: []
 
@@ -202,10 +212,6 @@ paths:
       produces:
         - "application/json"
       responses:
-        401:
-          description: "Unauthorized"
-          schema:
-            $ref: "#/definitions/Unauthorized"
         200:
           description: "successful operation"
           schema:
@@ -217,6 +223,12 @@ paths:
                   $ref: "#/definitions/Organisation"
               links:
                 type: "object"
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        500:
+          $ref: '#/responses/500'
       security:
         - basicAuth: []
   /organisation/{organisationId}:
@@ -235,14 +247,6 @@ paths:
           type: "integer"
           format: "int64"
       responses:
-        401:
-          description: "Unauthorized"
-          schema:
-            $ref: "#/definitions/Unauthorized"
-        404:
-          description: "Not found"
-          schema:
-            $ref: "#/definitions/NotFound"
         200:
           description: "successful operation"
           schema:
@@ -252,6 +256,14 @@ paths:
                 $ref: "#/definitions/Organisation"
               links:
                 type: "object"
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        404:
+          $ref: '#/responses/404'
+        500:
+          $ref: '#/responses/500'
       security:
         - basicAuth: []
     put:
@@ -269,10 +281,6 @@ paths:
           schema:
             $ref: "#/definitions/Organisation"
       responses:
-        401:
-          description: "Unauthorized"
-          schema:
-            $ref: "#/definitions/Unauthorized"
         200:
           description: "successful operation"
           schema:
@@ -282,6 +290,12 @@ paths:
                 $ref: "#/definitions/Organisation"
               links:
                 type: "object"
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        500:
+          $ref: '#/responses/500'
       security:
         - basicAuth: []
     delete:
@@ -292,10 +306,6 @@ paths:
       produces:
         - "application/json"
       responses:
-        401:
-          description: "Unauthorized"
-          schema:
-            $ref: "#/definitions/Unauthorized"
         200:
           description: "successful operation"
           schema:
@@ -305,6 +315,12 @@ paths:
                 type: "string"
               links:
                 type: "object"
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        500:
+          $ref: '#/responses/500'
       security:
         - basicAuth: []
   /organisation:
@@ -332,6 +348,12 @@ paths:
                 $ref: "#/definitions/Organisation"
               links:
                 type: "object"
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        500:
+          $ref: '#/responses/500'
       security:
         - basicAuth: []
 
@@ -344,10 +366,6 @@ paths:
       produces:
         - "application/json"
       responses:
-        401:
-          description: "Unauthorized"
-          schema:
-            $ref: "#/definitions/Unauthorized"
         200:
           description: "successful operation"
           schema:
@@ -359,6 +377,12 @@ paths:
                   $ref: "#/definitions/Group"
               links:
                 type: "object"
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        500:
+          $ref: '#/responses/500'
       security:
         - basicAuth: []
   /group/{groupId}:
@@ -377,14 +401,6 @@ paths:
           type: "integer"
           format: "int64"
       responses:
-        401:
-          description: "Unauthorized"
-          schema:
-            $ref: "#/definitions/Unauthorized"
-        404:
-          description: "Not found"
-          schema:
-            $ref: "#/definitions/NotFound"
         200:
           description: "successful operation"
           schema:
@@ -394,6 +410,14 @@ paths:
                 $ref: "#/definitions/Group"
               links:
                 type: "object"
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        404:
+          $ref: '#/responses/401'
+        500:
+          $ref: '#/responses/500'
       security:
         - basicAuth: []
     put:
@@ -411,10 +435,6 @@ paths:
           schema:
             $ref: "#/definitions/Group"
       responses:
-        401:
-          description: "Unauthorized"
-          schema:
-            $ref: "#/definitions/Unauthorized"
         200:
           description: "successful operation"
           schema:
@@ -424,6 +444,12 @@ paths:
                 $ref: "#/definitions/Group"
               links:
                 type: "object"
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        500:
+          $ref: '#/responses/500'
       security:
         - basicAuth: []
     delete:
@@ -434,10 +460,6 @@ paths:
       produces:
         - "application/json"
       responses:
-        401:
-          description: "Unauthorized"
-          schema:
-            $ref: "#/definitions/Unauthorized"
         200:
           description: "successful operation"
           schema:
@@ -447,6 +469,12 @@ paths:
                 type: "string"
               links:
                 type: "object"
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        500:
+          $ref: '#/responses/500'
       security:
         - basicAuth: []
   /group:
@@ -474,6 +502,12 @@ paths:
                 $ref: "#/definitions/Group"
               links:
                 type: "object"
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        500:
+          $ref: '#/responses/500'
       security:
         - basicAuth: []
 
@@ -486,10 +520,6 @@ paths:
       produces:
         - "application/json"
       responses:
-        401:
-          description: "Unauthorized"
-          schema:
-            $ref: "#/definitions/Unauthorized"
         200:
           description: "successful operation"
           schema:
@@ -501,6 +531,12 @@ paths:
                   $ref: "#/definitions/Member"
               links:
                 type: "object"
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        500:
+          $ref: '#/responses/500'
       security:
         - basicAuth: []
     post:
@@ -517,11 +553,13 @@ paths:
           required: true
           schema:
             type: "object"
+            required:
+              - group
+              - quantity
             properties:
               group:
                 type: "string"
                 example: "/group/1"
-                required: true
               defaultTransportMode:
                 type: "string"
                 example: "bus"
@@ -532,7 +570,6 @@ paths:
               quantity:
                 type: "integer"
                 example: 100
-                required: true
                 description: "Number to create"
 
       responses:
@@ -547,6 +584,12 @@ paths:
                   $ref: "#/definitions/Member"
               links:
                 type: "object"
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        500:
+          $ref: '#/responses/500'
       security:
         - basicAuth: []
 
@@ -566,14 +609,6 @@ paths:
           type: "integer"
           format: "int64"
       responses:
-        401:
-          description: "Unauthorized"
-          schema:
-            $ref: "#/definitions/Unauthorized"
-        404:
-          description: "Not found"
-          schema:
-            $ref: "#/definitions/NotFound"
         200:
           description: "successful operation"
           schema:
@@ -583,6 +618,14 @@ paths:
                 $ref: "#/definitions/Member"
               links:
                 type: "object"
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        404:
+          $ref: '#/responses/404'
+        500:
+          $ref: '#/responses/500'
       security:
         - basicAuth: []
     put:
@@ -600,10 +643,6 @@ paths:
           schema:
             $ref: "#/definitions/Group"
       responses:
-        401:
-          description: "Unauthorized"
-          schema:
-            $ref: "#/definitions/Unauthorized"
         200:
           description: "successful operation"
           schema:
@@ -613,6 +652,12 @@ paths:
                 $ref: "#/definitions/Group"
               links:
                 type: "object"
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        500:
+          $ref: '#/responses/500'
       security:
         - basicAuth: []
     delete:
@@ -623,10 +668,6 @@ paths:
       produces:
         - "application/json"
       responses:
-        401:
-          description: "Unauthorized"
-          schema:
-            $ref: "#/definitions/Unauthorized"
         200:
           description: "successful operation"
           schema:
@@ -636,12 +677,36 @@ paths:
                 type: "string"
               links:
                 type: "object"
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        500:
+          $ref: '#/responses/500'
       security:
         - basicAuth: []
 
 securityDefinitions:
   basicAuth:
     type: basic
+
+responses:
+  400:
+    description: Bad Request
+    schema:
+      $ref: '#/definitions/Error'
+  401:
+    description: Unauthorized
+    schema:
+      $ref: '#/definitions/Error'
+  404:
+    description: Not Found
+    schema:
+      $ref: '#/definitions/Error'
+  500:
+    description: Internal Server Error
+    schema:
+      $ref: '#/definitions/Error'
 
 definitions:
 
@@ -673,18 +738,7 @@ definitions:
       links:
         type: "object"
 
-  Unauthorized:
-    type: "object"
-    properties:
-      data:
-        type: "object"
-        properties:
-          error:
-            type: "string"
-      links:
-        type: "object"
-
-  NotFound:
+  Error:
     type: "object"
     properties:
       data:
@@ -697,47 +751,52 @@ definitions:
 
   Scheme:
     type: "object"
+    required:
+      - name
     properties:
       id:
         type: "string"
         example: "/scheme/1"
       name:
         type: "string"
-        required: true
         example: "Norfolk County Council"
 
   Organisation:
     type: "object"
+    required:
+      - scheme
+      - name
     properties:
       id:
         type: "string"
         example: "/organisation/2"
       scheme:
         type: "string"
-        required: true
         example: "/scheme/1"
       name:
         type: "string"
-        required: true
         example: "Notre Dame High School"
 
   Group:
     type: "object"
+    required:
+      - organisation
+      - name
     properties:
       id:
         type: "string"
         example: "/group/1"
       organisation:
         type: "string"
-        required: true
         example: "/organisation/2"
       name:
         type: "string"
-        required: true
         example: "Class of 2019"
 
   Member:
     type: "object"
+    required:
+      - group
     properties:
       id:
         type: "string"
@@ -745,7 +804,6 @@ definitions:
       group:
         type: "string"
         example: "/group/1"
-        required: true
       rewards:
         type: "integer"
         example: 100

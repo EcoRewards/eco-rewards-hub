@@ -86,7 +86,7 @@ export class ApiContainer {
       .get("/health", this.wrap(health.get))
       .post("/login", this.wrap(login.post))
       .get("/members", this.wrap(memberReadController.getAll))
-      .get("/members/:id", this.wrap(memberReadController.get))
+      .get("/member/:id", this.wrap(membersController.get))
       .post("/members", this.wrap(membersController.post))
       .get("/groups", this.wrap(groupReadController.getAll))
       .get("/group/:id", this.wrap(groupReadController.get))

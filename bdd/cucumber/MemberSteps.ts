@@ -39,3 +39,17 @@ Then("the group {string} should contain {string} members", async function(group:
     chai.expect(groupMembers.length).to.equal(+quantity);
   }
 );
+
+When("I view member a member in the group {string}", async function (group: string) {
+  const member = await World.api.get(this.createdMembers[0].id);
+
+  this.member = member.data.data;
+});
+
+Then("they should have {string} rewards", function (quantity: string) {
+  chai.expect(this.member.rewards).to.equal(+quantity);
+});
+
+Then("a carbon saving of {string}", function (carbonSaving: string) {
+  chai.expect(this.member.carbonSaving).to.equal(+carbonSaving);
+});

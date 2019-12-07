@@ -13,11 +13,14 @@ export class ErrorLoggingMiddleware {
   ) { }
 
   /**
-   * Put a try/catch around subsequent middlewares to catch any exceptions and provide an appropriate REST response.
+   * Put a try/catch around subsequent middleware to catch any exceptions and provide an appropriate REST response.
    *
    * There is also a check for a 500 status as the swagger plugin does not throw an exception.
    */
   public async errorHandler(ctx: Context, next: Next) {
+    ctx.status = 404;
+    ctx.body = { data: { error: "Not found." }, links: {} };
+
     try {
       await next();
 

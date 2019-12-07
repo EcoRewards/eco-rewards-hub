@@ -26,7 +26,7 @@ export function fromMemberId(id: MemberId): string {
 }
 
 export function toMemberId(id: string): MemberId {
-  const accountNumber = id.substr(8);
+  const accountNumber = id.substr(id.lastIndexOf("/") + 1);
 
   if (!luhn.validate(accountNumber)) {
     throw Error("Invalid account number");
