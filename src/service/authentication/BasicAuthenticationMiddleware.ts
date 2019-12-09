@@ -10,13 +10,11 @@ import { AdminUserIndex } from "../../user/AdminUserRepository";
 @autobind
 export class BasicAuthenticationMiddleware {
 
-  // todo add the user auth endpoint
   private readonly whitelist = [
     "/health",
     "/login"
   ];
 
-  // todo reload / mutate this when adding new orgs otherwise they won't authenticate
   constructor(
     private readonly userCredentials: AdminUserIndex,
     private readonly crypto: Cryptography
@@ -36,6 +34,8 @@ export class BasicAuthenticationMiddleware {
       const isValid = await this.crypto.compare(user.pass, this.userCredentials[user.name].password);
 
       if (isValid) {
+        ctx.adminUserId = this.userCredentials[user.name].id;
+
         return next();
       }
     }

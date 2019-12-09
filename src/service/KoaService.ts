@@ -10,7 +10,6 @@ import * as bodyParser from "koa-bodyparser";
 import autobind from "autobind-decorator";
 import { ErrorLoggingMiddleware } from "./logging/ErrorLoggingMiddleware";
 import { RequestLoggingMiddleware } from "./logging/RequestLoggingMiddleware";
-import { Context, Next } from "koa";
 import { BlacklistBodyParser } from "./parser/BlacklistBodyParser";
 
 /**
