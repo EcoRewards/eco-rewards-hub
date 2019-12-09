@@ -10,6 +10,8 @@ import * as bodyParser from "koa-bodyparser";
 import autobind from "autobind-decorator";
 import { ErrorLoggingMiddleware } from "./logging/ErrorLoggingMiddleware";
 import { RequestLoggingMiddleware } from "./logging/RequestLoggingMiddleware";
+import { Context, Next } from "koa";
+import { BlacklistBodyParser } from "./parser/BlacklistBodyParser";
 
 /**
  * Koa Wrapper that starts the API.
@@ -25,6 +27,7 @@ export class KoaService {
     private readonly swaggerDocument: Document,
     private readonly errorLogger: ErrorLoggingMiddleware,
     private readonly requestLogger: RequestLoggingMiddleware,
+    private readonly blacklistBodyParser: BlacklistBodyParser,
     private readonly logger: Logger
   ) {}
 
@@ -38,6 +41,7 @@ export class KoaService {
       .use(compress())
       .use(ui(this.swaggerDocument, "/swagger"))
       .use(cors({ origin: "*" }))
+      .use(this.blacklistBodyParser.disableBodyParser)
       .use(bodyParser())
       .use(this.authentication.auth)
       .use(this.router.routes())

@@ -32,6 +32,7 @@ import { Member, MemberJsonView } from "../member/Member";
 import { MemberViewFactory } from "../member/MemberViewFactory";
 import { MembersController } from "../member/controller/MembersController";
 import { MemberModelFactory } from "../member/MemberModelFactory";
+import { BlacklistBodyParser } from "./parser/BlacklistBodyParser";
 
 /**
  * Dependency container for the API
@@ -52,6 +53,7 @@ export class ApiContainer {
       this.getSwaggerDocument(),
       new ErrorLoggingMiddleware(this.getLogger()),
       new RequestLoggingMiddleware(this.getLogger()),
+      new BlacklistBodyParser(["/journey"]),
       this.getLogger()
     );
   }
