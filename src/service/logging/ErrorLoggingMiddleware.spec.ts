@@ -36,7 +36,7 @@ describe("ErrorLoggingMiddleware", () => {
   it("does nothing if there are no exceptions", async () => {
     const ctx = new MockCtx() as any;
 
-    await errorLogger.errorHandler(ctx, async () => {});
+    await errorLogger.errorHandler(ctx, async () => { ctx.status = 200; });
 
     chai.expect(ctx.status).to.equal(200);
   });

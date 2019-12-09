@@ -6,7 +6,7 @@ describe("MemberModelFactory", () => {
 
   it("creates a model from a JSON view", async () => {
     const actual = await factory.create({
-      id: "/member/1",
+      id: "/member/3023110000000012",
       group: "/group/2",
       carbonSaving: 4.3,
       rewards: 1700,

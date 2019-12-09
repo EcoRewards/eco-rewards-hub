@@ -14,6 +14,7 @@ export class World {
   organisations: Record<string, SchemeJsonView> = {};
   groups: Record<string, GroupJsonView> = {};
   createdMembers: MemberJsonView[] = [];
+  member?: MemberJsonView;
 }
 
 setWorldConstructor(World);

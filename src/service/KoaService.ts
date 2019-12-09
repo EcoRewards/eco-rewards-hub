@@ -36,10 +36,10 @@ export class KoaService {
    */
   public start(): void {
     this.app
+      .use(ui(this.swaggerDocument, "/swagger"))
       .use(this.errorLogger.errorHandler)
       .use(this.requestLogger.requestLogger)
       .use(compress())
-      .use(ui(this.swaggerDocument, "/swagger"))
       .use(cors({ origin: "*" }))
       .use(this.blacklistBodyParser.disableBodyParser)
       .use(bodyParser())
