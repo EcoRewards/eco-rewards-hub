@@ -3,7 +3,6 @@ import { HttpResponse } from "../../service/controller/HttpResponse";
 import * as parse from "csv-parse";
 import { AdminUserId } from "../../user/AdminUser";
 import { JourneyCsvToMySqlStreamFactory } from "../JourneyCsvToMySqlStreamFactory";
-import streamToPromise = require("stream-to-promise");
 import { JourneyRepository } from "../repository/JourneyRepository";
 import { Context } from "koa";
 
