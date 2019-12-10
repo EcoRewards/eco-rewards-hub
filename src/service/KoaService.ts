@@ -45,7 +45,7 @@ export class KoaService {
       .use(this.authentication.auth)
       .use(this.router.routes())
       .use(this.router.allowedMethods())
-      .use(validate(this.swaggerDocument))
+      // .use(validate(this.swaggerDocument))
       .listen(this.port);
 
     this.logger.info(`Started on ${this.port}`);

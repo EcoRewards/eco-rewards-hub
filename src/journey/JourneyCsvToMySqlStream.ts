@@ -23,7 +23,9 @@ export class JourneyCsvToMySqlStream extends Transform {
     let journey;
 
     try {
-       journey = this.factory.create(row, this.adminUserId);
+      console.log(row);
+      journey = this.factory.create(row, this.adminUserId);
+      console.log(journey);
     }
     catch (err) {
       this.errors.push(err.message);
