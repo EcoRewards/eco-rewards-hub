@@ -23,9 +23,7 @@ export class JourneyCsvToMySqlStream extends Transform {
     let journey;
 
     try {
-      console.log(row);
       journey = this.factory.create(row, this.adminUserId);
-      console.log(journey);
     }
     catch (err) {
       this.errors.push(err.message);
@@ -33,7 +31,8 @@ export class JourneyCsvToMySqlStream extends Transform {
       return callback();
     }
 
-    callback(null, Object.values(journey));
+    const mysqlRow = Object.values(journey).join() + "\n";
+    callback(null, Buffer.from(mysqlRow));
   }
 
   public getErrors(): string[] {

@@ -28,20 +28,22 @@ describe("JourneyCsvToMySqlStream", () => {
     stream.write(["3023110001112221", "2019-12-09T15:10:05"]);
     stream.end();
 
-    chai.expect(stream.getErrors()).to.deep.equal(["Invalid account number"]);
+    chai.expect(stream.getErrors()).to.deep.equal(["Invalid account number: 3023110001112221"]);
   });
 
   it("passes through values", async () => {
     const stream = new JourneyCsvToMySqlStream(factory, 1);
 
-    stream.on("data", values => {
-      chai.expect(values[0]).to.equal(null);
-      chai.expect(values[1]).to.equal(1);
-      chai.expect(values[2]).to.not.equal(null);
-      chai.expect(values[3]).to.equal(null);
+    stream.on("data", buffer => {
+      const values = buffer.toString().split(",");
+
+      chai.expect(values[0]).to.equal("");
+      chai.expect(values[1]).to.equal("1");
+      chai.expect(values[2]).to.not.equal("");
+      chai.expect(values[3]).to.equal("");
       chai.expect(values[4]).to.equal("2019-12-09T15:10:05");
-      chai.expect(values[5]).to.equal(2);
-      chai.expect(values[6]).to.equal(1.57);
+      chai.expect(values[5]).to.equal("2");
+      chai.expect(values[6]).to.equal("1.57");
       chai.expect(values[7]).to.equal("bus");
     });
 
