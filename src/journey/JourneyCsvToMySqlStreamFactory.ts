@@ -11,7 +11,7 @@ export class JourneyCsvToMySqlStreamFactory {
   ) {}
 
   /**
-   *
+   * Get an index of members and create a new JourneyFactory for the JourneyCsvToMySqlStream
    */
   public async create(adminUserId: AdminUserId): Promise<JourneyCsvToMySqlStream> {
     const members = await this.repository.getIndexedById();

@@ -36,6 +36,7 @@ import { BlacklistBodyParser } from "./parser/BlacklistBodyParser";
 import { JourneyController } from "../journey/controller/JourneyController";
 import { JourneyRepository } from "../journey/repository/JourneyRepository";
 import { JourneyCsvToMySqlStreamFactory } from "../journey/JourneyCsvToMySqlStreamFactory";
+import { MultiPartFileExtractor } from "../journey/controller/MultiPartFileExtractor";
 
 /**
  * Dependency container for the API
@@ -238,7 +239,8 @@ export class ApiContainer {
 
     return new JourneyController(
       new JourneyRepository(streamDatabase),
-      new JourneyCsvToMySqlStreamFactory(memberRepository)
+      new JourneyCsvToMySqlStreamFactory(memberRepository),
+      new MultiPartFileExtractor()
     );
   }
 
