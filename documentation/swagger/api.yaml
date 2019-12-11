@@ -686,6 +686,41 @@ paths:
       security:
         - basicAuth: []
 
+  /journey:
+    post:
+      summary: Uploads member journeys.
+      consumes:
+        - multipart/form-data
+      produces:
+        - application/json
+      parameters:
+        - in: formData
+          name: upfile
+          type: string
+          description: The CSV file to upload. There should be no header row and the fields should be separated by a comma.
+      responses:
+        200:
+          description: "Successfully process file."
+          schema:
+            type: "object"
+            properties:
+              data:
+                type: "object"
+                properties:
+                  errors:
+                    type: "array"
+                    items: "string"
+              links:
+                type: "object"
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        500:
+          $ref: '#/responses/500'
+      security:
+        - basicAuth: []
+
 securityDefinitions:
   basicAuth:
     type: basic

@@ -32,6 +32,11 @@ import { Member, MemberJsonView } from "../member/Member";
 import { MemberViewFactory } from "../member/MemberViewFactory";
 import { MembersController } from "../member/controller/MembersController";
 import { MemberModelFactory } from "../member/MemberModelFactory";
+import { BlacklistBodyParser } from "./parser/BlacklistBodyParser";
+import { JourneyController } from "../journey/controller/JourneyController";
+import { JourneyRepository } from "../journey/repository/JourneyRepository";
+import { JourneyCsvToMySqlStreamFactory } from "../journey/JourneyCsvToMySqlStreamFactory";
+import { MultiPartFileExtractor } from "../journey/controller/MultiPartFileExtractor";
 
 /**
  * Dependency container for the API
@@ -52,6 +57,7 @@ export class ApiContainer {
       this.getSwaggerDocument(),
       new ErrorLoggingMiddleware(this.getLogger()),
       new RequestLoggingMiddleware(this.getLogger()),
+      new BlacklistBodyParser(["/journey"]),
       this.getLogger()
     );
   }
@@ -65,10 +71,6 @@ export class ApiContainer {
       membersController,
       groupReadController,
       groupWriteController,
-      organisationReadController,
-      organisationWriteController,
-      schemeWriteController,
-      schemeReadController
     ] = await Promise.all([
       this.getHealthController(),
       this.getLoginController(),
@@ -76,10 +78,20 @@ export class ApiContainer {
       this.getMembersController(),
       this.getGroupGetController(),
       this.getGroupPostController(),
+    ]);
+
+    const [
+      organisationReadController,
+      organisationWriteController,
+      schemeWriteController,
+      schemeReadController,
+      journeyController
+    ] = await Promise.all([
       this.getOrganisationGetController(),
       this.getOrganisationPostController(),
       this.getSchemePostController(),
-      this.getSchemeGetController()
+      this.getSchemeGetController(),
+      this.getJourneyController()
     ]);
 
     return router
@@ -102,7 +114,8 @@ export class ApiContainer {
       .get("/scheme/:id", this.wrap(schemeReadController.get))
       .put("/scheme/:id", this.wrap(schemeWriteController.put))
       .delete("/scheme/:id", this.wrap(schemeWriteController.delete))
-      .post("/scheme", this.wrap(schemeWriteController.post));
+      .post("/scheme", this.wrap(schemeWriteController.post))
+      .post("/journey", this.wrap(journeyController.post));
   }
 
   // todo this needs a home and a test
@@ -218,6 +231,19 @@ export class ApiContainer {
     );
   }
 
+  private async getJourneyController(): Promise<JourneyController> {
+    const [memberRepository, streamDatabase] = await Promise.all([
+      this.getGenericRepository("member"),
+      this.getDatabaseStream()
+    ]);
+
+    return new JourneyController(
+      new JourneyRepository(streamDatabase),
+      new JourneyCsvToMySqlStreamFactory(memberRepository),
+      new MultiPartFileExtractor()
+    );
+  }
+
   @memoize
   private async getAdminUserRepository(): Promise<AdminUserRepository> {
     return new AdminUserRepository(await this.getDatabase());
@@ -243,17 +269,28 @@ export class ApiContainer {
 
   @memoize
   private getDatabase(): Promise<any> {
+    return require("mysql2/promise").createPool(this.getDatabaseConfig());
+  }
+
+  @memoize
+  private getDatabaseStream(): Promise<any> {
+    return require("mysql2").createPool(this.getDatabaseConfig());
+  }
+
+  @memoize
+  private getDatabaseConfig() {
     const env = process.env.NODE_ENV || databaseConfiguration.defaultEnv;
     const envConfig = databaseConfiguration[env];
 
-    return require("mysql2/promise").createPool({
+    return {
       host: envConfig.host,
       user: envConfig.user,
       password: envConfig.password,
       database: envConfig.database,
       dateStrings: true,
       // debug: ["ComQueryPacket", "RowDataPacket"]
-    });
+    };
+
   }
 
   @memoize
