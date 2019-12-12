@@ -1,12 +1,14 @@
 swagger: "2.0"
 info:
-  description: ""
-  version: "1.0.0"
   title: "Eco Rewards Hub API"
+  description: >
+    The Eco Rewards API provides admin users the ability to manage schemes, organisations, groups and members. It's allows suppliers to submit journeys via CSV.
+    HTTPS is required as it makes use of RFC 7617 Basic Authentication.
+  version: "1.0.0"
   contact:
     email: "linusnorton@gmail.com"
+host: "api.ecorewards.co.uk"
 schemes:
-  - "http"
   - "https"
 paths:
   /health:
@@ -69,8 +71,6 @@ paths:
                   $ref: "#/definitions/Scheme"
               links:
                 type: "object"
-        400:
-          $ref: '#/responses/400'
         401:
           $ref: '#/responses/401'
         500:
@@ -223,8 +223,6 @@ paths:
                   $ref: "#/definitions/Organisation"
               links:
                 type: "object"
-        400:
-          $ref: '#/responses/400'
         401:
           $ref: '#/responses/401'
         500:
@@ -377,8 +375,6 @@ paths:
                   $ref: "#/definitions/Group"
               links:
                 type: "object"
-        400:
-          $ref: '#/responses/400'
         401:
           $ref: '#/responses/401'
         500:
@@ -531,8 +527,6 @@ paths:
                   $ref: "#/definitions/Member"
               links:
                 type: "object"
-        400:
-          $ref: '#/responses/400'
         401:
           $ref: '#/responses/401'
         500:
@@ -709,11 +703,38 @@ paths:
                 properties:
                   errors:
                     type: "array"
-                    items: "string"
+                    items:
+                      type: "string"
               links:
                 type: "object"
         400:
           $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        500:
+          $ref: '#/responses/500'
+      security:
+        - basicAuth: []
+  /journeys:
+    get:
+      summary: "Return all journeys"
+      description: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              data:
+                type: "array"
+                items:
+                  $ref: "#/definitions/Journey"
+              links:
+                type: "object"
         401:
           $ref: '#/responses/401'
         500:
@@ -769,6 +790,8 @@ definitions:
         type: "object"
         properties:
           token:
+            type: "string"
+          name:
             type: "string"
       links:
         type: "object"
@@ -852,3 +875,44 @@ definitions:
         type: "number"
         example: 4.2
 
+  Journey:
+    type: "object"
+    required:
+      - id
+      - source
+      - uploaded
+      - travelDate
+      - memberId
+      - distance
+      - mode
+    properties:
+      id:
+        type: "number"
+        example: 1
+      source:
+        type: "string"
+        example: "A Third Party Retailer"
+      uploaded:
+        type: "string"
+        example: "2019-12-12T07:01:40Z"
+      processed:
+        type: "string"
+        example: "null"
+      travelDate:
+        type: "string"
+        example: "2019-12-12T07:01:40Z"
+      memberId:
+        type: "string"
+        example: "30230000000000012"
+      distance:
+        type: "number"
+        example: 4.65
+      mode:
+        type: "string"
+        example: "Train"
+      rewardsEarned:
+        type: "number"
+        example: "null"
+      carbonSaving:
+        type: "number"
+        example: "null"
