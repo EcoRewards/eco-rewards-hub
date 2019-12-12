@@ -14,4 +14,17 @@ export interface Journey {
   carbon_saving: number | null
 }
 
+export interface JourneyJsonView {
+  id: JourneyId,
+  source: string,
+  uploaded: string,
+  processed: string | null,
+  travelDate: string,
+  memberId: string,
+  distance: number,
+  mode: string,
+  rewardsEarned: number | null,
+  carbonSaving: number | null
+}
+
 export type JourneyId = number;

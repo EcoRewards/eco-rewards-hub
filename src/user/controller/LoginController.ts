@@ -35,7 +35,8 @@ export class LoginController {
 
       if (isValid) {
         const data = {
-          token: toBase64(request.username + ":" + request.password)
+          token: toBase64(request.username + ":" + request.password),
+          name: userIndex[request.username].name
         };
 
         return { data, links, code: 201 };
@@ -58,7 +59,8 @@ interface LoginRequest {
 }
 
 interface LoginToken {
-  token: string
+  token: string,
+  name: string
 }
 
 export type LoginResponse = HttpResponse<LoginToken | HttpError>;

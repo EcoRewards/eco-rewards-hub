@@ -37,6 +37,9 @@ import { JourneyController } from "../journey/controller/JourneyController";
 import { JourneyRepository } from "../journey/repository/JourneyRepository";
 import { JourneyCsvToMySqlStreamFactory } from "../journey/JourneyCsvToMySqlStreamFactory";
 import { MultiPartFileExtractor } from "../journey/controller/MultiPartFileExtractor";
+import { AdminUser } from "../user/AdminUser";
+import { Journey, JourneyJsonView } from "../journey/Journey";
+import { JourneyViewFactory } from "../journey/JourneyViewFactory";
 
 /**
  * Dependency container for the API
@@ -74,10 +77,10 @@ export class ApiContainer {
     ] = await Promise.all([
       this.getHealthController(),
       this.getLoginController(),
-      this.getMemberGetController(),
+      this.getMemberReadController(),
       this.getMembersController(),
-      this.getGroupGetController(),
-      this.getGroupPostController(),
+      this.getGroupReadController(),
+      this.getGroupWriteController(),
     ]);
 
     const [
@@ -85,12 +88,14 @@ export class ApiContainer {
       organisationWriteController,
       schemeWriteController,
       schemeReadController,
+      journeyReadController,
       journeyController
     ] = await Promise.all([
-      this.getOrganisationGetController(),
-      this.getOrganisationPostController(),
-      this.getSchemePostController(),
-      this.getSchemeGetController(),
+      this.getOrganisationReadController(),
+      this.getOrganisationWriteController(),
+      this.getSchemeWriteController(),
+      this.getSchemeReadController(),
+      this.getJourneyReadController(),
       this.getJourneyController()
     ]);
 
@@ -115,6 +120,7 @@ export class ApiContainer {
       .put("/scheme/:id", this.wrap(schemeWriteController.put))
       .delete("/scheme/:id", this.wrap(schemeWriteController.delete))
       .post("/scheme", this.wrap(schemeWriteController.post))
+      .get("/journeys", this.wrap(journeyReadController.getAll))
       .post("/journey", this.wrap(journeyController.post));
   }
 
@@ -133,7 +139,7 @@ export class ApiContainer {
     return new HealthController();
   }
 
-  private async getGroupGetController(): Promise<ReadController<Group, GroupJsonView>> {
+  private async getGroupReadController(): Promise<ReadController<Group, GroupJsonView>> {
     const [groupRepository, viewFactory] = await Promise
         .all<GenericRepository<Group>, GroupViewFactory>([
           this.getGenericRepository("member_group"),
@@ -143,7 +149,7 @@ export class ApiContainer {
     return new ReadController(groupRepository, viewFactory);
   }
 
-  private async getGroupPostController(): Promise<WriteController<GroupJsonView, Group>> {
+  private async getGroupWriteController(): Promise<WriteController<GroupJsonView, Group>> {
     const [groupRepository, viewFactory] = await Promise
         .all<GenericRepository<Group>, GroupViewFactory>([
           this.getGenericRepository("member_group"),
@@ -157,7 +163,7 @@ export class ApiContainer {
     );
   }
 
-  private async getOrganisationGetController(): Promise<ReadController<Organisation, OrganisationJsonView>> {
+  private async getOrganisationReadController(): Promise<ReadController<Organisation, OrganisationJsonView>> {
     const [organisationRepository, viewFactory] = await Promise
       .all<GenericRepository<Organisation>, OrganisationViewFactory>([
         this.getGenericRepository("organisation"),
@@ -167,7 +173,7 @@ export class ApiContainer {
     return new ReadController(organisationRepository, viewFactory);
   }
 
-  private async getOrganisationPostController(): Promise<WriteController<OrganisationJsonView, Organisation>> {
+  private async getOrganisationWriteController(): Promise<WriteController<OrganisationJsonView, Organisation>> {
     const [organisationRepository, viewFactory] = await Promise
       .all<GenericRepository<Organisation>, OrganisationViewFactory>([
         this.getGenericRepository("organisation"),
@@ -181,7 +187,7 @@ export class ApiContainer {
     );
   }
 
-  private async getSchemePostController(): Promise<WriteController<SchemeJsonView, Scheme>> {
+  private async getSchemeWriteController(): Promise<WriteController<SchemeJsonView, Scheme>> {
     return new WriteController(
       await this.getGenericRepository("scheme"),
       new SchemeModelFactory(),
@@ -189,14 +195,14 @@ export class ApiContainer {
     );
   }
 
-  private async getSchemeGetController(): Promise<ReadController<Scheme, SchemeJsonView>> {
+  private async getSchemeReadController(): Promise<ReadController<Scheme, SchemeJsonView>> {
     return new ReadController(
       await this.getGenericRepository("scheme"),
       new SchemeViewFactory()
     );
   }
 
-  private async getMemberGetController(): Promise<ReadController<Member, MemberJsonView>> {
+  private async getMemberReadController(): Promise<ReadController<Member, MemberJsonView>> {
     const [groupRepository, memberRepository, viewFactory] = await Promise
       .all<GenericRepository<Group>, GenericRepository<Member>, GroupViewFactory>([
         this.getGenericRepository("member_group"),
@@ -241,6 +247,19 @@ export class ApiContainer {
       new JourneyRepository(streamDatabase),
       new JourneyCsvToMySqlStreamFactory(memberRepository),
       new MultiPartFileExtractor()
+    );
+  }
+
+  private async getJourneyReadController(): Promise<ReadController<Journey, JourneyJsonView>> {
+    const [journeyRepository, userRepository] = await Promise
+      .all<GenericRepository<Journey>, GenericRepository<AdminUser>>([
+        this.getGenericRepository("journey"),
+        this.getGenericRepository("admin_user")
+      ]);
+
+    return new ReadController(
+      journeyRepository,
+      new JourneyViewFactory(userRepository)
     );
   }
 
