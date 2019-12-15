@@ -17,7 +17,7 @@ Feature:
       | 2      | 2019-12-09T06:20:30Z | bus   | 50.50    |
       | 3      | 2019-12-09T05:51:30Z | train | 20.50    |
       | 4      | 2019-12-09T07:52:30Z | bus   | 40.50    |
-      | 5      | 2019-12-09T08:53:30Z | tube  | 20.50    |
+      | 5      | 2019-12-09T08:53:30Z | tram  | 20.50    |
       | 6      | 2019-12-09T09:54:30Z | walk  | 40.50    |
     Then I should see the following journeys
       | source | travel date         | mode  | distance |
@@ -25,7 +25,7 @@ Feature:
       | Test   | 2019-12-09 06:20:30 | bus   | 50.50    |
       | Test   | 2019-12-09 05:51:30 | train | 20.50    |
       | Test   | 2019-12-09 07:52:30 | bus   | 40.50    |
-      | Test   | 2019-12-09 08:53:30 | tube  | 20.50    |
+      | Test   | 2019-12-09 08:53:30 | tram  | 20.50    |
       | Test   | 2019-12-09 09:54:30 | walk  | 40.50    |
 #    And I wait until the rewards have been processed
 #    And these members should have the following rewards:

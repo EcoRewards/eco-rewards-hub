@@ -3,7 +3,7 @@ import { Readable } from "stream";
 /**
  * Provides access to the journey table
  */
-export class JourneyRepository {
+export class JourneyStreamRepository {
 
   constructor(
     private readonly db: any

@@ -2,7 +2,7 @@ import { HttpResponse } from "../../service/controller/HttpResponse";
 import * as parse from "csv-parse";
 import { AdminUserId } from "../../user/AdminUser";
 import { JourneyCsvToMySqlStreamFactory } from "../JourneyCsvToMySqlStreamFactory";
-import { JourneyRepository } from "../repository/JourneyRepository";
+import { JourneyStreamRepository } from "../repository/JourneyStreamRepository";
 import { Context } from "koa";
 import autobind from "autobind-decorator";
 import { IncomingMessage } from "http";
@@ -15,7 +15,7 @@ import { MultiPartFileExtractor } from "./MultiPartFileExtractor";
 export class JourneyController {
 
   constructor(
-    private readonly repository: JourneyRepository,
+    private readonly repository: JourneyStreamRepository,
     private readonly factory: JourneyCsvToMySqlStreamFactory,
     private readonly fileExtractor: MultiPartFileExtractor
   ) { }
