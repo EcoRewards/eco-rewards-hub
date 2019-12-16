@@ -34,17 +34,22 @@ import { MembersController } from "../member/controller/MembersController";
 import { MemberModelFactory } from "../member/MemberModelFactory";
 import { BlacklistBodyParser } from "./parser/BlacklistBodyParser";
 import { JourneyController } from "../journey/controller/JourneyController";
-import { JourneyRepository } from "../journey/repository/JourneyRepository";
+import { JourneyStreamRepository } from "../journey/repository/JourneyStreamRepository";
 import { JourneyCsvToMySqlStreamFactory } from "../journey/JourneyCsvToMySqlStreamFactory";
 import { MultiPartFileExtractor } from "../journey/controller/MultiPartFileExtractor";
 import { AdminUser } from "../user/AdminUser";
 import { Journey, JourneyJsonView } from "../journey/Journey";
 import { JourneyViewFactory } from "../journey/JourneyViewFactory";
+import { JobScheduler } from "./job/JobScheduler";
+import { RewardAllocationJob } from "../reward/RewardAllocationJob";
+import { RewardRepository } from "../reward/RewardRepository";
+import { CarbonSavingPolicy } from "../reward/CarbonSavingPolicy";
+import { RewardPointPolicy } from "../reward/RewardPointPolicy";
 
 /**
  * Dependency container for the API
  */
-export class ApiContainer {
+export class ServiceContainer {
 
   public async getKoaService(): Promise<KoaService> {
     const [router, authenticationMiddleware] = await Promise.all([
@@ -63,6 +68,17 @@ export class ApiContainer {
       new BlacklistBodyParser(["/journey"]),
       this.getLogger()
     );
+  }
+
+  public async getJobScheduler(): Promise<JobScheduler> {
+    const db = await this.getDatabase();
+    const rewardAllocationJob = new RewardAllocationJob(
+      new RewardRepository(db),
+      new CarbonSavingPolicy(),
+      new RewardPointPolicy()
+    );
+
+    return new JobScheduler(rewardAllocationJob, 1000, this.getLogger());
   }
 
   private async getRoutes(): Promise<Router> {
@@ -244,7 +260,7 @@ export class ApiContainer {
     ]);
 
     return new JourneyController(
-      new JourneyRepository(streamDatabase),
+      new JourneyStreamRepository(streamDatabase),
       new JourneyCsvToMySqlStreamFactory(memberRepository),
       new MultiPartFileExtractor()
     );
