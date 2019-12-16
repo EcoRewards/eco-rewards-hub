@@ -46,19 +46,27 @@ export class RewardRepository {
     const connection = await this.db.getConnection();
     await connection.beginTransaction();
 
-    const memberUpdate = connection.query(
-      "UPDATE member SET rewards = rewards + ?, carbon_saving = carbon_saving + ? WHERE id = ?",
-      [rewardsGenerated, carbonSavingGenerated, memberId]
-    );
-
-    const journeyUpdates = journeysProcessed.map(journey => {
-      return connection.query(
-        "UPDATE journey SET processed = NOW(), rewards_earned = ?, carbon_saving = ? WHERE id = ?", journey
+    try {
+      const memberUpdate = connection.query(
+        "UPDATE member SET rewards = rewards + ?, carbon_saving = carbon_saving + ? WHERE id = ?",
+        [rewardsGenerated, carbonSavingGenerated, memberId]
       );
-    });
 
-    await Promise.all([memberUpdate, ...journeyUpdates]);
-    await connection.commit();
+      const journeyUpdates = journeysProcessed.map(journey => {
+        return connection.query(
+          "UPDATE journey SET processed = NOW(), rewards_earned = ?, carbon_saving = ? WHERE id = ?", journey
+        );
+      });
+
+      await Promise.all([memberUpdate, ...journeyUpdates]);
+      await connection.commit();
+    }
+    catch (err) {
+      await connection.rollback();
+    }
+    finally {
+      await connection.release();
+    }
   }
 }
 

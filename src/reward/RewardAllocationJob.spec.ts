@@ -24,7 +24,7 @@ class MockRepository {
 
 describe("RewardAllocationJob", () => {
   const carbonSavingPolicy = new CarbonSavingPolicy();
-  const rewardPointPolicy = new RewardPointPolicy(carbonSavingPolicy);
+  const rewardPointPolicy = new RewardPointPolicy();
   const mockRepository = new MockRepository() as any;
   const job = new RewardAllocationJob(
     mockRepository,
@@ -47,9 +47,9 @@ describe("RewardAllocationJob", () => {
     const [memberId, journeys, rewardPoints, carbonSaving] = mockRepository.updates[0];
 
     chai.expect(memberId).to.equal(1);
-    chai.expect(rewardPoints).to.equal(119);
+    chai.expect(rewardPoints).to.equal(400);
     chai.expect(carbonSaving).to.equal(1.1862);
-    chai.expect(journeys[0][0]).to.equal(53);
+    chai.expect(journeys[0][0]).to.equal(250);
     chai.expect(journeys[0][1]).to.equal(0.5296559999999999);
     chai.expect(journeys[0][2]).to.equal(1);
   });
@@ -75,18 +75,18 @@ describe("RewardAllocationJob", () => {
     let [memberId, journeys, rewardPoints, carbonSaving] = mockRepository.updates[0];
 
     chai.expect(memberId).to.equal(1);
-    chai.expect(rewardPoints).to.equal(119);
+    chai.expect(rewardPoints).to.equal(400);
     chai.expect(carbonSaving).to.equal(1.1862);
-    chai.expect(journeys[0][0]).to.equal(53);
+    chai.expect(journeys[0][0]).to.equal(250);
     chai.expect(journeys[0][1]).to.equal(0.5296559999999999);
     chai.expect(journeys[0][2]).to.equal(1);
 
     [memberId, journeys, rewardPoints, carbonSaving] = mockRepository.updates[1];
 
     chai.expect(memberId).to.equal(2);
-    chai.expect(rewardPoints).to.equal(119);
+    chai.expect(rewardPoints).to.equal(400);
     chai.expect(carbonSaving).to.equal(1.1862);
-    chai.expect(journeys[0][0]).to.equal(53);
+    chai.expect(journeys[0][0]).to.equal(250);
     chai.expect(journeys[0][1]).to.equal(0.5296559999999999);
     chai.expect(journeys[0][2]).to.equal(3);
   });
@@ -110,18 +110,18 @@ describe("RewardAllocationJob", () => {
     let [memberId, journeys, rewardPoints, carbonSaving] = mockRepository.updates[0];
 
     chai.expect(memberId).to.equal(1);
-    chai.expect(rewardPoints).to.equal(119);
+    chai.expect(rewardPoints).to.equal(400);
     chai.expect(carbonSaving).to.equal(1.1862);
-    chai.expect(journeys[0][0]).to.equal(53);
+    chai.expect(journeys[0][0]).to.equal(250);
     chai.expect(journeys[0][1]).to.equal(0.5296559999999999);
     chai.expect(journeys[0][2]).to.equal(1);
 
     [memberId, journeys, rewardPoints, carbonSaving] = mockRepository.updates[1];
 
     chai.expect(memberId).to.equal(1);
-    chai.expect(rewardPoints).to.equal(119);
+    chai.expect(rewardPoints).to.equal(400);
     chai.expect(carbonSaving).to.equal(1.1862);
-    chai.expect(journeys[0][0]).to.equal(53);
+    chai.expect(journeys[0][0]).to.equal(250);
     chai.expect(journeys[0][1]).to.equal(0.5296559999999999);
     chai.expect(journeys[0][2]).to.equal(3);
   });

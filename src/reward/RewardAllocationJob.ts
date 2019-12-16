@@ -16,6 +16,7 @@ export class RewardAllocationJob {
   ) { }
 
   /**
+   * Run the job to calculate reward points and carbon savings
    */
   public async run(): Promise<void> {
     const unprocessedJourneys = await this.repository.selectUnprocessedJourneysIndexedByMemberAndDate();

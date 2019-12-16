@@ -72,11 +72,10 @@ export class ServiceContainer {
 
   public async getJobScheduler(): Promise<JobScheduler> {
     const db = await this.getDatabase();
-    const carbonSavingPolicy = new CarbonSavingPolicy();
     const rewardAllocationJob = new RewardAllocationJob(
       new RewardRepository(db),
-      carbonSavingPolicy,
-      new RewardPointPolicy(carbonSavingPolicy)
+      new CarbonSavingPolicy(),
+      new RewardPointPolicy()
     );
 
     return new JobScheduler(rewardAllocationJob, 1000, this.getLogger());
