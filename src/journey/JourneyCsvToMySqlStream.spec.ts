@@ -30,7 +30,7 @@ describe("JourneyCsvToMySqlStream", () => {
     stream.write(["3023110001112221", "2019-12-09T15:10:05"]);
     stream.end();
 
-    chai.expect(stream.getErrors()).to.deep.equal(["Invalid member number: 3023110001112221"]);
+    chai.expect(stream.getErrors()).to.deep.equal(["Invalid account number: 3023110001112221"]);
   });
 
   it("passes through values", async () => {

@@ -26,7 +26,7 @@ describe("JourneyFactory", () => {
   it("throws an error when given an  invalid ID", () => {
     chai.expect(() => {
       factory.create(["3023110001112221", "2019-12-09T15:10:05"], 1);
-    }).to.throw(Error, "Invalid member number");
+    }).to.throw(Error, "Invalid account number");
   });
 
   it("throws an error if the member does not exist", () => {
