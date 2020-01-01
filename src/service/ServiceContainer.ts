@@ -45,6 +45,8 @@ import { RewardAllocationJob } from "../reward/RewardAllocationJob";
 import { RewardRepository } from "../reward/RewardRepository";
 import { CarbonSavingPolicy } from "../reward/CarbonSavingPolicy";
 import { RewardPointPolicy } from "../reward/RewardPointPolicy";
+import { MemberController } from "../member/controller/MemberController";
+import { MemberRepository } from "../member/repository/MemberRepository";
 
 /**
  * Dependency container for the API
@@ -88,6 +90,7 @@ export class ServiceContainer {
       login,
       memberReadController,
       membersController,
+      memberController,
       groupReadController,
       groupWriteController,
     ] = await Promise.all([
@@ -95,6 +98,7 @@ export class ServiceContainer {
       this.getLoginController(),
       this.getMemberReadController(),
       this.getMembersController(),
+      this.getMemberController(),
       this.getGroupReadController(),
       this.getGroupWriteController(),
     ]);
@@ -119,7 +123,8 @@ export class ServiceContainer {
       .get("/health", this.wrap(health.get))
       .post("/login", this.wrap(login.post))
       .get("/members", this.wrap(memberReadController.getAll))
-      .get("/member/:id", this.wrap(membersController.get))
+      .get("/member/:id", this.wrap(memberController.get))
+      .post("/member", this.wrap(memberController.post))
       .post("/members", this.wrap(membersController.post))
       .get("/groups", this.wrap(groupReadController.getAll))
       .get("/group/:id", this.wrap(groupReadController.get))
@@ -236,19 +241,42 @@ export class ServiceContainer {
   }
 
   private async getMembersController(): Promise<MembersController> {
-    const [groupRepository, memberRepository, viewFactory] = await Promise
-      .all<GenericRepository<Group>, GenericRepository<Member>, GroupViewFactory>([
-        this.getGenericRepository("member_group"),
-        this.getGenericRepository("member"),
-        this.getGroupViewFactory()
-      ]);
+    const [memberRepository, memberViewFactory] = await Promise.all([
+      this.getGenericRepository<Member>("member"),
+      this.getMemberViewFactory()
+    ]);
 
     return new MembersController(
       memberRepository,
-      new MemberViewFactory(
-        groupRepository,
-        viewFactory
-      ),
+      memberViewFactory,
+      new MemberModelFactory()
+    );
+  }
+
+  @memoize
+  private async getMemberViewFactory(): Promise<MemberViewFactory> {
+    const [groupRepository, viewFactory] = await Promise.all([
+        this.getGenericRepository<Group>("member_group"),
+        this.getGroupViewFactory()
+      ]);
+
+    return new MemberViewFactory(
+      groupRepository,
+      viewFactory
+    );
+  }
+
+  private async getMemberController(): Promise<MemberController> {
+    const [genericRepository, memberRepository, memberViewFactory] = await Promise.all([
+      this.getGenericRepository<Member>("member"),
+      this.getMemberRepository(),
+      this.getMemberViewFactory()
+    ]);
+
+    return new MemberController(
+      memberRepository,
+      genericRepository,
+      memberViewFactory,
       new MemberModelFactory()
     );
   }
@@ -331,6 +359,11 @@ export class ServiceContainer {
   @memoize
   private async getGenericRepository<T extends DatabaseRecord>(table: string): Promise<GenericRepository<T>> {
     return new GenericRepository(await this.getDatabase(), table);
+  }
+
+  @memoize
+  private async getMemberRepository(): Promise<MemberRepository> {
+    return new MemberRepository(await this.getDatabase());
   }
 
   @memoize

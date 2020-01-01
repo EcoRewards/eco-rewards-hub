@@ -10,7 +10,8 @@ describe("JourneyCsvToMySqlStream", () => {
       carbon_saving: 0,
       default_distance: 0,
       default_transport_mode: "",
-      member_group_id: 1
+      member_group_id: 1,
+      smartcard: null
     },
     2: {
       id: 2,
@@ -18,7 +19,8 @@ describe("JourneyCsvToMySqlStream", () => {
       carbon_saving: 0,
       default_distance: 1.57,
       default_transport_mode: "bus",
-      member_group_id: 1
+      member_group_id: 1,
+      smartcard: null
     }
   });
 
@@ -28,7 +30,7 @@ describe("JourneyCsvToMySqlStream", () => {
     stream.write(["3023110001112221", "2019-12-09T15:10:05"]);
     stream.end();
 
-    chai.expect(stream.getErrors()).to.deep.equal(["Invalid account number: 3023110001112221"]);
+    chai.expect(stream.getErrors()).to.deep.equal(["Invalid member number: 3023110001112221"]);
   });
 
   it("passes through values", async () => {

@@ -12,7 +12,9 @@ export class BasicAuthenticationMiddleware {
 
   private readonly whitelist = [
     "/health",
-    "/login"
+    "/login",
+    "/groups",
+    "/member"
   ];
 
   constructor(

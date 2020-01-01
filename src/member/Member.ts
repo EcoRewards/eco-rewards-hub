@@ -7,7 +7,8 @@ export interface Member {
   rewards: number,
   carbon_saving: number,
   default_transport_mode: string,
-  default_distance: number
+  default_distance: number,
+  smartcard: number | null
 }
 
 export type MemberId = number;
@@ -29,7 +30,7 @@ export function toMemberId(id: string): MemberId {
   const accountNumber = id.substr(id.lastIndexOf("/") + 1);
 
   if (!luhn.validate(accountNumber)) {
-    throw Error("Invalid account number: " + accountNumber);
+    throw Error("Invalid member number: " + accountNumber);
   }
 
   return +(accountNumber.substr(6, 9));
