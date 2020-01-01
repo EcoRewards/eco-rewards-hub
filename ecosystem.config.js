@@ -1,8 +1,8 @@
 module.exports = {
     apps : [{
         name: "eco-rewards-hub",
-        script: "./node_modules/.bin/ts-node",
-        args: "src/start.ts",
+        interpreter: "./node_modules/.bin/ts-node",
+        script: "src/start.ts",
         env: {
             NODE_ENV: "development",
         },
