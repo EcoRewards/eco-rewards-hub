@@ -7,7 +7,8 @@ export interface Member {
   rewards: number,
   carbon_saving: number,
   default_transport_mode: string,
-  default_distance: number
+  default_distance: number,
+  smartcard: string | null
 }
 
 export type MemberId = number;

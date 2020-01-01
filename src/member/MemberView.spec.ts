@@ -26,7 +26,8 @@ describe("MemberView", () => {
       carbon_saving: 4.3,
       rewards: 1700,
       default_distance: 5.4,
-      default_transport_mode: "train"
+      default_transport_mode: "train",
+      smartcard: null
     });
 
     chai.expect(actual.id).to.equal("/member/3023110000000012");
@@ -45,7 +46,8 @@ describe("MemberView", () => {
       carbon_saving: 4.3,
       rewards: 1700,
       default_distance: 5.4,
-      default_transport_mode: "train"
+      default_transport_mode: "train",
+      smartcard: null
     });
 
     chai.expect(links["/group/1"]).to.equal(undefined);

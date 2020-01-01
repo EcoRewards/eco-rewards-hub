@@ -1,10 +1,9 @@
-import { GenericRepository, NonNullId } from "../../database/GenericRepository";
-import { Member, MemberJsonView, toMemberId } from "../Member";
+import { GenericRepository } from "../../database/GenericRepository";
+import { Member, MemberJsonView } from "../Member";
 import { MemberViewFactory } from "../MemberViewFactory";
 import { HttpResponse } from "../../service/controller/HttpResponse";
 import { MemberModelFactory } from "../MemberModelFactory";
 import autobind from "autobind-decorator";
-import { GetRequest, GetResponse, MemberView, View } from "../..";
 
 /**
  * Controller for bulk creation of members and the get request
@@ -33,24 +32,6 @@ export class MembersController {
     return { data, links, code: 201 };
   }
 
-  /**
-   * Return a member or a 404 if one cannot be found
-   */
-  public async get({ id }: GetRequest): Promise<GetResponse<MemberJsonView>> {
-    const links = {};
-    const [model, view] = await Promise.all<NonNullId<Member> | undefined, MemberView>([
-      this.repository.selectOne(toMemberId(id)),
-      this.viewFactory.create()
-    ]);
-
-    if (!model) {
-      return { data: { error: "Not found"}, links, code: 404 };
-    }
-
-    const data = view.create(links, model);
-
-    return { data, links };
-  }
 }
 
 export interface MembersPostRequest {
