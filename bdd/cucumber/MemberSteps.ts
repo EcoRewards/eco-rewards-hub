@@ -3,6 +3,7 @@ import { Given, Then, When } from "cucumber";
 import { World } from "./World";
 import { indexBy } from "ts-array-utils";
 import { MemberJsonView } from "../../src/member/Member";
+import { GroupJsonView } from "../../src";
 
 Given("there are {string} members in the group {string}", async function(quantity: string, group: string) {
     const allMembers = await World.api.get("/members");
@@ -52,4 +53,17 @@ Then("they should have {string} rewards", function (quantity: string) {
 
 Then("a carbon saving of {string}", function (carbonSaving: string) {
   chai.expect(this.member.carbonSaving).to.equal(+carbonSaving);
+});
+
+Then("I should see a member {string}", async function (memberId: string) {
+  await World.api.get("/member/" + memberId);
+});
+
+When("I create an account with smartcard {string}", async function (smartcard: string) {
+  const defaultTransportMode = "bus";
+  const defaultDistance = 1.5;
+  const groups = Object.values(this.groups) as GroupJsonView[];
+  const group = groups[0].id;
+
+  await World.api.post("/member", { smartcard, defaultTransportMode, defaultDistance, group });
 });

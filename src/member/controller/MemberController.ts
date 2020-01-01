@@ -73,5 +73,5 @@ export interface MemberPostRequest {
   group: string,
   defaultTransportMode: string,
   defaultDistance: number,
-  smartcard: number
+  smartcard: string
 }

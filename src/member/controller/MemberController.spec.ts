@@ -69,7 +69,7 @@ describe("MemberController", () => {
 
   it("should create a member", async () => {
     const result = await controller.post({
-      smartcard: 654321002222230099,
+      smartcard: "654321002222230099",
       defaultDistance: 1,
       defaultTransportMode: "bus",
       group: "/group/2"

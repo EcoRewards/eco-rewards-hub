@@ -27,5 +27,5 @@ export interface PartialMemberJsonView {
   group: string,
   defaultTransportMode: string,
   defaultDistance: number,
-  smartcard?: number
+  smartcard?: string
 }

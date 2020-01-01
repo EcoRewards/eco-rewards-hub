@@ -646,8 +646,8 @@ paths:
                 description: "Distance in miles"
                 example: 1.2
               smartcard:
-                type: "integer"
-                example: 654321002222230099
+                type: "string"
+                example: "654321002222230099"
                 description: "Number to create"
       responses:
         201:
