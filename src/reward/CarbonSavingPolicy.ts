@@ -11,11 +11,13 @@ export class CarbonSavingPolicy {
     "car share": 0.161205,
     "electric car": 0.06,
     "taxi": 0.16286,
+    "park and ride": 0.10172,
     "tram": 0.05363,
     "bus": 0.10172,
     "train": 0.04885,
     "cycling": 0,
-    "walk": 0
+    "walk": 0,
+    "work from home": 0
   };
 
   /**

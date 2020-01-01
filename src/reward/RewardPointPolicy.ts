@@ -5,7 +5,21 @@ import { CarbonSavingPolicy } from "./CarbonSavingPolicy";
  */
 export class RewardPointPolicy {
   private dailyCap = 400;
-  private pointsPerTrip = 250;
+  private pointsPerMode = {
+    "large car": 0,
+    "medium car": 0,
+    "small car": 0,
+    "car share": 125,
+    "electric car": 100,
+    "taxi": 50,
+    "park and ride": 75,
+    "tram": 250,
+    "bus": 250,
+    "train": 250,
+    "cycling": 250,
+    "walk": 250,
+    "work from home": 125
+  };
 
   /**
    * Calculate the maximum number of points a member can generate within the cap and then return the number they have
@@ -13,8 +27,9 @@ export class RewardPointPolicy {
    */
   public getRewardPoints(mode: string, distance: number, currentPoints: number) {
     const maxPossibleToEarn = this.dailyCap - currentPoints;
+    const points = this.pointsPerMode[mode.toLowerCase()];
 
-    return Math.min(maxPossibleToEarn, this.pointsPerTrip);
+    return Math.min(maxPossibleToEarn, points);
   }
 
 }
