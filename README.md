@@ -66,10 +66,6 @@ See [features](/bdd/feature).
 | 2019-11-27 | Travis deployment | Simple, easy, as seen [here](https://github.com/dwyl/learn-travis/blob/master/encrypted-ssh-keys-deployment.md) |
 | 2019-11-27 | PM2 process management | Makes the travis deployment easier |
 
-## Release notes
-
-N/A
-
 ## License
 
 This software is licensed under [GNU GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html).
