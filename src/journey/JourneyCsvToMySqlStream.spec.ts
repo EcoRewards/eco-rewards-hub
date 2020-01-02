@@ -27,10 +27,10 @@ describe("JourneyCsvToMySqlStream", () => {
   it("returns errors", () => {
     const stream = new JourneyCsvToMySqlStream(factory, 1);
 
-    stream.write(["3023110001112221", "2019-12-09T15:10:05"]);
+    stream.write(["0001112221", "2019-12-09T15:10:05"]);
     stream.end();
 
-    chai.expect(stream.getErrors()).to.deep.equal(["Invalid account number: 3023110001112221"]);
+    chai.expect(stream.getErrors()).to.deep.equal(["Invalid account number: 0001112221"]);
   });
 
   it("passes through values", async () => {
@@ -49,7 +49,7 @@ describe("JourneyCsvToMySqlStream", () => {
       chai.expect(values[7]).to.equal("bus");
     });
 
-    stream.write(["3023110000000020", "2019-12-09T15:10:05"]);
+    stream.write(["0000000026", "2019-12-09T15:10:05"]);
 
     await new Promise(r => stream.end(r));
 

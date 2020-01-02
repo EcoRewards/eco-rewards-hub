@@ -30,7 +30,7 @@ describe("MemberView", () => {
       smartcard: null
     });
 
-    chai.expect(actual.id).to.equal("/member/3023110000000012");
+    chai.expect(actual.id).to.equal("/member/0000000018");
     chai.expect(actual.group).to.equal("/group/" + 2);
     chai.expect(actual.carbonSaving).to.equal(4.3);
     chai.expect(actual.rewards).to.equal(1700);

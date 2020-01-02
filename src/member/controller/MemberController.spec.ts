@@ -75,17 +75,17 @@ describe("MemberController", () => {
       group: "/group/2"
     });
 
-    chai.expect(result.data.id).equal("/member/3023110000000012");
+    chai.expect(result.data.id).equal("/member/0000000018");
   });
 
   it("return a result by id", async () => {
-    const result = await controller.get({ id: "3023110000000012" });
+    const result = await controller.get({ id: "0000000018" });
     const expected = {
       carbonSaving: 0,
       defaultDistance: 0,
       defaultTransportMode: "bus",
       group: "/group/1",
-      id: "/member/3023110000000012",
+      id: "/member/0000000018",
       rewards: 0
     };
 
@@ -99,7 +99,7 @@ describe("MemberController", () => {
       defaultDistance: 0,
       defaultTransportMode: "bus",
       group: "/group/1",
-      id: "/member/3023110000000020",
+      id: "/member/0000000026",
       rewards: 0
     };
 
@@ -107,7 +107,7 @@ describe("MemberController", () => {
   });
 
   it("return a 404 if the record does not exist", async () => {
-    const result = await controller.get({ id: "3023110000000020" });
+    const result = await controller.get({ id: "0000000026" });
 
     chai.expect(result.code).to.deep.equal(404);
   });

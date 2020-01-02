@@ -36,7 +36,7 @@ class MockMultiPartFileExtractor {
 
   async getFile() {
     const lines = [
-      "3023110000000020,2019-12-09T15:10:05",
+      "0000000026,2019-12-09T15:10:05",
       null
     ];
     let i = 0;

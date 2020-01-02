@@ -25,7 +25,7 @@ describe("JourneyView", () => {
     chai.expect(actual.uploaded).to.equal("2019-12-11T22:04:50");
     chai.expect(actual.processed).to.equal(null);
     chai.expect(actual.travelDate).to.equal("2019-12-11T10:02:20");
-    chai.expect(actual.memberId).to.equal("/member/3023110000000012");
+    chai.expect(actual.memberId).to.equal("/member/0000000018");
     chai.expect(actual.distance).to.equal(1.56);
     chai.expect(actual.mode).to.equal("Train");
     chai.expect(actual.rewardsEarned).to.equal(null);

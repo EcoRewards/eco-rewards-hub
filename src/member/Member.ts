@@ -23,7 +23,7 @@ export interface MemberJsonView {
 }
 
 export function fromMemberId(id: MemberId): string {
-  return "/member/" + luhn.generate("302311" + (id + "").padStart(9, "0"));
+  return "/member/" + luhn.generate(id, { pad: 10 });
 }
 
 export function toMemberId(id: string): MemberId {
@@ -33,5 +33,5 @@ export function toMemberId(id: string): MemberId {
     throw Error("Invalid account number: " + accountNumber);
   }
 
-  return +(accountNumber.substr(6, 9));
+  return +accountNumber.substring(0, 9);
 }

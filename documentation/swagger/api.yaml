@@ -887,7 +887,7 @@ definitions:
         example: "2019-12-12T07:01:40Z"
       memberId:
         type: "string"
-        example: "30230000000000012"
+        example: "30230000000000018"
       distance:
         type: "number"
         example: 4.65
