@@ -26,7 +26,7 @@ describe("fromMemberId", () => {
   it("extracts creates a resource ID from the numeric ID", () => {
     const actual = fromMemberId(111222);
 
-    chai.expect(actual).to.equal("/member/3023110001112220");
+    chai.expect(actual).to.equal("/member/0001112226");
   });
 
 });

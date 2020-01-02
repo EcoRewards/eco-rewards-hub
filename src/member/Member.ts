@@ -23,7 +23,7 @@ export interface MemberJsonView {
 }
 
 export function fromMemberId(id: MemberId): string {
-  return "/member/" + luhn.generate("302311" + (id + "").padStart(9, "0"));
+  return "/member/" + luhn.generate((id + "").padStart(9, "0"));
 }
 
 export function toMemberId(id: string): MemberId {
