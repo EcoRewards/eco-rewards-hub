@@ -79,7 +79,7 @@ describe("MemberController", () => {
   });
 
   it("return a result by id", async () => {
-    const result = await controller.get({ id: "3023110000000012" });
+    const result = await controller.get({ id: "0000000018" });
     const expected = {
       carbonSaving: 0,
       defaultDistance: 0,
@@ -107,7 +107,7 @@ describe("MemberController", () => {
   });
 
   it("return a 404 if the record does not exist", async () => {
-    const result = await controller.get({ id: "3023110000000020" });
+    const result = await controller.get({ id: "0000000026" });
 
     chai.expect(result.code).to.deep.equal(404);
   });
