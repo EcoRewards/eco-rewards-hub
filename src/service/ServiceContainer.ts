@@ -35,7 +35,7 @@ import { MemberModelFactory } from "../member/MemberModelFactory";
 import { BlacklistBodyParser } from "./parser/BlacklistBodyParser";
 import { JourneyController } from "../journey/controller/JourneyController";
 import { JourneyStreamRepository } from "../journey/repository/JourneyStreamRepository";
-import { JourneyCsvToMySqlStreamFactory } from "../journey/JourneyCsvToMySqlStreamFactory";
+import { JourneyCsvToMySqlStreamFactory } from "../journey/stream/JourneyCsvToMySqlStreamFactory";
 import { MultiPartFileExtractor } from "../journey/controller/MultiPartFileExtractor";
 import { AdminUser } from "../user/AdminUser";
 import { Journey, JourneyJsonView } from "../journey/Journey";

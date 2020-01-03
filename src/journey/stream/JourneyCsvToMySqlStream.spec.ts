@@ -1,5 +1,5 @@
 import * as chai from "chai";
-import { JourneyFactory } from "./JourneyFactory";
+import { JourneyFactory } from "../JourneyFactory";
 import { JourneyCsvToMySqlStream } from "./JourneyCsvToMySqlStream";
 
 describe("JourneyCsvToMySqlStream", () => {
@@ -22,7 +22,7 @@ describe("JourneyCsvToMySqlStream", () => {
       member_group_id: 1,
       smartcard: null
     }
-  });
+  }, {});
 
   it("returns errors", () => {
     const stream = new JourneyCsvToMySqlStream(factory, 1);

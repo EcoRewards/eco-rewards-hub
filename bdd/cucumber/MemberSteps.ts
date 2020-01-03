@@ -65,5 +65,6 @@ When("I create an account with smartcard {string}", async function (smartcard: s
   const groups = Object.values(this.groups) as GroupJsonView[];
   const group = groups[0].id;
 
-  await World.api.post("/member", { smartcard, defaultTransportMode, defaultDistance, group });
+  const response = await World.api.post("/member", { smartcard, defaultTransportMode, defaultDistance, group });
+  this.createdMember = response.data.data;
 });

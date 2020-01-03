@@ -8,7 +8,8 @@ import { AdminUserId } from "../user/AdminUser";
 export class JourneyFactory {
 
   constructor(
-    private readonly members: Record<MemberId, Member>
+    private readonly membersById: Record<MemberId, Member>,
+    private readonly membersBySmartcard: Record<string, Member>
   ) { }
 
   /**
@@ -16,8 +17,8 @@ export class JourneyFactory {
    * set in the CSV data.
    */
   public create([memberId, date, mode, distance]: CsvInput, adminUserId: AdminUserId): Journey {
-    const actualMemberId = toMemberId(memberId);
-    const member = this.members[actualMemberId];
+    const id = memberId.length >= 16 ? memberId : toMemberId(memberId);
+    const member = this.membersById[id] || this.membersBySmartcard[id];
 
     if (!member) {
       throw Error("Cannot find member: " + memberId);
@@ -41,7 +42,7 @@ export class JourneyFactory {
       uploaded: new Date().toISOString(),
       processed: null,
       travel_date: date,
-      member_id: actualMemberId,
+      member_id: member.id,
       distance: +actualDistance,
       mode: actualMode,
       rewards_earned: null,

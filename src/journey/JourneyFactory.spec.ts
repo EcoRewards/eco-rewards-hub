@@ -21,6 +21,16 @@ describe("JourneyFactory", () => {
       member_group_id: 1,
       smartcard: null
     }
+  }, {
+    "654321002222230099": {
+      id: 1,
+      rewards: 0,
+      carbon_saving: 0,
+      default_distance: 1.0,
+      default_transport_mode: "bus",
+      member_group_id: 1,
+      smartcard: "654321002222230099"
+    },
   });
 
   it("throws an error when given an  invalid ID", () => {
@@ -69,6 +79,12 @@ describe("JourneyFactory", () => {
     chai.expect(() => {
       factory.create(["0001112226", "2019-12-09T15:10:05"], 1);
     }).to.throw(Error, "No mode given for 0001112226 and no default set");
+  });
+
+  it("uses the smartcard index", () => {
+    const actual = factory.create(["654321002222230099", "2019-12-09T15:10:05"], 1);
+
+    chai.expect(actual.member_id).to.equal(1);
   });
 
 });

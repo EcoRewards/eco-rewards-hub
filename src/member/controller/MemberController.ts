@@ -45,7 +45,7 @@ export class MemberController {
   }
 
   private getModel(id: string): Promise<AMember> {
-    return id.length === 18
+    return id.length >= 16
       ? this.memberRepository.selectBySmartcard(id)
       : this.genericRepository.selectOne(toMemberId(id));
   }
