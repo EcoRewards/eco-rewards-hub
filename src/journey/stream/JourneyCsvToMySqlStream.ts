@@ -1,6 +1,6 @@
+import { JourneyFactory } from "../JourneyFactory";
+import { AdminUserId } from "../../user/AdminUser";
 import { Transform, TransformCallback } from "stream";
-import { JourneyFactory } from "./JourneyFactory";
-import { AdminUserId } from "../user/AdminUser";
 
 /**
  * Transforms CSV rows into MySQL rows

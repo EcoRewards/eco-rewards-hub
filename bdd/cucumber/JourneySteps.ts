@@ -7,7 +7,11 @@ When("I upload a file", async function ({ rawTable }: any) {
   const members = this.createdMembers;
   const csv = rawTable
     .slice(1)
-    .map(row => [members[row[0]].id.substring(7), ...row.slice(1)].join())
+    .map(row => {
+      row[0] = row[0].length >= 16 ? row[0] : members[row[0]].id.substring(7);
+
+      return row.join();
+    })
     .join("\n");
 
   const formData = new FormData();
@@ -28,9 +32,9 @@ Then("I should see the following journeys", async function ({ rawTable }: any) {
 
   for (let i = 1; i < rawTable.length; i ++) {
     const memberIndex = rawTable[i][0];
-    const memberId = this.createdMembers[memberIndex].id;
+    const member = memberIndex >= 16 ? this.createdMember : this.createdMembers[memberIndex];
 
-    chai.expect(journeys[i - 1].memberId).to.equal(memberId);
+    chai.expect(journeys[i - 1].memberId).to.equal(member.id);
     chai.expect(journeys[i - 1].source).to.equal(rawTable[i][1]);
     chai.expect(journeys[i - 1].travelDate).to.equal(rawTable[i][2]);
     chai.expect(journeys[i - 1].mode).to.equal(rawTable[i][3]);
@@ -45,8 +49,8 @@ Then("I wait until the rewards have been processed", async function() {
 Then("these members should have the following rewards", async function ({ rawTable }: any) {
   for (const row of rawTable.slice(1)) {
     const memberIndex = row[0];
-    const memberId = this.createdMembers[memberIndex].id;
-    const {data} = await World.api.get(memberId);
+    const member = memberIndex >= 16 ? this.createdMember : this.createdMembers[memberIndex];
+    const {data} = await World.api.get(member.id);
 
     chai.expect(data.data.rewards).to.equal(+row[1]);
     chai.expect(data.data.carbonSaving).to.equal(+row[2]);

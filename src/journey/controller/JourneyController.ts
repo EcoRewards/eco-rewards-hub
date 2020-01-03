@@ -1,7 +1,7 @@
 import { HttpResponse } from "../../service/controller/HttpResponse";
 import * as parse from "csv-parse";
 import { AdminUserId } from "../../user/AdminUser";
-import { JourneyCsvToMySqlStreamFactory } from "../JourneyCsvToMySqlStreamFactory";
+import { JourneyCsvToMySqlStreamFactory } from "../stream/JourneyCsvToMySqlStreamFactory";
 import { JourneyStreamRepository } from "../repository/JourneyStreamRepository";
 import { Context } from "koa";
 import autobind from "autobind-decorator";

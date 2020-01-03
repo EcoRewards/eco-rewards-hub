@@ -1,5 +1,5 @@
 import * as chai from "chai";
-import { JourneyCsvToMySqlStream } from "../JourneyCsvToMySqlStream";
+import { JourneyCsvToMySqlStream } from "../stream/JourneyCsvToMySqlStream";
 import { JourneyController } from "./JourneyController";
 import { Readable } from "stream";
 import { JourneyFactory } from "../JourneyFactory";
@@ -70,7 +70,7 @@ describe("JourneyController", () => {
       member_group_id: 1,
       smartcard: null
     }
-  });
+  }, {});
 
   const journeyRepository = new MockJourneyRepository();
   const badJourneyRepository = new MockExceptionJourneyRepository();
