@@ -161,45 +161,41 @@ export class ServiceContainer {
   }
 
   private async getGroupReadController(): Promise<ReadController<Group, GroupJsonView>> {
-    const [groupRepository, viewFactory] = await Promise
-        .all<GenericRepository<Group>, GroupViewFactory>([
-          this.getGenericRepository("member_group"),
-          this.getGroupViewFactory()
-        ]);
+    const [groupRepository, viewFactory] = await Promise.all([
+      this.getMemberGroupRepository(),
+      this.getGroupViewFactory()
+    ]);
 
     return new ReadController(groupRepository, viewFactory);
   }
 
   private async getGroupWriteController(): Promise<WriteController<GroupJsonView, Group>> {
-    const [groupRepository, viewFactory] = await Promise
-        .all<GenericRepository<Group>, GroupViewFactory>([
-          this.getGenericRepository("member_group"),
-          this.getGroupViewFactory()
-        ]);
+    const [groupRepository, viewFactory] = await Promise.all([
+      this.getMemberGroupRepository(),
+      this.getGroupViewFactory()
+    ]);
 
     return new WriteController(
-        groupRepository,
-        new GroupModelFactory(),
-        viewFactory
+      groupRepository,
+      new GroupModelFactory(),
+      viewFactory
     );
   }
 
   private async getOrganisationReadController(): Promise<ReadController<Organisation, OrganisationJsonView>> {
-    const [organisationRepository, viewFactory] = await Promise
-      .all<GenericRepository<Organisation>, OrganisationViewFactory>([
-        this.getGenericRepository("organisation"),
-        this.getOrganisationViewFactory()
-      ]);
+    const [organisationRepository, viewFactory] = await Promise.all([
+      this.getOrganisationRepository(),
+      this.getOrganisationViewFactory()
+    ]);
 
     return new ReadController(organisationRepository, viewFactory);
   }
 
   private async getOrganisationWriteController(): Promise<WriteController<OrganisationJsonView, Organisation>> {
-    const [organisationRepository, viewFactory] = await Promise
-      .all<GenericRepository<Organisation>, OrganisationViewFactory>([
-        this.getGenericRepository("organisation"),
-        this.getOrganisationViewFactory()
-      ]);
+    const [organisationRepository, viewFactory] = await Promise.all([
+      this.getOrganisationRepository(),
+      this.getOrganisationViewFactory()
+    ]);
 
     return new WriteController(
       organisationRepository,
@@ -210,7 +206,7 @@ export class ServiceContainer {
 
   private async getSchemeWriteController(): Promise<WriteController<SchemeJsonView, Scheme>> {
     return new WriteController(
-      await this.getGenericRepository("scheme"),
+      await this.getSchemeRepository(),
       new SchemeModelFactory(),
       new SchemeViewFactory()
     );
@@ -218,16 +214,15 @@ export class ServiceContainer {
 
   private async getSchemeReadController(): Promise<ReadController<Scheme, SchemeJsonView>> {
     return new ReadController(
-      await this.getGenericRepository("scheme"),
+      await this.getSchemeRepository(),
       new SchemeViewFactory()
     );
   }
 
   private async getMemberReadController(): Promise<ReadController<Member, MemberJsonView>> {
-    const [groupRepository, memberRepository, viewFactory] = await Promise
-      .all<GenericRepository<Group>, GenericRepository<Member>, GroupViewFactory>([
-        this.getGenericRepository("member_group"),
-        this.getGenericRepository("member"),
+    const [groupRepository, memberRepository, viewFactory] = await Promise.all([
+        this.getMemberGroupRepository(),
+        this.getGenericMemberRepository(),
         this.getGroupViewFactory()
       ]);
 
@@ -242,7 +237,7 @@ export class ServiceContainer {
 
   private async getMembersController(): Promise<MembersController> {
     const [memberRepository, memberViewFactory] = await Promise.all([
-      this.getGenericRepository<Member>("member"),
+      this.getGenericMemberRepository(),
       this.getMemberViewFactory()
     ]);
 
@@ -256,7 +251,7 @@ export class ServiceContainer {
   @memoize
   private async getMemberViewFactory(): Promise<MemberViewFactory> {
     const [groupRepository, viewFactory] = await Promise.all([
-        this.getGenericRepository<Group>("member_group"),
+        this.getMemberGroupRepository(),
         this.getGroupViewFactory()
       ]);
 
@@ -268,7 +263,7 @@ export class ServiceContainer {
 
   private async getMemberController(): Promise<MemberController> {
     const [genericRepository, memberRepository, memberViewFactory] = await Promise.all([
-      this.getGenericRepository<Member>("member"),
+      this.getGenericMemberRepository(),
       this.getMemberRepository(),
       this.getMemberViewFactory()
     ]);
@@ -283,7 +278,7 @@ export class ServiceContainer {
 
   private async getJourneyController(): Promise<JourneyController> {
     const [memberRepository, streamDatabase] = await Promise.all([
-      this.getGenericRepository("member"),
+      this.getGenericMemberRepository(),
       this.getDatabaseStream()
     ]);
 
@@ -295,10 +290,9 @@ export class ServiceContainer {
   }
 
   private async getJourneyReadController(): Promise<ReadController<Journey, JourneyJsonView>> {
-    const [journeyRepository, userRepository] = await Promise
-      .all<GenericRepository<Journey>, GenericRepository<AdminUser>>([
-        this.getGenericRepository("journey"),
-        this.getGenericRepository("admin_user")
+    const [journeyRepository, userRepository] = await Promise.all([
+        this.getJourneyRepository(),
+        this.getGenericAdminUserRepository()
       ]);
 
     return new ReadController(
@@ -357,11 +351,6 @@ export class ServiceContainer {
   }
 
   @memoize
-  private async getGenericRepository<T extends DatabaseRecord>(table: string): Promise<GenericRepository<T>> {
-    return new GenericRepository(await this.getDatabase(), table);
-  }
-
-  @memoize
   private async getMemberRepository(): Promise<MemberRepository> {
     return new MemberRepository(await this.getDatabase());
   }
@@ -369,14 +358,14 @@ export class ServiceContainer {
   @memoize
   private async getOrganisationViewFactory(): Promise<OrganisationViewFactory> {
     return new OrganisationViewFactory(
-      await this.getGenericRepository("scheme")
+      await this.getSchemeRepository()
     );
   }
 
   @memoize
   private async getGroupViewFactory(): Promise<GroupViewFactory> {
     const [organisationRepository, organisationViewFactory] = await Promise.all([
-      this.getGenericRepository<Organisation>("organisation"),
+      this.getOrganisationRepository(),
       this.getOrganisationViewFactory()
     ]);
 
@@ -391,6 +380,36 @@ export class ServiceContainer {
   @memoize
   private getSwaggerDocument(): Document {
     return swagger.loadDocumentSync("documentation/swagger/api.yaml") as Document;
+  }
+
+  @memoize
+  public async getSchemeRepository(): Promise<GenericRepository<Scheme>> {
+    return new GenericRepository(await this.getDatabase(), "scheme", { "organisation": "scheme_id" });
+  }
+
+  @memoize
+  public async getOrganisationRepository(): Promise<GenericRepository<Organisation>> {
+    return new GenericRepository(await this.getDatabase(), "organisation", { "group": "organisation_id" });
+  }
+
+  @memoize
+  public async getMemberGroupRepository(): Promise<GenericRepository<Group>> {
+    return new GenericRepository(await this.getDatabase(), "member_group", { "member": "member_group_id" });
+  }
+
+  @memoize
+  public async getGenericMemberRepository(): Promise<GenericRepository<Member>> {
+    return new GenericRepository(await this.getDatabase(), "member");
+  }
+
+  @memoize
+  public async getJourneyRepository(): Promise<GenericRepository<Journey>> {
+    return new GenericRepository(await this.getDatabase(), "journey");
+  }
+
+  @memoize
+  public async getGenericAdminUserRepository(): Promise<GenericRepository<AdminUser>> {
+    return new GenericRepository(await this.getDatabase(), "admin_user");
   }
 
 }

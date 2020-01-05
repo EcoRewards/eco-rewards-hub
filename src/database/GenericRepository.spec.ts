@@ -132,18 +132,80 @@ describe("GenericRepository", () => {
     const sql = db.sqlQueries[0];
 
     chai.expect(sql).to.equal("DELETE FROM table WHERE id = ?");
+    chai.expect(db.transaction).to.equal(true);
+    chai.expect(db.transactionAborted).to.equal(false);
+    chai.expect(db.transactionCommitted).to.equal(true);
+    chai.expect(db.connectionReleased).to.equal(true);
+  });
+
+  it("rolls back a transaction of the delete fails", async () => {
+    const db = new MockDb();
+    db.shouldError = true;
+
+    const repository = new GenericRepository(db, "table");
+    await repository.deleteOne(1);
+
+    chai.expect(db.transaction).to.equal(true);
+    chai.expect(db.transactionAborted).to.equal(true);
+    chai.expect(db.transactionCommitted).to.equal(false);
+    chai.expect(db.connectionReleased).to.equal(true);
+  });
+
+  it("cleans up relationships", async () => {
+    const db = new MockDb();
+    const repository = new GenericRepository(db, "table", { "relation": "column" });
+    await repository.deleteOne(1);
+
+    const [sql, relationSql] = db.sqlQueries;
+
+    chai.expect(sql).to.equal("DELETE FROM table WHERE id = ?");
+    chai.expect(relationSql).to.equal("UPDATE relation SET column = 1 WHERE column = ?");
+    chai.expect(db.transaction).to.equal(true);
+    chai.expect(db.transactionAborted).to.equal(false);
+    chai.expect(db.transactionCommitted).to.equal(true);
+    chai.expect(db.connectionReleased).to.equal(true);
   });
 
 });
 
 class MockDb {
   public sqlQueries: string[] = [];
+  public transaction = false;
+  public transactionCommitted = false;
+  public transactionAborted = false;
+  public connectionReleased = false;
+  public shouldError = false;
 
   public async query(sql: string, values: any[]): Promise<[QueryResult]> {
+    if (this.shouldError) {
+      throw new Error("DB query failed.");
+    }
+
     this.sqlQueries.push(sql);
 
     return [{ insertId: 1 }];
   }
+
+  public async getConnection() {
+    return this;
+  }
+
+  public async beginTransaction() {
+    this.transaction = true;
+  }
+
+  public async commit() {
+    this.transactionCommitted = true;
+  }
+
+  public async rollback() {
+    this.transactionAborted = true;
+  }
+
+  public async release() {
+    this.connectionReleased = true;
+  }
+
 }
 
 class MockSelectDb<T> {

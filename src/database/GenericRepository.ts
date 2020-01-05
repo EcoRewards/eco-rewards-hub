@@ -7,7 +7,8 @@ export class GenericRepository<T extends DatabaseRecord> {
 
   constructor(
     private readonly db: any,
-    private readonly table: string
+    private readonly table: string,
+    private readonly relations: Record<string, string> = {}
   ) {}
 
   /**
@@ -84,10 +85,27 @@ export class GenericRepository<T extends DatabaseRecord> {
   }
 
   /**
-   * Get an index of scheme id to scheme
+   * Delete the record and clean up any related tables by defaulting them to 1
    */
   public async deleteOne(id: number): Promise<void> {
-    return this.db.query(`DELETE FROM ${this.table} WHERE id = ?`, [id]);
+    const connection = await this.db.getConnection();
+    await connection.beginTransaction();
+
+    try {
+      await this.db.query(`DELETE FROM ${this.table} WHERE id = ?`, [id]);
+
+      for (const [table, column] of Object.entries(this.relations)) {
+        await connection.query(`UPDATE ${table} SET ${column} = 1 WHERE ${column} = ?`, [id]);
+      }
+
+      await connection.commit();
+    }
+    catch (err) {
+      await connection.rollback();
+    }
+    finally {
+      await connection.release();
+    }
   }
 
 }
