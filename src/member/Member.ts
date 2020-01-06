@@ -23,7 +23,7 @@ export interface MemberJsonView {
 }
 
 export function fromMemberId(id: MemberId | string): string {
-  const viewId = typeof id === "string" ? id : luhn.generate(id, { pad: 10 });
+  const viewId = typeof id === "string" && id.length >= 16 ? id : luhn.generate(id, { pad: 10 });
 
   return "/member/" + viewId;
 }

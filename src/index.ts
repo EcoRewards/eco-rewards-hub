@@ -21,7 +21,7 @@ export * from "./journey/JourneyView";
 export * from "./journey/JourneyViewFactory";
 export * from "./journey/controller/JourneyController";
 export * from "./journey/controller/MultiPartFileExtractor";
-export * from "./journey/repository/JourneyStreamRepository";
+export * from "./journey/repository/JourneyRepository";
 export * from "./member/Member";
 export * from "./member/MemberModelFactory";
 export * from "./member/MemberView";

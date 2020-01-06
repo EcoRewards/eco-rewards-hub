@@ -34,7 +34,7 @@ import { MembersController } from "../member/controller/MembersController";
 import { MemberModelFactory } from "../member/MemberModelFactory";
 import { BlacklistBodyParser } from "./parser/BlacklistBodyParser";
 import { JourneyController } from "../journey/controller/JourneyController";
-import { JourneyStreamRepository } from "../journey/repository/JourneyStreamRepository";
+import { JourneyRepository } from "../journey/repository/JourneyRepository";
 import { JourneyCsvToMySqlStreamFactory } from "../journey/stream/JourneyCsvToMySqlStreamFactory";
 import { MultiPartFileExtractor } from "../journey/controller/MultiPartFileExtractor";
 import { AdminUser } from "../user/AdminUser";
@@ -108,14 +108,12 @@ export class ServiceContainer {
       organisationWriteController,
       schemeWriteController,
       schemeReadController,
-      journeyReadController,
       journeyController
     ] = await Promise.all([
       this.getOrganisationReadController(),
       this.getOrganisationWriteController(),
       this.getSchemeWriteController(),
       this.getSchemeReadController(),
-      this.getJourneyReadController(),
       this.getJourneyController()
     ]);
 
@@ -141,7 +139,7 @@ export class ServiceContainer {
       .put("/scheme/:id", this.wrap(schemeWriteController.put))
       .delete("/scheme/:id", this.wrap(schemeWriteController.delete))
       .post("/scheme", this.wrap(schemeWriteController.post))
-      .get("/journeys", this.wrap(journeyReadController.getAll))
+      .get("/journeys", this.wrap(journeyController.getAll))
       .post("/journey", this.wrap(journeyController.post));
   }
 
@@ -277,26 +275,17 @@ export class ServiceContainer {
   }
 
   private async getJourneyController(): Promise<JourneyController> {
-    const [memberRepository, streamDatabase] = await Promise.all([
+    const [memberRepository, streamDatabase, database, userRepository] = await Promise.all([
       this.getGenericMemberRepository(),
-      this.getDatabaseStream()
+      this.getDatabaseStream(),
+      this.getDatabase(),
+      this.getGenericAdminUserRepository()
     ]);
 
     return new JourneyController(
-      new JourneyStreamRepository(streamDatabase),
+      new JourneyRepository(streamDatabase, database),
       new JourneyCsvToMySqlStreamFactory(memberRepository),
-      new MultiPartFileExtractor()
-    );
-  }
-
-  private async getJourneyReadController(): Promise<ReadController<Journey, JourneyJsonView>> {
-    const [journeyRepository, userRepository] = await Promise.all([
-        this.getJourneyRepository(),
-        this.getGenericAdminUserRepository()
-      ]);
-
-    return new ReadController(
-      journeyRepository,
+      new MultiPartFileExtractor(),
       new JourneyViewFactory(userRepository)
     );
   }
