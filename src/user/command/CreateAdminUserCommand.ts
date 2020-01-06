@@ -20,7 +20,7 @@ export class CreateAdminUserCommand {
       throw "Invalid email";
     }
     if (password.length < 5) {
-      throw "Password must be exactly 86 characters";
+      throw "Password must be longer than 4 characters";
     }
 
     const user = await this.factory.create(name, email, password, role);
