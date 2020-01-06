@@ -1,5 +1,6 @@
 import * as chai from "chai";
 import { OrganisationViewFactory } from "./OrganisationViewFactory";
+import { SchemeViewFactory } from "../scheme/SchemeViewFactory";
 
 class MockRepository {
   called = false;
@@ -20,7 +21,7 @@ describe("OrganisationViewFactory", () => {
     2: { id: 2, name: "scheme2" }
   }) as any;
 
-  const view = new OrganisationViewFactory(repository);
+  const view = new OrganisationViewFactory(repository, new SchemeViewFactory());
 
   it("creates a view", async () => {
     await view.create();

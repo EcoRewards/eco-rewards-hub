@@ -1,6 +1,7 @@
 import * as chai from "chai";
 import { GroupView } from "./GroupView";
 import { OrganisationView } from "../organisation/OrganisationView";
+import { SchemeView } from "../scheme/SchemeView";
 
 describe("GroupView", () => {
   const view = new GroupView({
@@ -10,7 +11,7 @@ describe("GroupView", () => {
     new OrganisationView({
       1: { id: 1, name: "scheme1" },
       2: { id: 2, name: "scheme2" }
-    })
+    }, new SchemeView())
   );
 
   it("creates a JSON view from a model", async () => {
