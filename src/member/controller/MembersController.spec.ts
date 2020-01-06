@@ -6,6 +6,7 @@ import { OrganisationView } from "../../organisation/OrganisationView";
 import { MemberView } from "../MemberView";
 import { MemberModelFactory } from "../MemberModelFactory";
 import { Member } from "../Member";
+import { SchemeView } from "../../scheme/SchemeView";
 
 class MockOrganisationRepository {
   data: Scheme[] = [];
@@ -23,7 +24,7 @@ const groupView = new GroupView({
   new OrganisationView({
     1: { id: 1, name: "scheme1" },
     2: { id: 2, name: "scheme2" }
-  })
+  }, new SchemeView())
 );
 
 class MockFactory {

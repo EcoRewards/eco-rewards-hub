@@ -358,7 +358,8 @@ export class ServiceContainer {
   @memoize
   private async getOrganisationViewFactory(): Promise<OrganisationViewFactory> {
     return new OrganisationViewFactory(
-      await this.getSchemeRepository()
+      await this.getSchemeRepository(),
+      new SchemeViewFactory()
     );
   }
 

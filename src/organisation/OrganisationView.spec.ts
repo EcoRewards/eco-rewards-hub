@@ -1,12 +1,14 @@
 import * as chai from "chai";
 import { OrganisationView } from "./OrganisationView";
+import { SchemeView } from "../scheme/SchemeView";
 
 describe("OrganisationView", () => {
   const view = new OrganisationView(
     {
       1: { id: 1, name: "scheme" },
       2: { id: 2, name: "scheme2" }
-    }
+    },
+    new SchemeView()
   );
 
   it("creates a JSON view from a model", async () => {
