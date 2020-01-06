@@ -23,7 +23,7 @@ export class MemberView implements View<Member, MemberJsonView> {
     links[groupId] = links[groupId] || this.groupView.create(links, this.groups[member.member_group_id]);
 
     return {
-      id: fromMemberId(member.id),
+      id: fromMemberId(member.smartcard || member.id),
       group: groupId,
       rewards: member.rewards,
       carbonSaving: member.carbon_saving,

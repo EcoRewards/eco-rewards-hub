@@ -19,7 +19,8 @@ class MockMemberRepository {
         default_distance: 0,
         member_group_id: 1,
         rewards: 0,
-        carbon_saving: 0
+        carbon_saving: 0,
+        smartcard: "654321002222230099"
       }
     }[id];
   }
@@ -76,7 +77,7 @@ describe("MemberController", () => {
       group: "/group/2"
     });
 
-    chai.expect(result.data.id).equal("/member/0000000018");
+    chai.expect(result.data.id).equal("/member/654321002222230099");
   });
 
   it("return a result by id", async () => {
@@ -100,7 +101,7 @@ describe("MemberController", () => {
       defaultDistance: 0,
       defaultTransportMode: "bus",
       group: "/group/1",
-      id: "/member/0000000026",
+      id: "/member/654321002222230099",
       rewards: 0
     };
 

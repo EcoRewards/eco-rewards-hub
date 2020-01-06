@@ -22,8 +22,10 @@ export interface MemberJsonView {
   defaultDistance: number
 }
 
-export function fromMemberId(id: MemberId): string {
-  return "/member/" + luhn.generate(id, { pad: 10 });
+export function fromMemberId(id: MemberId | string): string {
+  const viewId = typeof id === "string" ? id : luhn.generate(id, { pad: 10 });
+
+  return "/member/" + viewId;
 }
 
 export function toMemberId(id: string): MemberId {
