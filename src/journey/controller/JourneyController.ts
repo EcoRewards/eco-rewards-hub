@@ -2,11 +2,14 @@ import { HttpResponse } from "../../service/controller/HttpResponse";
 import * as parse from "csv-parse";
 import { AdminUserId } from "../../user/AdminUser";
 import { JourneyCsvToMySqlStreamFactory } from "../stream/JourneyCsvToMySqlStreamFactory";
-import { JourneyStreamRepository } from "../repository/JourneyStreamRepository";
+import { JourneyRepository } from "../repository/JourneyRepository";
 import { Context } from "koa";
 import autobind from "autobind-decorator";
 import { IncomingMessage } from "http";
 import { MultiPartFileExtractor } from "./MultiPartFileExtractor";
+import { JourneyViewFactory } from "../JourneyViewFactory";
+import { GetAllResponse } from "../../service/controller/ReadController";
+import { JourneyJsonView } from "../Journey";
 
 /**
  * Journey endpoints
@@ -15,9 +18,10 @@ import { MultiPartFileExtractor } from "./MultiPartFileExtractor";
 export class JourneyController {
 
   constructor(
-    private readonly repository: JourneyStreamRepository,
+    private readonly repository: JourneyRepository,
     private readonly factory: JourneyCsvToMySqlStreamFactory,
-    private readonly fileExtractor: MultiPartFileExtractor
+    private readonly fileExtractor: MultiPartFileExtractor,
+    private readonly viewFactory: JourneyViewFactory
   ) { }
 
   /**
@@ -48,6 +52,21 @@ export class JourneyController {
     catch (err) {
       return csvToMySql.getErrors().concat(err.message);
     }
+  }
+
+  /**
+   * Return a list of items
+   */
+  public async getAll(): Promise<GetAllResponse<JourneyJsonView>> {
+    const links = {};
+    const [models, view] = await Promise.all([
+      this.repository.selectAll(),
+      this.viewFactory.create()
+    ]);
+
+    const data = models.map(m => view.create(links, m));
+
+    return { data, links };
   }
 
 }

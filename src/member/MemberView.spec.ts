@@ -39,6 +39,20 @@ describe("MemberView", () => {
     chai.expect(actual.defaultTransportMode).to.equal("train");
   });
 
+  it("uses the smartcard ID as the ID if there is one", async () => {
+    const actual = await view.create({}, {
+      id: 1,
+      member_group_id: 2,
+      carbon_saving: 4.3,
+      rewards: 1700,
+      default_distance: 5.4,
+      default_transport_mode: "train",
+      smartcard: "123123123123123123"
+    });
+
+    chai.expect(actual.id).to.equal("/member/123123123123123123");
+  });
+
   it("populates the links object", async () => {
     const links = {};
     const actual = await view.create(links, {

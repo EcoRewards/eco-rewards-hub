@@ -1,11 +1,13 @@
 import { Readable } from "stream";
+import { Journey, NonNullId } from "../..";
 
 /**
  * Provides access to the journey table
  */
-export class JourneyStreamRepository {
+export class JourneyRepository {
 
   constructor(
+    private readonly stream: any,
     private readonly db: any
   ) {}
 
@@ -45,8 +47,22 @@ export class JourneyStreamRepository {
     const infileStreamFactory = () => input;
 
     return new Promise((resolve, reject) => {
-      this.db.query({ sql, infileStreamFactory }, err => err ? reject(err) : resolve());
+      this.stream.query({ sql, infileStreamFactory }, err => err ? reject(err) : resolve());
     });
+  }
+
+  /**
+   * Select all rows from the journey table and replace the member ID with the smartcard number if it's set
+   */
+  public async selectAll(): Promise<NonNullId<Journey>[]> {
+    const [rows] = await this.db.query(`
+      SELECT *, IFNULL(smartcard, member_id) AS member_id 
+      FROM journey JOIN member ON member.id = member_id 
+      ORDER BY journey.id DESC 
+      LIMIT 10000
+    `);
+
+    return rows;
   }
 
 }

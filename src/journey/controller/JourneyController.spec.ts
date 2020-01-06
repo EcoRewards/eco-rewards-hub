@@ -3,7 +3,7 @@ import { JourneyCsvToMySqlStream } from "../stream/JourneyCsvToMySqlStream";
 import { JourneyController } from "./JourneyController";
 import { Readable } from "stream";
 import { JourneyFactory } from "../JourneyFactory";
-import { MultiPartFileExtractor } from "./MultiPartFileExtractor";
+import { JourneyViewFactory } from "../JourneyViewFactory";
 
 class MockFactory {
   constructor(
@@ -23,6 +23,47 @@ class MockJourneyRepository {
 
     return new Promise(r => input.on("end", r));
   }
+
+  async selectAll() {
+    return [
+      {
+        id: 1,
+        admin_user_id: 1,
+        uploaded: "2019-12-11T22:04:50",
+        processed: null,
+        travel_date: "2019-12-11T10:02:20",
+        member_id: 1,
+        distance: 1.56,
+        mode: "Train",
+        rewards_earned: null,
+        carbon_saving: null,
+      },
+      {
+        id: 2,
+        admin_user_id: 1,
+        uploaded: "2019-12-11T22:04:50",
+        processed: null,
+        travel_date: "2019-12-11T10:02:20",
+        member_id: "654321002222230099",
+        distance: 1.56,
+        mode: "Train",
+        rewards_earned: null,
+        carbon_saving: null,
+      }
+    ];
+  }
+}
+
+class MockRepository {
+
+  async getIndexedById() {
+    return {
+      1: {
+        name: "Bob"
+      }
+    };
+  }
+
 }
 
 class MockExceptionJourneyRepository {
@@ -81,7 +122,8 @@ describe("JourneyController", () => {
     const controller = new JourneyController(
       journeyRepository as any,
       streamFactory as any,
-      multiPartFileExtractor as any
+      multiPartFileExtractor as any,
+      {} as any
     );
 
     const ctx = { adminUserId: 1, req: {} };
@@ -105,13 +147,52 @@ describe("JourneyController", () => {
     const controller = new JourneyController(
       badJourneyRepository as any,
       streamFactory as any,
-      multiPartFileExtractor as any
+      multiPartFileExtractor as any,
+      {} as any
     );
 
     const ctx = { adminUserId: 1, req: {} };
     const result = await controller.post({}, ctx as any);
 
     chai.expect(result.data.errors).to.deep.equal(["Could not save to database"]);
+  });
+
+  it("returns all results", async () => {
+    const controller = new JourneyController(
+      journeyRepository as any,
+      {} as any,
+      multiPartFileExtractor as any,
+      new JourneyViewFactory(new MockRepository() as any)
+    );
+    const result = await controller.getAll();
+    const expected = [
+      {
+        "carbonSaving": null,
+        "distance": 1.56,
+        "id": 1,
+        "memberId": "/member/0000000018",
+        "mode": "Train",
+        "processed": null,
+        "rewardsEarned": null,
+        "source": "Bob",
+        "travelDate": "2019-12-11T10:02:20",
+        "uploaded": "2019-12-11T22:04:50"
+      },
+      {
+        "carbonSaving": null,
+        "distance": 1.56,
+        "id": 2,
+        "memberId": "/member/654321002222230099",
+        "mode": "Train",
+        "processed": null,
+        "rewardsEarned": null,
+        "source": "Bob",
+        "travelDate": "2019-12-11T10:02:20",
+        "uploaded": "2019-12-11T22:04:50"
+      }
+    ];
+
+    chai.expect(result.data).to.deep.equal(expected);
   });
 
 });
