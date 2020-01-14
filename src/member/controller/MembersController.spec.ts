@@ -36,12 +36,19 @@ class MockFactory {
   }
 }
 
+class MockExternalApi {
+  async exportAll() {
+
+  }
+}
+
 describe("MembersController", () => {
 
   const controller = new MembersController(
     new MockOrganisationRepository() as any,
     new MockFactory() as any,
-    new MemberModelFactory()
+    new MemberModelFactory(),
+    new MockExternalApi() as any
   );
 
   it("should create members", async () => {
