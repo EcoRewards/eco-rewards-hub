@@ -14,7 +14,7 @@ import { Cryptography } from "../cryptography/Cryptography";
 import { Document } from "swagger2/dist/schema";
 import * as swagger from "swagger2";
 import { ReadController } from "./controller/ReadController";
-import { DatabaseRecord, GenericRepository } from "../database/GenericRepository";
+import { GenericRepository } from "../database/GenericRepository";
 import { LoginController } from "../user/controller/LoginController";
 import { OrganisationViewFactory } from "../organisation/OrganisationViewFactory";
 import { Organisation, OrganisationJsonView } from "../organisation/Organisation";
@@ -38,7 +38,7 @@ import { JourneyRepository } from "../journey/repository/JourneyRepository";
 import { JourneyCsvToMySqlStreamFactory } from "../journey/stream/JourneyCsvToMySqlStreamFactory";
 import { MultiPartFileExtractor } from "../journey/controller/MultiPartFileExtractor";
 import { AdminUser } from "../user/AdminUser";
-import { Journey, JourneyJsonView } from "../journey/Journey";
+import { Journey } from "../journey/Journey";
 import { JourneyViewFactory } from "../journey/JourneyViewFactory";
 import { JobScheduler } from "./job/JobScheduler";
 import { RewardAllocationJob } from "../reward/RewardAllocationJob";
@@ -47,6 +47,10 @@ import { CarbonSavingPolicy } from "../reward/CarbonSavingPolicy";
 import { RewardPointPolicy } from "../reward/RewardPointPolicy";
 import { MemberController } from "../member/controller/MemberController";
 import { MemberRepository } from "../member/repository/MemberRepository";
+import { ExternalMemberRepository } from "../member/repository/ExternalMemberRepository";
+import Axios from "axios";
+
+require("dotenv").config();
 
 /**
  * Dependency container for the API
@@ -242,7 +246,8 @@ export class ServiceContainer {
     return new MembersController(
       memberRepository,
       memberViewFactory,
-      new MemberModelFactory()
+      new MemberModelFactory(),
+      this.getExternalMemberRepository()
     );
   }
 
@@ -270,7 +275,8 @@ export class ServiceContainer {
       memberRepository,
       genericRepository,
       memberViewFactory,
-      new MemberModelFactory()
+      new MemberModelFactory(),
+      this.getExternalMemberRepository()
     );
   }
 
@@ -402,4 +408,18 @@ export class ServiceContainer {
     return new GenericRepository(await this.getDatabase(), "admin_user");
   }
 
+  @memoize
+  private getExternalMemberRepository(): ExternalMemberRepository {
+    return new ExternalMemberRepository(
+      Axios.create({
+        baseURL: process.env.EXTERNAL_MEMBER_API_URL,
+        headers: {
+          "Username": process.env.EXTERNAL_MEMBER_API_USERNAME,
+          "Password": process.env.EXTERNAL_MEMBER_API_PASSWORD,
+          "Api-key": process.env.EXTERNAL_MEMBER_API_KEY
+        }
+      }),
+      this.getLogger()
+    );
+  }
 }

@@ -11,6 +11,7 @@ import {
   MemberView,
   NonNullId
 } from "../..";
+import { ExternalMemberRepository } from "../repository/ExternalMemberRepository";
 
 /**
  * Controller for /member
@@ -22,7 +23,8 @@ export class MemberController {
     private readonly memberRepository: MemberRepository,
     private readonly genericRepository: GenericRepository<Member>,
     private readonly viewFactory: MemberViewFactory,
-    private readonly modelFactory: MemberModelFactory
+    private readonly modelFactory: MemberModelFactory,
+    private readonly externalRepository: ExternalMemberRepository
   ) { }
 
   /**
@@ -57,7 +59,11 @@ export class MemberController {
     const member = this.modelFactory.createFromPartial(request);
     const memberWithId = await this.genericRepository.save(member);
 
-    const view = await this.viewFactory.create();
+    const [view] = await Promise.all([
+      this.viewFactory.create(),
+      this.externalRepository.exportAll([memberWithId])
+    ]);
+
     const links = {};
     const data = view.create(links, memberWithId);
 

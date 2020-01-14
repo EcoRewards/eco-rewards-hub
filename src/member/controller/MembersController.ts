@@ -4,6 +4,7 @@ import { MemberViewFactory } from "../MemberViewFactory";
 import { HttpResponse } from "../../service/controller/HttpResponse";
 import { MemberModelFactory } from "../MemberModelFactory";
 import autobind from "autobind-decorator";
+import { ExternalMemberRepository } from "../repository/ExternalMemberRepository";
 
 /**
  * Controller for bulk creation of members and the get request
@@ -14,7 +15,8 @@ export class MembersController {
   constructor(
     private readonly repository: GenericRepository<Member>,
     private readonly viewFactory: MemberViewFactory,
-    private readonly modelFactory: MemberModelFactory
+    private readonly modelFactory: MemberModelFactory,
+    private readonly externalRepository: ExternalMemberRepository
   ) { }
 
   /**
@@ -25,7 +27,11 @@ export class MembersController {
     const members = new Array(request.quantity).fill(member);
     const membersWithId = await this.repository.insertAll(members);
 
-    const view = await this.viewFactory.create();
+    const [view] = await Promise.all([
+      this.viewFactory.create(),
+      this.externalRepository.exportAll(membersWithId)
+    ]);
+
     const links = {};
     const data = membersWithId.map(m => view.create(links, m));
 
