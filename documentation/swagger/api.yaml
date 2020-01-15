@@ -666,6 +666,43 @@ paths:
 
   /journey:
     post:
+      summary: Uploads a single journey.
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Journey details"
+          required: true
+          schema:
+            type: "object"
+            required:
+              - payload_raw
+            properties:
+              payload_raw:
+                type: "string"
+                example: "BREYcAAAABJMYzgAAIU1FQEHv4BOIiIjABMHv4BOIiIjABIHv4E="
+      responses:
+        201:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              data:
+                $ref: "#/definitions/Journey"
+              links:
+                type: "object"
+        400:
+          $ref: '#/responses/400'
+        500:
+          $ref: '#/responses/500'
+      security:
+        - basicAuth: []
+
+  /journeys:
+    post:
       summary: Uploads member journeys.
       consumes:
         - multipart/form-data
@@ -699,7 +736,6 @@ paths:
           $ref: '#/responses/500'
       security:
         - basicAuth: []
-  /journeys:
     get:
       summary: "Return all journeys"
       description: ""

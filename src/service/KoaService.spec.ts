@@ -12,7 +12,7 @@ describe("KoaService", () => {
   const document = swagger.loadDocumentSync("documentation/swagger/api.yaml") as Document;
   const errorLogger = new ErrorLoggingMiddleware(logger);
   const requestLogger = new RequestLoggingMiddleware(logger);
-  const blacklistBodyParser = new BlacklistBodyParser(["/journey"]);
+  const blacklistBodyParser = new BlacklistBodyParser(["/journeys"]);
 
   it("starts on the configured port", () => {
     const mockKoa = new MockApp() as any;

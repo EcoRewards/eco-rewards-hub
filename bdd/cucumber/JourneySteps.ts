@@ -2,6 +2,7 @@ import { Then, When } from "cucumber";
 import { World } from "./World";
 import * as chai from "chai";
 import FormData = require("form-data");
+import btoa = require("btoa");
 
 When("I upload a file", async function ({ rawTable }: any) {
   const members = this.createdMembers;
@@ -18,7 +19,7 @@ When("I upload a file", async function ({ rawTable }: any) {
   formData.append("file", csv, { filename: "file" });
 
   const response = await World.api.post(
-    "/journey",
+    "/journeys",
     formData,
     { headers: formData.getHeaders() }
   );
@@ -55,4 +56,16 @@ Then("these members should have the following rewards", async function ({ rawTab
     chai.expect(data.data.rewards).to.equal(+row[1]);
     chai.expect(data.data.carbonSaving).to.equal(+row[2]);
   }
+});
+
+When("I tap with a smartcard {string}", async function (member: string) {
+  const device = "AAAAAAAA";
+  const tsn = "AAAAAAAA";
+  const tx1minsSinceEpoch = "000001";
+  const hex = device + tsn + member + tx1minsSinceEpoch;
+  const buffer = Buffer.from(hex, "hex");
+  const payload = btoa(buffer);
+  const response = await World.api.post("/journey", { payload_raw: payload });
+
+  chai.expect(response.data.data[0].mode).to.deep.equal("bus");
 });

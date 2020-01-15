@@ -14,4 +14,3 @@ Feature:
     When I create "50" members in the group "Sussex 2019"
     Then I should get "50" unique IDs back
     And the group "Sussex 2019" should contain "50" members
-    # And the members should have been sent to VAC via CSV
