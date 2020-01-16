@@ -33,7 +33,7 @@ import { MemberViewFactory } from "../member/MemberViewFactory";
 import { MembersController } from "../member/controller/MembersController";
 import { MemberModelFactory } from "../member/MemberModelFactory";
 import { BlacklistBodyParser } from "./parser/BlacklistBodyParser";
-import { JourneyController } from "../journey/controller/JourneyController";
+import { JourneysController } from "../journey/controller/JourneysController";
 import { JourneyRepository } from "../journey/repository/JourneyRepository";
 import { JourneyCsvToMySqlStreamFactory } from "../journey/stream/JourneyCsvToMySqlStreamFactory";
 import { MultiPartFileExtractor } from "../journey/controller/MultiPartFileExtractor";
@@ -49,6 +49,8 @@ import { MemberController } from "../member/controller/MemberController";
 import { MemberRepository } from "../member/repository/MemberRepository";
 import { ExternalMemberRepository } from "../member/repository/ExternalMemberRepository";
 import Axios from "axios";
+import { JourneyController } from "../journey/controller/JourneyController";
+import { TapReader } from "../journey/TapReader";
 
 require("dotenv").config();
 
@@ -71,7 +73,7 @@ export class ServiceContainer {
       this.getSwaggerDocument(),
       new ErrorLoggingMiddleware(this.getLogger()),
       new RequestLoggingMiddleware(this.getLogger()),
-      new BlacklistBodyParser(["/journey"]),
+      new BlacklistBodyParser(["/journeys"]),
       this.getLogger()
     );
   }
@@ -112,12 +114,14 @@ export class ServiceContainer {
       organisationWriteController,
       schemeWriteController,
       schemeReadController,
+      journeysController,
       journeyController
     ] = await Promise.all([
       this.getOrganisationReadController(),
       this.getOrganisationWriteController(),
       this.getSchemeWriteController(),
       this.getSchemeReadController(),
+      this.getJourneysController(),
       this.getJourneyController()
     ]);
 
@@ -143,8 +147,9 @@ export class ServiceContainer {
       .put("/scheme/:id", this.wrap(schemeWriteController.put))
       .delete("/scheme/:id", this.wrap(schemeWriteController.delete))
       .post("/scheme", this.wrap(schemeWriteController.post))
-      .get("/journeys", this.wrap(journeyController.getAll))
-      .post("/journey", this.wrap(journeyController.post));
+      .post("/journey", this.wrap(journeyController.post))
+      .get("/journeys", this.wrap(journeysController.getAll))
+      .post("/journeys", this.wrap(journeysController.post));
   }
 
   // todo this needs a home and a test
@@ -280,7 +285,7 @@ export class ServiceContainer {
     );
   }
 
-  private async getJourneyController(): Promise<JourneyController> {
+  private async getJourneysController(): Promise<JourneysController> {
     const [memberRepository, streamDatabase, database, userRepository] = await Promise.all([
       this.getGenericMemberRepository(),
       this.getDatabaseStream(),
@@ -288,11 +293,26 @@ export class ServiceContainer {
       this.getGenericAdminUserRepository()
     ]);
 
-    return new JourneyController(
+    return new JourneysController(
       new JourneyRepository(streamDatabase, database),
       new JourneyCsvToMySqlStreamFactory(memberRepository),
       new MultiPartFileExtractor(),
       new JourneyViewFactory(userRepository)
+    );
+  }
+
+  private async getJourneyController(): Promise<JourneyController> {
+    const [userRepository, journeyRepository, memberRepository] = await Promise.all([
+      this.getGenericAdminUserRepository(),
+      this.getJourneyRepository(),
+      this.getGenericMemberRepository()
+    ]);
+
+    return new JourneyController(
+      new TapReader(this.getLogger()),
+      new JourneyViewFactory(userRepository),
+      journeyRepository,
+      memberRepository
     );
   }
 

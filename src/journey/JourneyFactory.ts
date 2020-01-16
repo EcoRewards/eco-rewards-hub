@@ -39,7 +39,7 @@ export class JourneyFactory {
     return {
       id: null,
       admin_user_id: adminUserId,
-      uploaded: new Date().toISOString(),
+      uploaded: new Date().toISOString().substr(0, 18),
       processed: null,
       travel_date: date,
       member_id: member.id,

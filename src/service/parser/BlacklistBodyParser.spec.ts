@@ -3,11 +3,11 @@ import { BlacklistBodyParser } from "./BlacklistBodyParser";
 
 describe("BlacklistBodyParser", () => {
   const middleware = new BlacklistBodyParser([
-    "/journey"
+    "/journeys"
   ]);
 
   it("disables the body parser if the request is blacklisted", async () => {
-    const ctx = new MockCtx("/journey") as any;
+    const ctx = new MockCtx("/journeys") as any;
 
     await middleware.disableBodyParser(ctx, async () => {});
 

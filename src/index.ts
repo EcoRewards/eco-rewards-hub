@@ -19,7 +19,7 @@ export * from "./journey/stream/JourneyCsvToMySqlStreamFactory";
 export * from "./journey/JourneyFactory";
 export * from "./journey/JourneyView";
 export * from "./journey/JourneyViewFactory";
-export * from "./journey/controller/JourneyController";
+export * from "./journey/controller/JourneysController";
 export * from "./journey/controller/MultiPartFileExtractor";
 export * from "./journey/repository/JourneyRepository";
 export * from "./member/Member";
