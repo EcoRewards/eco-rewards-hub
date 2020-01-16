@@ -18,7 +18,7 @@ export class TapReader {
       length: 8
     },
     // NFC
-    0x4E: {
+    0x54: {
       startOffset: 1,
       length: 5
     }
