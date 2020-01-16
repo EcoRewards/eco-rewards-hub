@@ -51,6 +51,8 @@ export class JourneyRepository {
     });
   }
 
+  // TAKE THIS OUT AND SWITCH BACK TO NORMAL REPOSITORY
+
   /**
    * Select all rows from the journey table and replace the member ID with the smartcard number if it's set
    */

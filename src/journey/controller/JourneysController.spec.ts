@@ -44,7 +44,7 @@ class MockJourneyRepository {
         uploaded: "2019-12-11T22:04:50",
         processed: null,
         travel_date: "2019-12-11T10:02:20",
-        member_id: "654321002222230099",
+        member_id: 2,
         distance: 1.56,
         mode: "Train",
         rewards_earned: null,
@@ -55,13 +55,9 @@ class MockJourneyRepository {
 }
 
 class MockRepository {
-
+  constructor(private records: any) { }
   async getIndexedById() {
-    return {
-      1: {
-        name: "Bob"
-      }
-    };
+    return this.records;
   }
 
 }
@@ -91,27 +87,35 @@ class MockMultiPartFileExtractor {
   }
 }
 
+const membersById = {
+  1: {
+    id: 1,
+    rewards: 0,
+    carbon_saving: 0,
+    default_distance: 0,
+    default_transport_mode: "",
+    member_group_id: 1,
+    smartcard: null,
+  },
+  2: {
+    id: 2,
+    rewards: 0,
+    carbon_saving: 0,
+    default_distance: 1.57,
+    default_transport_mode: "bus",
+    member_group_id: 1,
+    smartcard: "654321002222230099"
+  }
+};
+
 describe("JourneysController", () => {
-  const factory = new JourneyFactory({
-    111222: {
-      id: 111222,
-      rewards: 0,
-      carbon_saving: 0,
-      default_distance: 0,
-      default_transport_mode: "",
-      member_group_id: 1,
-      smartcard: null,
-    },
-    2: {
-      id: 2,
-      rewards: 0,
-      carbon_saving: 0,
-      default_distance: 1.57,
-      default_transport_mode: "bus",
-      member_group_id: 1,
-      smartcard: null
+  const factory = new JourneyFactory(membersById, {});
+  const membersRepository = new MockRepository(membersById) as any;
+  const adminRepository = new MockRepository({
+    1: {
+      name: "Bob"
     }
-  }, {});
+  }) as any;
 
   const journeyRepository = new MockJourneyRepository();
   const badJourneyRepository = new MockExceptionJourneyRepository();
@@ -162,7 +166,7 @@ describe("JourneysController", () => {
       journeyRepository as any,
       {} as any,
       multiPartFileExtractor as any,
-      new JourneyViewFactory(new MockRepository() as any)
+      new JourneyViewFactory(adminRepository, membersRepository)
     );
     const result = await controller.getAll();
     const expected = [
@@ -170,7 +174,7 @@ describe("JourneysController", () => {
         "carbonSaving": null,
         "distance": 1.56,
         "id": 1,
-        "memberId": "/member/0000000018",
+        "member": "/member/0000000018",
         "mode": "Train",
         "processed": null,
         "rewardsEarned": null,
@@ -182,7 +186,7 @@ describe("JourneysController", () => {
         "carbonSaving": null,
         "distance": 1.56,
         "id": 2,
-        "memberId": "/member/654321002222230099",
+        "member": "/member/654321002222230099",
         "mode": "Train",
         "processed": null,
         "rewardsEarned": null,

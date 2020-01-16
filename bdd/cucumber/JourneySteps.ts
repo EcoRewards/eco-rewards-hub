@@ -33,9 +33,9 @@ Then("I should see the following journeys", async function ({ rawTable }: any) {
 
   for (let i = 1; i < rawTable.length; i ++) {
     const memberIndex = rawTable[i][0];
-    const member = memberIndex >= 16 ? this.createdMember : this.createdMembers[memberIndex];
+    const member = memberIndex.length >= 16 ? this.createdMember : this.createdMembers[memberIndex];
 
-    chai.expect(journeys[i - 1].memberId).to.equal(member.id);
+    chai.expect(journeys[i - 1].member).to.equal(member.id);
     chai.expect(journeys[i - 1].source).to.equal(rawTable[i][1]);
     chai.expect(journeys[i - 1].travelDate).to.equal(rawTable[i][2]);
     chai.expect(journeys[i - 1].mode).to.equal(rawTable[i][3]);
@@ -50,7 +50,7 @@ Then("I wait until the rewards have been processed", async function() {
 Then("these members should have the following rewards", async function ({ rawTable }: any) {
   for (const row of rawTable.slice(1)) {
     const memberIndex = row[0];
-    const member = memberIndex >= 16 ? this.createdMember : this.createdMembers[memberIndex];
+    const member = memberIndex.length >= 16 ? this.createdMember : this.createdMembers[memberIndex];
     const {data} = await World.api.get(member.id);
 
     chai.expect(data.data.rewards).to.equal(+row[1]);

@@ -20,7 +20,7 @@ export interface JourneyJsonView {
   uploaded: string,
   processed: string | null,
   travelDate: string,
-  memberId: string,
+  member: string,
   distance: number,
   mode: string,
   rewardsEarned: number | null,

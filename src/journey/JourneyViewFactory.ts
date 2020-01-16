@@ -3,6 +3,7 @@ import { Journey, JourneyJsonView } from "./Journey";
 import { GenericRepository } from "../database/GenericRepository";
 import { JourneyView } from "./JourneyView";
 import { AdminUser } from "../user/AdminUser";
+import { Member } from "../member/Member";
 
 /**
  * Creates a JourneyView
@@ -10,14 +11,20 @@ import { AdminUser } from "../user/AdminUser";
 export class JourneyViewFactory implements ViewFactory<Journey, JourneyJsonView> {
 
   constructor(
-    private readonly repository: GenericRepository<AdminUser>
+    private readonly adminRepository: GenericRepository<AdminUser>,
+    private readonly memberRepository: GenericRepository<Member>
   ) { }
 
   /**
-   * Load the admin index for the JourneyView
+   * Load the admins and members for the JourneyView
    */
   public async create(): Promise<JourneyView> {
-    return new JourneyView(await this.repository.getIndexedById());
+    const [admins, members] = await Promise.all([
+      this.adminRepository.getIndexedById(),
+      this.memberRepository.getIndexedById()
+    ]);
+
+    return new JourneyView(admins, members);
   }
 
 }

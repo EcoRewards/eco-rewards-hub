@@ -53,7 +53,7 @@ describe("JourneyController", () => {
   }) as any;
 
   const reader = new MockTapReader() as any;
-  const journeyViewFactory = new JourneyViewFactory(adminRepository);
+  const journeyViewFactory = new JourneyViewFactory(adminRepository, memberRepository);
 
   it("handles post requests", async () => {
     const controller = new JourneyController(
@@ -69,7 +69,7 @@ describe("JourneyController", () => {
     };
     const result = await controller.post(request, ctx as any);
 
-    chai.expect(result.data[0].memberId).to.deep.equal("/member/2222230019");
+    chai.expect(result.data[0].member).to.deep.equal("/member/2222230019");
     chai.expect(journeyRepository.inserts[0].member_id).to.equal(222223001);
   });
 

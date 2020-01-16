@@ -297,7 +297,7 @@ export class ServiceContainer {
       new JourneyRepository(streamDatabase, database),
       new JourneyCsvToMySqlStreamFactory(memberRepository),
       new MultiPartFileExtractor(),
-      new JourneyViewFactory(userRepository)
+      new JourneyViewFactory(userRepository, memberRepository)
     );
   }
 
@@ -310,7 +310,7 @@ export class ServiceContainer {
 
     return new JourneyController(
       new TapReader(this.getLogger()),
-      new JourneyViewFactory(userRepository),
+      new JourneyViewFactory(userRepository, memberRepository),
       journeyRepository,
       memberRepository
     );
