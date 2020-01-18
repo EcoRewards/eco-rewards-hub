@@ -31,8 +31,7 @@ export class TapReader {
   /**
    * Convert the raw ASCII data into a buffer of 16 bit integers (hex values) and extract each tap.
    */
-  public getTaps(payload: string): MemberJourneys {
-    const data = Buffer.from(payload, "base64");
+  public getTaps(data: Buffer): MemberJourneys {
     const journeys = {};
 
     for (let i = 8; i < data.length;) {

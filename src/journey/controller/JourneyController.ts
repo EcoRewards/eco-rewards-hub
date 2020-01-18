@@ -9,18 +9,26 @@ import { GenericRepository } from "../../database/GenericRepository";
 import { AdminUserId, JourneyCsvToMySqlStream, Member } from "../..";
 import { indexBy } from "ts-array-utils";
 import autobind from "autobind-decorator";
+import { LocalDateTime, ZoneId, DateTimeFormatter } from "@js-joda/core";
+import { AxiosInstance } from "axios";
+import { Logger } from "pino";
+import btoa = require("btoa");
 
 /**
  * Endpoint for receiving LORaWAN data from The Things API
  */
 @autobind
 export class JourneyController {
+  private readonly dateFormat = DateTimeFormatter.ofPattern("yyyyMMDDHHmm");
+  private readonly statusResponseCommand = Buffer.from("SETDT");
 
   constructor(
     private readonly tapReader: TapReader,
     private readonly viewFactory: JourneyViewFactory,
     private readonly journeyRepository: GenericRepository<Journey>,
-    private readonly memberRepository: GenericRepository<Member>
+    private readonly memberRepository: GenericRepository<Member>,
+    private readonly http: AxiosInstance,
+    private readonly logger: Logger
   ) {}
 
   /**
@@ -36,8 +44,19 @@ export class JourneyController {
   /**
    * Read the raw payload and store the journeys.
    */
-  public async post(request: JourneyPostRequest, ctx: Context): Promise<HttpResponse<JourneyJsonView[]>> {
-    const taps = this.tapReader.getTaps(request.payload_raw);
+  public post(request: JourneyPostRequest, ctx: Context): Promise<HttpResponse<JourneyJsonView[]>> {
+    const buffer = Buffer.from(request.payload_raw, "base64");
+
+    if (buffer[8] === 0x20) {
+      return this.processStatus(request);
+    }
+    else {
+      return this.processTaps(buffer, ctx);
+    }
+  }
+
+  private async processTaps(buffer: Buffer, ctx: Context): Promise<HttpResponse<JourneyJsonView[]>> {
+    const taps = this.tapReader.getTaps(buffer);
     const factory = await this.getFactory();
     const journeys = Object.entries(taps).map(t => factory.create(t, ctx.adminUserId));
     const savedJourneys = await this.journeyRepository.insertAll(journeys);
@@ -48,8 +67,32 @@ export class JourneyController {
     return { data, links };
   }
 
+  private async processStatus(request: JourneyPostRequest): Promise<HttpResponse<JourneyJsonView[]>> {
+    const dateTime = LocalDateTime.now(ZoneId.UTC).format(this.dateFormat);
+    const dateTimeBinary = Buffer.from(dateTime, "hex");
+    const payload = Buffer.concat([this.statusResponseCommand, dateTimeBinary]);
+
+    const response = {
+      "dev_id": request.dev_id,
+      "port": request.port,
+      "confirmed": false,
+      "payload_raw": btoa(payload)
+    };
+
+    try {
+      await this.http.post(request.downlink_url, response);
+    }
+    catch (e) {
+      this.logger.warn(e);
+    }
+
+    return { data: [], links: {} };
+  }
 }
 
 export interface JourneyPostRequest {
-  payload_raw: string
+  payload_raw: string,
+  dev_id: string,
+  port: number,
+  downlink_url: string
 }

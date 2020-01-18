@@ -1,11 +1,7 @@
 import * as chai from "chai";
-import { JourneyCsvToMySqlStream } from "../stream/JourneyCsvToMySqlStream";
-import { JourneysController } from "./JourneysController";
-import { Readable } from "stream";
-import { JourneyFactory } from "../JourneyFactory";
 import { JourneyViewFactory } from "../JourneyViewFactory";
 import { JourneyController } from "./JourneyController";
-import { TapReader } from "../TapReader";
+import btoa = require("btoa");
 
 class MockRepository {
 
@@ -31,6 +27,16 @@ class MockTapReader {
     return {
       "2222230019": "2020-01-15T20:30"
     };
+  }
+}
+
+class MockHttp {
+  url?: string;
+  data?: any;
+
+  post(url: string, data: any) {
+    this.url = url;
+    this.data = data;
   }
 }
 
@@ -60,17 +66,48 @@ describe("JourneyController", () => {
       reader,
       journeyViewFactory,
       journeyRepository,
-      memberRepository
+      memberRepository,
+      {} as any,
+      {} as any,
     );
 
     const ctx = { adminUserId: 1, req: {} };
     const request = {
+      "dev_id": "1",
+      "port": 1,
+      "downlink_url": "",
       "payload_raw": "BREYcAAAABJMYzgAAIU1FQEHv4BOIiIjABMHv4BOIiIjABIHv4E="
     };
     const result = await controller.post(request, ctx as any);
 
     chai.expect(result.data[0].memberId).to.deep.equal("/member/2222230019");
     chai.expect(journeyRepository.inserts[0].member_id).to.equal(222223001);
+  });
+
+  it("handles status requests", async () => {
+    const mockHttp = new MockHttp();
+    const controller = new JourneyController(
+      {} as any,
+      {} as any,
+      {} as any,
+      {} as any,
+      mockHttp as any,
+      {} as any,
+    );
+
+    const ctx = { adminUserId: 1, req: {} };
+    const request = {
+      "dev_id": "1",
+      "port": 1,
+      "downlink_url": "http://example.org",
+      "payload_raw": btoa(Buffer.from("0412885000000401202001181616000015703752000400000000", "hex"))
+    };
+
+    await controller.post(request, ctx as any);
+
+    chai.expect(mockHttp.url).to.equal("http://example.org");
+    chai.expect(mockHttp.data.dev_id).to.equal("1");
+    chai.expect(mockHttp.data.port).to.equal(1);
   });
 
 });

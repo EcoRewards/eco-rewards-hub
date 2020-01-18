@@ -684,6 +684,15 @@ paths:
               payload_raw:
                 type: "string"
                 example: "BREYcAAAABJMYzgAAIU1FQEHv4BOIiIjABMHv4BOIiIjABIHv4E="
+              downlink_url:
+                type: "string"
+                example: "https://integrations.thethingsnetwork.org/ttn-eu/api/v2/down/my-app-id/my-process-id?key=ttn-account-v2.secret"
+              port:
+                type: "number"
+                example: 1
+              dev_id:
+                type: "string"
+                example: "my-dev-id"
       responses:
         201:
           description: "successful operation"

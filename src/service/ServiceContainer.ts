@@ -312,7 +312,9 @@ export class ServiceContainer {
       new TapReader(this.getLogger()),
       new JourneyViewFactory(userRepository),
       journeyRepository,
-      memberRepository
+      memberRepository,
+      Axios.create(),
+      this.getLogger()
     );
   }
 
