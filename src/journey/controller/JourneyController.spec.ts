@@ -92,7 +92,7 @@ describe("JourneyController", () => {
       {} as any,
       {} as any,
       mockHttp as any,
-      {} as any,
+      { info: () => {} } as any,
     );
 
     const ctx = { adminUserId: 1, req: {} };
@@ -107,7 +107,7 @@ describe("JourneyController", () => {
 
     chai.expect(mockHttp.url).to.equal("http://example.org");
     chai.expect(mockHttp.data.dev_id).to.equal("1");
-    chai.expect(mockHttp.data.port).to.equal(1);
+    chai.expect(mockHttp.data.port).to.equal(2);
   });
 
 });

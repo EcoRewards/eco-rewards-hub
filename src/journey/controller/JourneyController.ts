@@ -48,6 +48,8 @@ export class JourneyController {
     const buffer = Buffer.from(request.payload_raw, "base64");
 
     if (buffer[8] === 0x20) {
+      this.logger.info("Status message: " + Array.from(buffer).map(byte => byte.toString(16).padStart(2, "0")));
+
       return this.processStatus(request);
     }
     else {
@@ -74,7 +76,7 @@ export class JourneyController {
 
     const response = {
       "dev_id": request.dev_id,
-      "port": request.port,
+      "port": 2,
       "confirmed": false,
       "payload_raw": btoa(payload)
     };
