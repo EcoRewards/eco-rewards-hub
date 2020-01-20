@@ -1,2 +1,2 @@
 ALTER TABLE journey
-CHANGE mode mode VARCHAR(10);
+CHANGE mode mode VARCHAR(25);
