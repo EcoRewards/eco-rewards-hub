@@ -26,12 +26,12 @@ export class RewardRepository {
    * Return the number of rewards a given user has generated in a day
    */
   public async selectMemberRewardsGeneratedOn(memberId: number, date: string): Promise<number> {
-    const [{ amount }] = await this.db.query(
+    const [rows] = await this.db.query(
       "SELECT SUM(rewards_earned) AS amount FROM journey WHERE member_id = ? AND DATE(processed) = ? ",
       [memberId, date]
     );
 
-    return amount || 0;
+    return rows[0] ? +rows[0].amount : 0;
   }
 
   /**
