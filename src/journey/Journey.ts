@@ -15,7 +15,6 @@ export interface Journey {
 }
 
 export interface JourneyJsonView {
-  id: JourneyId,
   source: string,
   uploaded: string,
   processed: string | null,

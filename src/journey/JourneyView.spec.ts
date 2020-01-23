@@ -20,7 +20,6 @@ describe("JourneyView", () => {
       carbon_saving: null,
     });
 
-    chai.expect(actual.id).to.equal(1);
     chai.expect(actual.source).to.equal("Linus Norton");
     chai.expect(actual.uploaded).to.equal("2019-12-11T22:04:50");
     chai.expect(actual.processed).to.equal(null);

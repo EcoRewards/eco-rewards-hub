@@ -18,7 +18,6 @@ export class JourneyView implements View<Journey, JourneyJsonView> {
    */
   public create(links: object, record: NonNullId<Journey>): JourneyJsonView {
     return {
-      id: record.id,
       source: this.adminUserIndex[record.admin_user_id].name,
       uploaded: record.uploaded,
       processed: record.processed,

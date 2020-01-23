@@ -11,7 +11,7 @@ describe("JourneyRepository", () => {
     await repository.selectAll();
 
     chai.expect(db.queries[0]).to.equal(`
-      SELECT *, IFNULL(smartcard, member_id) AS member_id 
+      SELECT journey.*, IFNULL(smartcard, member_id) AS member_id 
       FROM journey JOIN member ON member.id = member_id 
       ORDER BY journey.id DESC 
       LIMIT 10000

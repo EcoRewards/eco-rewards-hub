@@ -169,7 +169,6 @@ describe("JourneysController", () => {
       {
         "carbonSaving": null,
         "distance": 1.56,
-        "id": 1,
         "memberId": "/member/0000000018",
         "mode": "Train",
         "processed": null,
@@ -181,7 +180,6 @@ describe("JourneysController", () => {
       {
         "carbonSaving": null,
         "distance": 1.56,
-        "id": 2,
         "memberId": "/member/654321002222230099",
         "mode": "Train",
         "processed": null,

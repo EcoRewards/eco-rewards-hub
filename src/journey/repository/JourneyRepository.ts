@@ -56,7 +56,7 @@ export class JourneyRepository {
    */
   public async selectAll(): Promise<NonNullId<Journey>[]> {
     const [rows] = await this.db.query(`
-      SELECT *, IFNULL(smartcard, member_id) AS member_id 
+      SELECT journey.*, IFNULL(smartcard, member_id) AS member_id 
       FROM journey JOIN member ON member.id = member_id 
       ORDER BY journey.id DESC 
       LIMIT 10000
