@@ -94,7 +94,6 @@ export class ServiceContainer {
     const [
       health,
       login,
-      memberReadController,
       membersController,
       memberController,
       groupReadController,
@@ -102,7 +101,6 @@ export class ServiceContainer {
     ] = await Promise.all([
       this.getHealthController(),
       this.getLoginController(),
-      this.getMemberReadController(),
       this.getMembersController(),
       this.getMemberController(),
       this.getGroupReadController(),
@@ -128,9 +126,9 @@ export class ServiceContainer {
     return router
       .get("/health", this.wrap(health.get))
       .post("/login", this.wrap(login.post))
-      .get("/members", this.wrap(memberReadController.getAll))
       .get("/member/:id", this.wrap(memberController.get))
       .post("/member", this.wrap(memberController.post))
+      .get("/members", this.wrap(membersController.getAll))
       .post("/members", this.wrap(membersController.post))
       .get("/groups", this.wrap(groupReadController.getAll))
       .get("/group/:id", this.wrap(groupReadController.get))
@@ -156,9 +154,15 @@ export class ServiceContainer {
   private wrap(controller: Function): Middleware {
     return async (ctx: Context, next: Next) => {
       const input = { ...ctx.request.body, ...ctx.request.query, ...ctx.params };
-      const { code, ...rest } = await controller(input, ctx);
-      ctx.body = rest;
-      ctx.status = code || 200;
+      const result = await controller(input, ctx);
+
+      if (result) {
+        const { code, ...rest } = result;
+
+        ctx.body = rest;
+        ctx.status = code || 200;
+      }
+
       return next();
     };
   }
@@ -223,22 +227,6 @@ export class ServiceContainer {
     return new ReadController(
       await this.getSchemeRepository(),
       new SchemeViewFactory()
-    );
-  }
-
-  private async getMemberReadController(): Promise<ReadController<Member, MemberJsonView>> {
-    const [groupRepository, memberRepository, viewFactory] = await Promise.all([
-        this.getMemberGroupRepository(),
-        this.getGenericMemberRepository(),
-        this.getGroupViewFactory()
-      ]);
-
-    return new ReadController(
-      memberRepository,
-      new MemberViewFactory(
-        groupRepository,
-        viewFactory
-      )
     );
   }
 

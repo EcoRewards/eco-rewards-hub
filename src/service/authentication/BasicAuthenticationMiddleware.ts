@@ -26,7 +26,7 @@ export class BasicAuthenticationMiddleware {
    * Authenticate a request
    */
   public async auth(ctx: Context, next: Next) {
-    if (this.whitelist.includes(ctx.request.path)) {
+    if (this.whitelist.includes(ctx.request.path) || ctx.request.method === "OPTIONS") {
       return next();
     }
 

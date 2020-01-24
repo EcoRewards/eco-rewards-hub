@@ -68,3 +68,12 @@ When("I create an account with smartcard {string}", async function (smartcard: s
   const response = await World.api.post("/member", { smartcard, defaultTransportMode, defaultDistance, group });
   this.createdMember = response.data.data;
 });
+
+When("I export the members as CSV", async function () {
+  const response = await World.api.get("/members", { headers: { Accept: "text/csv" } });
+  this.memberCsv = response.data;
+});
+
+Then("the CSV should have at least {string} members", async function (quantity: string) {
+  chai.expect(this.memberCsv.split("\n").length + 1).to.be.greaterThan(+quantity);
+});

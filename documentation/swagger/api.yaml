@@ -509,20 +509,13 @@ paths:
       description: ""
       consumes:
         - "application/json"
+        - "text/csv"
       produces:
         - "application/json"
+        - "text/csv"
       responses:
         200:
-          description: "successful operation"
-          schema:
-            type: "object"
-            properties:
-              data:
-                type: "array"
-                items:
-                  $ref: "#/definitions/Member"
-              links:
-                type: "object"
+          description: "List of members in JSON or CSV format"
         401:
           $ref: '#/responses/401'
         500:

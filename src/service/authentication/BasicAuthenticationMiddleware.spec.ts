@@ -80,6 +80,22 @@ describe("BasicAuthenticationMiddleware", async () => {
     chai.expect(hasBeenCalled).to.equal(true);
   });
 
+  it("does not validate OPTIONS requests", async () => {
+    const index = {
+      "1": { id: 1, email: "1", name: "user1", role: "provider" as AdminRole, password: await cryptography.hash("password1") },
+    };
+
+    const middleware = new BasicAuthenticationMiddleware(index, cryptography);
+    let hasBeenCalled = false;
+    const next = () => hasBeenCalled = true;
+    const ctx = createContext("");
+    ctx.request.method = "OPTIONS";
+    ctx.req.headers = {}; // no authentication header
+
+    await middleware.auth(ctx , next as any);
+
+    chai.expect(hasBeenCalled).to.equal(true);
+  });
 });
 
 function createContext(authorization: string, path: string = "/organisation"): Context {
