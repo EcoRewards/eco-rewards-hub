@@ -5,8 +5,9 @@ import { GroupView } from "../../group/GroupView";
 import { OrganisationView } from "../../organisation/OrganisationView";
 import { MemberView } from "../MemberView";
 import { MemberModelFactory } from "../MemberModelFactory";
-import { Member } from "../Member";
+import { Member, MemberJsonView } from "../Member";
 import { SchemeView } from "../../scheme/SchemeView";
+import { GetAllResponse, GetResponse } from "../..";
 
 class MockOrganisationRepository {
   data: Scheme[] = [];
@@ -15,6 +16,37 @@ class MockOrganisationRepository {
     return records.map((record, i) => ({ ...record, id: i + 1 }));
   }
 
+  public async selectAll() {
+    return [
+      {
+        id: 1,
+        member_group_id: 2,
+        carbon_saving: 4.3,
+        rewards: 1700,
+        default_distance: 5.4,
+        default_transport_mode: "bus",
+        smartcard: null
+      },
+      {
+        id: 2,
+        member_group_id: 2,
+        carbon_saving: 4.3,
+        rewards: 1700,
+        default_distance: 5.4,
+        default_transport_mode: "bus",
+        smartcard: null
+      },
+      {
+        id: 3,
+        member_group_id: 2,
+        carbon_saving: 4.3,
+        rewards: 1700,
+        default_distance: 5.4,
+        default_transport_mode: "bus",
+        smartcard: null
+      },
+    ];
+  }
 }
 
 const groupView = new GroupView({
@@ -66,6 +98,45 @@ describe("MembersController", () => {
     chai.expect(result.data[0].id).equal("/member/0000000018");
     chai.expect(result.data[1].id).equal("/member/0000000026");
     chai.expect(result.data[2].id).equal("/member/0000000034");
+  });
+
+  it("return members as json", async () => {
+    const context = {
+      request: {
+        accept: {
+          types: () => []
+        }
+      },
+      set: () => {}
+    };
+
+    const result: GetAllResponse<MemberJsonView> = await controller.getAll({}, context as any) as any;
+
+    chai.expect(result.data.length).equal(3);
+    chai.expect(result.data[0].defaultTransportMode).equal("bus");
+    chai.expect(result.data[1].defaultTransportMode).equal("bus");
+    chai.expect(result.data[2].defaultTransportMode).equal("bus");
+    chai.expect(result.data[0].id).equal("/member/0000000018");
+    chai.expect(result.data[1].id).equal("/member/0000000026");
+    chai.expect(result.data[2].id).equal("/member/0000000034");
+  });
+
+  it("return members as csv", async () => {
+    const context = {
+      body: "",
+      request: {
+        accept: {
+          types: () => ["text/csv"]
+        }
+      },
+      set: () => {}
+    };
+
+    await controller.getAll({}, context as any);
+
+    chai.expect(context.body).equal(
+      "0000000018,2,5.4,bus,1700,4.3\n0000000026,2,5.4,bus,1700,4.3\n0000000034,2,5.4,bus,1700,4.3"
+    );
   });
 
 });
