@@ -20,7 +20,8 @@ class MockMemberRepository {
         member_group_id: 1,
         rewards: 0,
         carbon_saving: 0,
-        smartcard: "654321002222230099"
+        smartcard: "654321002222230099",
+        total_miles: 4.2
       }
     }[id];
   }
@@ -35,7 +36,15 @@ class MockRepository {
 
   public async selectOne(id: number) {
     return {
-      1: { id: 1, default_transport_mode: "bus", default_distance: 0, member_group_id: 1, rewards: 0, carbon_saving: 0 }
+      1: {
+        id: 1,
+        default_transport_mode: "bus",
+        default_distance: 0,
+        member_group_id: 1,
+        rewards: 0,
+        carbon_saving: 0,
+        total_miles: 5
+      }
     }[id];
   }
 
@@ -95,7 +104,8 @@ describe("MemberController", () => {
       defaultTransportMode: "bus",
       group: "/group/1",
       id: "/member/0000000018",
-      rewards: 0
+      rewards: 0,
+      totalMiles: 5
     };
 
     chai.expect(result.data).to.deep.equal(expected);
@@ -109,7 +119,8 @@ describe("MemberController", () => {
       defaultTransportMode: "bus",
       group: "/group/1",
       id: "/member/654321002222230099",
-      rewards: 0
+      rewards: 0,
+      totalMiles: 4.2
     };
 
     chai.expect(result.data).to.deep.equal(expected);

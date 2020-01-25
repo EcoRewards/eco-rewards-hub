@@ -3,6 +3,7 @@ import { Journey } from "../journey/Journey";
 import { Connection } from "mysql";
 import { NonNullId } from "..";
 import { pushNested } from "ts-array-utils";
+import { Logger } from "pino";
 
 /**
  * Database queries specific to reward allocation. These span the journey and member tables.
@@ -10,7 +11,8 @@ import { pushNested } from "ts-array-utils";
 export class RewardRepository {
 
   constructor(
-    private readonly db: any
+    private readonly db: any,
+    private readonly logger: Logger
   ) { }
 
   /**
@@ -41,15 +43,20 @@ export class RewardRepository {
     memberId: MemberId,
     journeysProcessed: any[],
     rewardsGenerated: number,
-    carbonSavingGenerated: number
+    carbonSavingGenerated: number,
+    totalMiles: number
   ): Promise<void> {
     const connection = await this.db.getConnection();
     await connection.beginTransaction();
 
     try {
       const memberUpdate = connection.query(
-        "UPDATE member SET rewards = rewards + ?, carbon_saving = carbon_saving + ? WHERE id = ?",
-        [rewardsGenerated, carbonSavingGenerated, memberId]
+        `UPDATE member SET 
+           rewards = rewards + ?, 
+           carbon_saving = carbon_saving + ?,
+           total_miles = total_miles + ?
+         WHERE id = ?`,
+        [rewardsGenerated, carbonSavingGenerated, totalMiles, memberId]
       );
 
       const journeyUpdates = journeysProcessed.map(journey => {
@@ -62,6 +69,9 @@ export class RewardRepository {
       await connection.commit();
     }
     catch (err) {
+      this.logger.warn("Error processing journeys, rolling back transaction");
+      this.logger.warn(err);
+
       await connection.rollback();
     }
     finally {

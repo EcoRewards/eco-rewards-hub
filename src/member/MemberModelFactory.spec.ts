@@ -15,6 +15,7 @@ describe("MemberModelFactory", () => {
     chai.expect(actual.member_group_id).to.equal(2);
     chai.expect(actual.carbon_saving).to.equal(0);
     chai.expect(actual.rewards).to.equal(0);
+    chai.expect(actual.total_miles).to.equal(0.0);
     chai.expect(actual.default_distance).to.equal(5.4);
     chai.expect(actual.default_transport_mode).to.equal("train");
   });

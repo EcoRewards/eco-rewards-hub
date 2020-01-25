@@ -17,7 +17,8 @@ export class MemberModelFactory {
       carbon_saving: 0,
       default_transport_mode: view.defaultTransportMode,
       default_distance: view.defaultDistance,
-      smartcard: view.smartcard || null
+      smartcard: view.smartcard || null,
+      total_miles: 0
     };
   }
 

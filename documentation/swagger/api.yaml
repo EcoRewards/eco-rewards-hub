@@ -896,11 +896,13 @@ definitions:
       defaultDistance:
         type: "number"
         example: 4.2
+      totalMiles:
+        type: "number"
+        example: 403.53
 
   Journey:
     type: "object"
     required:
-      - id
       - source
       - uploaded
       - travelDate
@@ -908,9 +910,6 @@ definitions:
       - distance
       - mode
     properties:
-      id:
-        type: "number"
-        example: 1
       source:
         type: "string"
         example: "A Third Party Retailer"

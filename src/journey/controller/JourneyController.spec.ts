@@ -51,6 +51,7 @@ describe("JourneyController", () => {
       default_transport_mode: "bus",
       member_group_id: 1,
       smartcard: null,
+      total_miles: 4.2
     },
   }) as any;
 

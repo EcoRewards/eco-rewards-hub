@@ -101,6 +101,7 @@ describe("JourneysController", () => {
       default_transport_mode: "",
       member_group_id: 1,
       smartcard: null,
+      total_miles: 5.0
     },
     2: {
       id: 2,
@@ -109,7 +110,8 @@ describe("JourneysController", () => {
       default_distance: 1.57,
       default_transport_mode: "bus",
       member_group_id: 1,
-      smartcard: null
+      smartcard: null,
+      total_miles: 10
     }
   }, {});
 

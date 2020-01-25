@@ -25,7 +25,8 @@ class MockOrganisationRepository {
         rewards: 1700,
         default_distance: 5.4,
         default_transport_mode: "bus",
-        smartcard: null
+        smartcard: null,
+        total_miles: 5.2
       },
       {
         id: 2,
@@ -34,7 +35,8 @@ class MockOrganisationRepository {
         rewards: 1700,
         default_distance: 5.4,
         default_transport_mode: "bus",
-        smartcard: null
+        smartcard: null,
+        total_miles: 5.2
       },
       {
         id: 3,
@@ -43,7 +45,8 @@ class MockOrganisationRepository {
         rewards: 1700,
         default_distance: 5.4,
         default_transport_mode: "bus",
-        smartcard: null
+        smartcard: null,
+        total_miles: 5.2
       },
     ];
   }
@@ -135,7 +138,7 @@ describe("MembersController", () => {
     await controller.getAll({}, context as any);
 
     chai.expect(context.body).equal(
-      "0000000018,2,5.4,bus,1700,4.3\n0000000026,2,5.4,bus,1700,4.3\n0000000034,2,5.4,bus,1700,4.3"
+      "0000000018,2,5.4,bus,1700,4.3,5.2\n0000000026,2,5.4,bus,1700,4.3,5.2\n0000000034,2,5.4,bus,1700,4.3,5.2"
     );
   });
 
