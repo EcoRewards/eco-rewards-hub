@@ -10,7 +10,8 @@ describe("JourneyFactory", () => {
       default_distance: 0,
       default_transport_mode: "",
       member_group_id: 1,
-      smartcard: null
+      smartcard: null,
+      total_miles: 100
     },
     2: {
       id: 2,
@@ -19,7 +20,8 @@ describe("JourneyFactory", () => {
       default_distance: 1.57,
       default_transport_mode: "bus",
       member_group_id: 1,
-      smartcard: null
+      smartcard: null,
+      total_miles: 100
     }
   }, {
     "654321002222230099": {
@@ -29,7 +31,8 @@ describe("JourneyFactory", () => {
       default_distance: 1.0,
       default_transport_mode: "bus",
       member_group_id: 1,
-      smartcard: "654321002222230099"
+      smartcard: "654321002222230099",
+      total_miles: 50
     },
   });
 

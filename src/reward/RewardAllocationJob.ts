@@ -38,6 +38,7 @@ export class RewardAllocationJob {
 
     let rewardsGenerated = 0;
     let carbonSavingGenerated = 0;
+    let totalDistance = 0;
 
     for (const journey of journeys) {
       const carbonSaving = this.carbonSavingPolicy.getCarbonSaving(journey.mode, journey.distance);
@@ -47,8 +48,15 @@ export class RewardAllocationJob {
       journeysProcessed.push([rewardPoints, carbonSaving, journey.id]);
       rewardsGenerated += rewardPoints;
       carbonSavingGenerated += carbonSaving;
+      totalDistance += journey.distance;
     }
 
-    await this.repository.updateRewards(memberId, journeysProcessed, rewardsGenerated, carbonSavingGenerated);
+    await this.repository.updateRewards(
+      memberId,
+      journeysProcessed,
+      rewardsGenerated,
+      carbonSavingGenerated,
+      totalDistance
+    );
   }
 }

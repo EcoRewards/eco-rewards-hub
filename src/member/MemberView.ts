@@ -28,7 +28,8 @@ export class MemberView implements View<Member, MemberJsonView> {
       rewards: member.rewards,
       carbonSaving: member.carbon_saving,
       defaultDistance: member.default_distance,
-      defaultTransportMode: member.default_transport_mode
+      defaultTransportMode: member.default_transport_mode,
+      totalMiles: member.total_miles
     };
   }
 

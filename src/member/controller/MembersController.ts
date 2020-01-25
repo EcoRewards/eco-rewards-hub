@@ -62,7 +62,8 @@ export class MembersController {
         m.defaultDistance,
         m.defaultTransportMode,
         m.rewards,
-        m.carbonSaving
+        m.carbonSaving,
+        m.totalMiles
       ].join()).join("\n");
     } else {
       return { data, links };

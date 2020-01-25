@@ -8,7 +8,8 @@ export interface Member {
   carbon_saving: number,
   default_transport_mode: string,
   default_distance: number,
-  smartcard: string | null
+  smartcard: string | null,
+  total_miles: number
 }
 
 export type MemberId = number;
@@ -19,7 +20,8 @@ export interface MemberJsonView {
   rewards: number
   carbonSaving: number
   defaultTransportMode: string
-  defaultDistance: number
+  defaultDistance: number,
+  totalMiles: number
 }
 
 export function fromMemberId(id: MemberId | string): string {

@@ -41,15 +41,20 @@ export class RewardRepository {
     memberId: MemberId,
     journeysProcessed: any[],
     rewardsGenerated: number,
-    carbonSavingGenerated: number
+    carbonSavingGenerated: number,
+    totalDistance: number
   ): Promise<void> {
     const connection = await this.db.getConnection();
     await connection.beginTransaction();
 
     try {
       const memberUpdate = connection.query(
-        "UPDATE member SET rewards = rewards + ?, carbon_saving = carbon_saving + ? WHERE id = ?",
-        [rewardsGenerated, carbonSavingGenerated, memberId]
+        `UPDATE member SET 
+           rewards = rewards + ?, 
+           carbon_saving = carbon_saving + ?,
+           total_distance = total_distance + ?,
+         WHERE id = ?`,
+        [rewardsGenerated, carbonSavingGenerated, totalDistance, memberId]
       );
 
       const journeyUpdates = journeysProcessed.map(journey => {

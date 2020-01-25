@@ -2,7 +2,6 @@ import * as chai from "chai";
 import { RewardAllocationJob } from "./RewardAllocationJob";
 import { CarbonSavingPolicy } from "./CarbonSavingPolicy";
 import { RewardPointPolicy } from "./RewardPointPolicy";
-import { MemberId } from "..";
 
 class MockRepository {
   public updates: any = [];
@@ -44,11 +43,12 @@ describe("RewardAllocationJob", () => {
     };
     await job.run();
 
-    const [memberId, journeys, rewardPoints, carbonSaving] = mockRepository.updates[0];
+    const [memberId, journeys, rewardPoints, carbonSaving, totalDistance] = mockRepository.updates[0];
 
     chai.expect(memberId).to.equal(1);
     chai.expect(rewardPoints).to.equal(400);
     chai.expect(carbonSaving).to.equal(1.1862);
+    chai.expect(totalDistance).to.equal(4.8);
     chai.expect(journeys[0][0]).to.equal(250);
     chai.expect(journeys[0][1]).to.equal(0.5296559999999999);
     chai.expect(journeys[0][2]).to.equal(1);
@@ -107,11 +107,12 @@ describe("RewardAllocationJob", () => {
     };
     await job.run();
 
-    let [memberId, journeys, rewardPoints, carbonSaving] = mockRepository.updates[0];
+    let [memberId, journeys, rewardPoints, carbonSaving, totalDistance] = mockRepository.updates[0];
 
     chai.expect(memberId).to.equal(1);
     chai.expect(rewardPoints).to.equal(400);
     chai.expect(carbonSaving).to.equal(1.1862);
+    chai.expect(totalDistance).to.equal(4.8);
     chai.expect(journeys[0][0]).to.equal(250);
     chai.expect(journeys[0][1]).to.equal(0.5296559999999999);
     chai.expect(journeys[0][2]).to.equal(1);
