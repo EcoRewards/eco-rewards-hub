@@ -69,6 +69,20 @@ export class MemberController {
 
     return { data, links, code: 201 };
   }
+
+  /**
+   * Create multiple new members in a single request
+   */
+  public async put(request: MemberPutRequest): Promise<MemberPostResponse> {
+    const member = this.modelFactory.createFromMinimum(request);
+    const memberWithId = await this.memberRepository.save(member);
+
+    const links = {};
+    const view = await this.viewFactory.create();
+    const data = view.create(links, memberWithId);
+
+    return { data, links };
+  }
 }
 
 type AMember = NonNullId<Member> | undefined;
@@ -80,4 +94,10 @@ export interface MemberPostRequest {
   defaultTransportMode: string,
   defaultDistance: number,
   smartcard: string
+}
+
+export interface MemberPutRequest {
+  id: string,
+  defaultTransportMode: string,
+  defaultDistance: number
 }

@@ -22,6 +22,9 @@ export class GenericRepository<T extends DatabaseRecord> {
     const insertValues = Object.values(record);
     const insertSql = new Array(insertValues.length).fill("?").join();
 
+    console.log(`INSERT INTO ${this.table} (${keys.join()}) VALUES (${insertSql}) ON DUPLICATE KEY UPDATE ${updateSql}`,
+        [...insertValues, ...updateValues]);
+
     const [result] = await this.db.query(
       `INSERT INTO ${this.table} (${keys.join()}) VALUES (${insertSql}) ON DUPLICATE KEY UPDATE ${updateSql}`,
       [...insertValues, ...updateValues]

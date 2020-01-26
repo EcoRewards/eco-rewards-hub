@@ -1,4 +1,4 @@
-import { Member } from "./Member";
+import { Member, toMemberId } from "./Member";
 import { toGroupId } from "../group/Group";
 
 /**
@@ -21,6 +21,13 @@ export class MemberModelFactory {
     };
   }
 
+  public createFromMinimum(view: MinimumMemberJsonView) {
+    return {
+      id: toMemberId(view.id),
+      default_transport_mode: view.defaultTransportMode,
+      default_distance: view.defaultDistance
+    };
+  }
 }
 
 export interface PartialMemberJsonView {
@@ -28,4 +35,10 @@ export interface PartialMemberJsonView {
   defaultTransportMode: string,
   defaultDistance: number,
   smartcard?: string
+}
+
+export interface MinimumMemberJsonView {
+  id: string,
+  defaultTransportMode: string,
+  defaultDistance: number
 }

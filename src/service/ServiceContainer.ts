@@ -130,6 +130,7 @@ export class ServiceContainer {
       .post("/login", this.wrap(login.post))
       .get("/members", this.wrap(memberReadController.getAll))
       .get("/member/:id", this.wrap(memberController.get))
+      .put("/member/:id", this.wrap(memberController.put))
       .post("/member", this.wrap(memberController.post))
       .post("/members", this.wrap(membersController.post))
       .get("/groups", this.wrap(groupReadController.getAll))
@@ -369,7 +370,7 @@ export class ServiceContainer {
 
   @memoize
   private async getMemberRepository(): Promise<MemberRepository> {
-    return new MemberRepository(await this.getDatabase());
+    return new MemberRepository(await this.getDatabase(), "member");
   }
 
   @memoize
