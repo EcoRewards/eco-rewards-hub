@@ -54,10 +54,13 @@ export class MembersController {
     const accepts = ctx.request.accept.types();
 
     if (accepts && accepts.includes("text/csv")) {
-      ctx.set("Content-disposition", "attachment; filename=members.csv");
-      ctx.status = 200;
-      ctx.body = data.map(m => [
+      const header =
+        "id,scheme,organisation,group,default_distance,default_transport_mode,rewards,carbon_saving,total_miles\n";
+      const csvData = data.map(m => [
         m.id.substr(m.id.lastIndexOf("/") + 1),
+        links[links[links[m.group].organisation].scheme].name,
+        links[links[m.group].organisation].name,
+        links[m.group].name,
         m.group.substr(m.group.lastIndexOf("/") + 1),
         m.defaultDistance,
         m.defaultTransportMode,
@@ -65,6 +68,10 @@ export class MembersController {
         m.carbonSaving,
         m.totalMiles
       ].join()).join("\n");
+
+      ctx.set("Content-disposition", "attachment; filename=members.csv");
+      ctx.status = 200;
+      ctx.body = header + csvData;
     } else {
       return { data, links };
     }

@@ -137,9 +137,14 @@ describe("MembersController", () => {
 
     await controller.getAll({}, context as any);
 
-    chai.expect(context.body).equal(
-      "0000000018,2,5.4,bus,1700,4.3,5.2\n0000000026,2,5.4,bus,1700,4.3,5.2\n0000000034,2,5.4,bus,1700,4.3,5.2"
+    const lines = context.body.split("\n");
+
+    chai.expect(lines[0]).equal(
+      "id,scheme,organisation,group,default_distance,default_transport_mode,rewards,carbon_saving,total_miles"
     );
+    chai.expect(lines[1]).equal("0000000018,scheme2,org2,group2,2,5.4,bus,1700,4.3,5.2");
+    chai.expect(lines[2]).equal("0000000026,scheme2,org2,group2,2,5.4,bus,1700,4.3,5.2");
+    chai.expect(lines[3]).equal("0000000034,scheme2,org2,group2,2,5.4,bus,1700,4.3,5.2");
   });
 
 });
