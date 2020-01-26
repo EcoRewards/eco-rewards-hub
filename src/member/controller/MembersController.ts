@@ -61,7 +61,6 @@ export class MembersController {
         links[links[links[m.group].organisation].scheme].name,
         links[links[m.group].organisation].name,
         links[m.group].name,
-        m.group.substr(m.group.lastIndexOf("/") + 1),
         m.defaultDistance,
         m.defaultTransportMode,
         m.rewards,
