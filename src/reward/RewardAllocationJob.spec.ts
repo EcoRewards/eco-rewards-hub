@@ -6,14 +6,14 @@ import { RewardPointPolicy } from "./RewardPointPolicy";
 class MockRepository {
   public updates: any = [];
   public journeyIndex = {};
-  public numRewards = 0;
+  public rewards = { existingRewards: 0, devices: [] };
 
   async selectUnprocessedJourneysIndexedByMemberAndDate() {
     return this.journeyIndex;
   }
 
   async selectMemberRewardsGeneratedOn() {
-    return this.numRewards;
+    return this.rewards;
   }
 
   async updateRewards(...args: any[]) {
@@ -36,8 +36,8 @@ describe("RewardAllocationJob", () => {
     mockRepository.journeyIndex = {
       1: {
         "2019-12-15": [
-          { id: 1, member_id: 1, mode: "Bus", distance: 2.4 },
-          { id: 2, member_id: 1, mode: "Train", distance: 2.4 },
+          { id: 1, member_id: 1, mode: "Bus", distance: 2.4, device_id: "123456" },
+          { id: 2, member_id: 1, mode: "Train", distance: 2.4, device_id: "01345456" },
         ]
       }
     };
@@ -59,14 +59,14 @@ describe("RewardAllocationJob", () => {
     mockRepository.journeyIndex = {
       1: {
         "2019-12-15": [
-          { id: 1, member_id: 1, mode: "Bus", distance: 2.4 },
-          { id: 2, member_id: 1, mode: "Train", distance: 2.4 },
+          { id: 1, member_id: 1, mode: "Bus", distance: 2.4, device_id: "123456" },
+          { id: 2, member_id: 1, mode: "Train", distance: 2.4, device_id: "01345456" },
         ]
       },
       2: {
         "2019-12-15": [
-          { id: 3, member_id: 2, mode: "Bus", distance: 2.4 },
-          { id: 4, member_id: 2, mode: "Train", distance: 2.4 },
+          { id: 3, member_id: 2, mode: "Bus", distance: 2.4, device_id: "123456" },
+          { id: 4, member_id: 2, mode: "Train", distance: 2.4, device_id: "01345456" },
         ]
       }
     };
@@ -96,12 +96,12 @@ describe("RewardAllocationJob", () => {
     mockRepository.journeyIndex = {
       1: {
         "2019-12-15": [
-          { id: 1, member_id: 1, mode: "Bus", distance: 2.4 },
-          { id: 2, member_id: 1, mode: "Train", distance: 2.4 },
+          { id: 1, member_id: 1, mode: "Bus", distance: 2.4, device_id: "123456" },
+          { id: 2, member_id: 1, mode: "Train", distance: 2.4, device_id: "01345456" },
         ],
         "2019-12-16": [
-          { id: 3, member_id: 1, mode: "Bus", distance: 2.4 },
-          { id: 4, member_id: 1, mode: "Train", distance: 2.4 },
+          { id: 3, member_id: 1, mode: "Bus", distance: 2.4, device_id: "123456" },
+          { id: 4, member_id: 1, mode: "Train", distance: 2.4, device_id: "01345456" },
         ]
       }
     };
@@ -125,6 +125,36 @@ describe("RewardAllocationJob", () => {
     chai.expect(journeys[0][0]).to.equal(250);
     chai.expect(journeys[0][1]).to.equal(0.5296559999999999);
     chai.expect(journeys[0][2]).to.equal(3);
+  });
+
+  it("calculates rewards from multiple readers", async () => {
+    mockRepository.updates = [];
+    mockRepository.journeyIndex = {
+      1: {
+        "2019-12-15": [
+          { id: 1, member_id: 1, mode: "Bus", distance: 2.4, device_id: "01345456" },
+          { id: 2, member_id: 1, mode: "Train", distance: 2.4, device_id: "" },
+        ]
+      }
+    };
+    mockRepository.rewards = {
+      existingRewards: 50,
+      devices: ["01345456"]
+    };
+
+    await job.run();
+
+    let [memberId, journeys, rewardPoints, carbonSaving, totalDistance] = mockRepository.updates[0];
+    chai.expect(memberId).to.equal(1);
+    chai.expect(journeys[0][0]).to.equal(0);
+    chai.expect(journeys[0][1]).to.equal(0);
+    chai.expect(journeys[0][2]).to.equal(1);
+    chai.expect(journeys[1][0]).to.equal(250);
+    chai.expect(journeys[1][1]).to.equal(0.6565439999999999);
+    chai.expect(journeys[1][2]).to.equal(2);
+    chai.expect(rewardPoints).to.equal(250);
+    chai.expect(carbonSaving).to.equal(0.6565439999999999);
+    chai.expect(totalDistance).to.equal(2.4);
   });
 
 });

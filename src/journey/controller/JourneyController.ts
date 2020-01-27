@@ -1,7 +1,7 @@
 import { HttpResponse } from "../../service/controller/HttpResponse";
 import { JourneyJsonView, Journey } from "../Journey";
 import { Base64 } from "js-base64";
-import { TapReader } from "../TapReader";
+import { TapReader, toHex } from "../TapReader";
 import { JourneyFactory } from "../JourneyFactory";
 import { Context } from "koa";
 import { JourneyViewFactory } from "../JourneyViewFactory";
@@ -46,10 +46,9 @@ export class JourneyController {
    */
   public post(request: JourneyPostRequest, ctx: Context): Promise<HttpResponse<JourneyJsonView[]>> {
     const buffer = Buffer.from(request.payload_raw, "base64");
+    this.logger.info("Tap: " + Array.from(buffer).map(toHex));
 
     if (buffer[8] === 0x20) {
-      this.logger.info("Status message: " + Array.from(buffer).map(byte => byte.toString(16).padStart(2, "0")));
-
       return this.processStatus(request);
     }
     else {
@@ -58,9 +57,10 @@ export class JourneyController {
   }
 
   private async processTaps(buffer: Buffer, ctx: Context): Promise<HttpResponse<JourneyJsonView[]>> {
+    const deviceId = Array.from(buffer).slice(0, 4).map(toHex).join("");
     const taps = this.tapReader.getTaps(buffer);
     const factory = await this.getFactory();
-    const journeys = Object.entries(taps).map(t => factory.create(t, ctx.adminUserId));
+    const journeys = Object.entries(taps).map(t => factory.create(t, ctx.adminUserId, deviceId));
     const savedJourneys = await this.journeyRepository.insertAll(journeys);
     const view = await this.viewFactory.create();
     const links = {};

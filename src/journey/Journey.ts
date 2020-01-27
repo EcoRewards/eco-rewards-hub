@@ -11,7 +11,8 @@ export interface Journey {
   distance: number,
   mode: string,
   rewards_earned: number | null,
-  carbon_saving: number | null
+  carbon_saving: number | null,
+  device_id: string
 }
 
 export interface JourneyJsonView {
@@ -23,7 +24,8 @@ export interface JourneyJsonView {
   distance: number,
   mode: string,
   rewardsEarned: number | null,
-  carbonSaving: number | null
+  carbonSaving: number | null,
+  deviceId: string
 }
 
 export type JourneyId = number;

@@ -26,7 +26,8 @@ export class JourneyView implements View<Journey, JourneyJsonView> {
       distance: record.distance,
       mode: record.mode,
       rewardsEarned: record.rewards_earned,
-      carbonSaving: record.carbon_saving
+      carbonSaving: record.carbon_saving,
+      deviceId: record.device_id
     };
   }
 

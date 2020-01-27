@@ -39,15 +39,15 @@ export class TapReader {
 
       if (format) {
         const card = Array.from(data.slice(i + format.startOffset, i + format.length + 1));
-        const member = card.map(this.toHex).join("");
+        const member = card.map(toHex).join("");
         const minsSinceEpoch = data.readUIntBE(i + format.length + 1, 3);
 
         journeys[member] = TapReader.EPOCH.plusMinutes(minsSinceEpoch).toJSON();
         i = i + format.length + 4;
       }
       else {
-        const fullData = Array.from(data).map(this.toHex).join(" ");
-        this.logger.warn("Unknown card type: " + this.toHex(data[i]) + " full data: " + fullData);
+        const fullData = Array.from(data).map(toHex).join(" ");
+        this.logger.warn("Unknown card type: " + toHex(data[i]) + " full data: " + fullData);
         break;
       }
     }
@@ -55,10 +55,13 @@ export class TapReader {
     return journeys;
   }
 
-  private toHex(byte: number): string {
-    return byte.toString(16).padStart(2, "0");
-  }
+}
 
+/**
+ * Convert a byte to a hex string
+ */
+export function toHex(byte: number): string {
+  return byte.toString(16).padStart(2, "0");
 }
 
 export type MemberJourneys = Record<string, string>;

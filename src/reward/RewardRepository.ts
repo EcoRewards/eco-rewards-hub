@@ -27,13 +27,22 @@ export class RewardRepository {
   /**
    * Return the number of rewards a given user has generated in a day
    */
-  public async selectMemberRewardsGeneratedOn(memberId: number, date: string): Promise<number> {
+  public async selectMemberRewardsGeneratedOn(memberId: number, date: string): Promise<MemberPreviousJourneys> {
     const [rows] = await this.db.query(
-      "SELECT SUM(rewards_earned) AS amount FROM journey WHERE member_id = ? AND DATE(processed) = ? ",
+      `SELECT 
+        SUM(rewards_earned) AS amount,
+        GROUP_CONCAT(IF(device_id="", "none", device_id)) AS devices
+       FROM journey 
+       WHERE member_id = ? 
+       AND processed IS NOT NULL
+       AND DATE(travel_date) = ?`,
       [memberId, date]
     );
 
-    return rows[0] ? +rows[0].amount : 0;
+    const existingRewards = rows[0] ? +rows[0].amount : 0;
+    const devices = rows[0] && rows[0].devices ? rows[0].devices.split(",") : [];
+
+    return { existingRewards, devices };
   }
 
   /**
@@ -84,3 +93,7 @@ export type SavedJourney = NonNullId<Journey>;
 export type TravelDate = string;
 export type UnprocessedJourneyIndex = Record<MemberId, Record<TravelDate, SavedJourney[]>>;
 export type JourneyProcessedRow = [number, number, number];
+export type MemberPreviousJourneys = {
+  existingRewards: number,
+  devices: string[]
+};
