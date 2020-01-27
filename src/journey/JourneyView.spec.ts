@@ -18,6 +18,7 @@ describe("JourneyView", () => {
       mode: "Train",
       rewards_earned: null,
       carbon_saving: null,
+      device_id: "123456"
     });
 
     chai.expect(actual.source).to.equal("Linus Norton");
@@ -29,7 +30,7 @@ describe("JourneyView", () => {
     chai.expect(actual.mode).to.equal("Train");
     chai.expect(actual.rewardsEarned).to.equal(null);
     chai.expect(actual.carbonSaving).to.equal(null);
-
+    chai.expect(actual.deviceId).to.equal("123456");
   });
 
 });

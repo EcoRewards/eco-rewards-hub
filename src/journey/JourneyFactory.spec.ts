@@ -90,4 +90,10 @@ describe("JourneyFactory", () => {
     chai.expect(actual.member_id).to.equal(1);
   });
 
+  it("stores the device ID", () => {
+    const actual = factory.create(["654321002222230099", "2019-12-09T15:10:05"], 1, "123456");
+
+    chai.expect(actual.device_id).to.equal("123456");
+  });
+
 });

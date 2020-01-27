@@ -16,7 +16,7 @@ export class JourneyFactory {
    * Ensure the member exists, and there is either a default mode and distance or one has been
    * set in the CSV data.
    */
-  public create([memberId, date, mode, distance]: CsvInput, adminUserId: AdminUserId): Journey {
+  public create([memberId, date, mode, distance]: CsvInput, adminUserId: AdminUserId, deviceId?: string): Journey {
     const id = memberId.length >= 16 ? memberId : toMemberId(memberId);
     const member = this.membersById[id] || this.membersBySmartcard[id];
 
@@ -47,6 +47,7 @@ export class JourneyFactory {
       mode: actualMode,
       rewards_earned: null,
       carbon_saving: null,
+      device_id: deviceId || ""
     };
   }
 

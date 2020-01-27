@@ -69,7 +69,7 @@ describe("JourneyController", () => {
       journeyRepository,
       memberRepository,
       {} as any,
-      {} as any,
+      { info: () => {} } as any,
     );
 
     const ctx = { adminUserId: 1, req: {} };
@@ -83,6 +83,7 @@ describe("JourneyController", () => {
 
     chai.expect(result.data[0].memberId).to.deep.equal("/member/2222230019");
     chai.expect(journeyRepository.inserts[0].member_id).to.equal(222223001);
+    chai.expect(journeyRepository.inserts[0].device_id).to.equal("05111870");
   });
 
   it("handles status requests", async () => {
