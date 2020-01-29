@@ -1,10 +1,16 @@
 import { Readable } from "stream";
 import { Journey, NonNullId } from "../..";
+import { setNested } from "ts-array-utils";
 
 /**
  * Provides access to the journey table
  */
 export class JourneyRepository {
+  private readonly subTable = {
+    "global": "scheme",
+    "scheme": "organisation",
+    "organisation": "member_group"
+  };
 
   constructor(
     private readonly stream: any,
@@ -65,4 +71,47 @@ export class JourneyRepository {
     return rows;
   }
 
+  /**
+   * Select journey data grouped by travel date and limited to a scope of scheme, organisation or group.
+   */
+  public async selectJourneysGroupedByTravelDate(
+    from: string,
+    to: string,
+    scope: QueryScope,
+    id?: number,
+  ): Promise<ReportRowsIndexed> {
+    const subTable = this.subTable[scope];
+    const dateClause = "travel_date BETWEEN ? AND ?";
+    const subIdClause = scope === "global" ? "" : `AND ${scope}.id = ?`;
+
+    const [rows]: ReportRow[][] = await this.db.query(`
+      SELECT
+        ${subTable}.name as sub_name,
+        DATE(travel_date) as date,
+        SUM(journey.distance) AS total_distance,
+        SUM(journey.rewards_earned) AS total_rewards_earned,
+        SUM(journey.carbon_saving) AS total_carbon_saving
+      FROM member
+      JOIN member_group on member_group.id = member_group_id
+      JOIN organisation on organisation.id
+      JOIN scheme on scheme.id = scheme_id
+      JOIN journey on member.id = member_id
+      WHERE ${dateClause} ${subIdClause}
+      GROUP BY CONCAT(sub_name, DATE(travel_date));
+    `, [from, to, id]);
+
+    return rows.reduce((index, row) => setNested(row, index, row.sub_name, row.date), {});
+  }
+
 }
+
+export type QueryScope = "global" | "scheme" | "organisation";
+export interface ReportRow {
+  sub_name: string,
+  date: string,
+  total_distance: number,
+  total_rewards_earned: number,
+  total_carbon_saving: number
+}
+
+export type ReportRowsIndexed = Record<string, Record<string, ReportRow>>;
