@@ -147,7 +147,8 @@ export class ServiceContainer {
       .post("/scheme", this.wrap(schemeWriteController.post))
       .post("/journey", this.wrap(journeyController.post))
       .get("/journeys", this.wrap(journeysController.getAll))
-      .post("/journeys", this.wrap(journeysController.post));
+      .post("/journeys", this.wrap(journeysController.post))
+      .get("/:type/:id/report", this.wrap(journeysController.getReport));
   }
 
   // todo this needs a home and a test

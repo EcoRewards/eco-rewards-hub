@@ -8,8 +8,10 @@ import autobind from "autobind-decorator";
 import { IncomingMessage } from "http";
 import { MultiPartFileExtractor } from "./MultiPartFileExtractor";
 import { JourneyViewFactory } from "../JourneyViewFactory";
-import { GetAllResponse } from "../../service/controller/ReadController";
+import { GetAllResponse, GetResponse } from "../../service/controller/ReadController";
 import { JourneyJsonView } from "../Journey";
+import { LocalDate } from "@js-joda/core";
+import { indexBy } from "ts-array-utils";
 
 /**
  * /journeys endpoints
@@ -69,8 +71,55 @@ export class JourneysController {
     return { data, links };
   }
 
+  /**
+   * Return total miles, points earned and carbon savings by day.
+   */
+  public async getReport({ type, id }: ReportRequest): Promise<GetResponse<ReportJsonRow[]>> {
+    const from = LocalDate.now().minusDays(7);
+    const until = LocalDate.now();
+    const parsedId = id ? +id : undefined;
+    const report = await this.repository.selectJourneysGroupedByTravelDate(
+      from.toJSON(),
+      until.toJSON(),
+      type,
+      parsedId
+    );
+
+    const links = {};
+    const itemNames = Object.keys(report);
+    const data = [] as ReportJsonRow[];
+
+    for (const name of itemNames) {
+      for (let date = from; !date.isAfter(until); date = date.plusDays(1)) {
+        const dateString = date.toJSON();
+        data.push({
+          date: dateString,
+          name: name,
+          totalDistance: +(report[name]?.[dateString]?.total_distance) || 0,
+          totalRewardsEarned: +(report[name]?.[dateString]?.total_rewards_earned) || 0,
+          totalCarbonSaving: +(report[name]?.[dateString]?.total_carbon_saving) || 0
+        });
+      }
+    }
+
+    return { data, links };
+  }
+
 }
 
 export interface JourneysPostResponse {
   errors: string[]
+}
+
+export interface ReportRequest {
+  type: "global" | "scheme" | "organisation",
+  id?: string
+}
+
+export interface ReportJsonRow {
+  date: string,
+  name: string,
+  totalDistance: number,
+  totalRewardsEarned: number,
+  totalCarbonSaving: number
 }

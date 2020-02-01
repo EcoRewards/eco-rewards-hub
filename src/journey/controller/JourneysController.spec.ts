@@ -4,6 +4,7 @@ import { JourneysController } from "./JourneysController";
 import { Readable } from "stream";
 import { JourneyFactory } from "../JourneyFactory";
 import { JourneyViewFactory } from "../JourneyViewFactory";
+import { LocalDate } from "@js-joda/core";
 
 class MockFactory {
   constructor(
@@ -14,6 +15,12 @@ class MockFactory {
     return this.value;
   }
 }
+
+const today = LocalDate.now().toJSON();
+const todayMinus1 = LocalDate.now().minusDays(1).toJSON();
+const todayMinus2 = LocalDate.now().minusDays(2).toJSON();
+const todayMinus3 = LocalDate.now().minusDays(3).toJSON();
+const todayMinus4 = LocalDate.now().minusDays(4).toJSON();
 
 class MockJourneyRepository {
   records: any[] = [];
@@ -53,6 +60,57 @@ class MockJourneyRepository {
         device_id: null
       }
     ];
+  }
+
+  public async selectJourneysGroupedByTravelDate() {
+    return {
+      subName1: {
+        [today]: {
+          sub_name: "subName1",
+          date: today,
+          total_distance: 1,
+          total_rewards_earned: 1,
+          total_carbon_saving: 1
+        },
+        [todayMinus1]: {
+          sub_name: "subName1",
+          date: todayMinus1,
+          total_distance: 1,
+          total_rewards_earned: 1,
+          total_carbon_saving: 1
+        },
+        [todayMinus3]: {
+          sub_name: "subName1",
+          date: todayMinus3,
+          total_distance: 1,
+          total_rewards_earned: 1,
+          total_carbon_saving: 1
+        },
+      },
+      subName2: {
+        [today]: {
+          sub_name: "subName2",
+          date: today,
+          total_distance: 2,
+          total_rewards_earned: 2,
+          total_carbon_saving: 2
+        },
+        [todayMinus4]: {
+          sub_name: "subName2",
+          date: todayMinus4,
+          total_distance: 2,
+          total_rewards_earned: 2,
+          total_carbon_saving: 2
+        },
+        [todayMinus3]: {
+          sub_name: "subName2",
+          date: todayMinus3,
+          total_distance: 2,
+          total_rewards_earned: 2,
+          total_carbon_saving: 2
+        }
+      }
+    };
   }
 }
 
@@ -198,6 +256,18 @@ describe("JourneysController", () => {
     ];
 
     chai.expect(result.data).to.deep.equal(expected);
+  });
+
+  it("returns a report", async () => {
+    const controller = new JourneysController(
+      journeyRepository as any,
+      {} as any,
+      {} as any,
+      {} as any
+    );
+    const { data }: any = await controller.getReport({ type: "global" });
+
+    chai.expect(data.length).to.deep.equal(16);
   });
 
 });
