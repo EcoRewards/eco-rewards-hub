@@ -80,10 +80,10 @@ describe("JourneyRepository", () => {
         SUM(journey.carbon_saving) AS total_carbon_saving
       FROM member
       JOIN member_group on member_group.id = member_group_id
-      JOIN organisation on organisation.id
+      JOIN organisation on organisation.id = organisation_id
       JOIN scheme on scheme.id = scheme_id
       JOIN journey on member.id = member_id
-      WHERE travel_date BETWEEN(?, ?) 
+      WHERE travel_date BETWEEN ? AND ? 
       GROUP BY CONCAT(sub_name, DATE(travel_date));
     `);
   });
@@ -110,10 +110,10 @@ describe("JourneyRepository", () => {
         SUM(journey.carbon_saving) AS total_carbon_saving
       FROM member
       JOIN member_group on member_group.id = member_group_id
-      JOIN organisation on organisation.id
+      JOIN organisation on organisation.id = organisation_id
       JOIN scheme on scheme.id = scheme_id
       JOIN journey on member.id = member_id
-      WHERE travel_date BETWEEN(?, ?) AND ? = ?
+      WHERE travel_date BETWEEN ? AND ? AND scheme.id = ?
       GROUP BY CONCAT(sub_name, DATE(travel_date));
     `);
 

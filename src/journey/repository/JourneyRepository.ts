@@ -93,7 +93,7 @@ export class JourneyRepository {
         SUM(journey.carbon_saving) AS total_carbon_saving
       FROM member
       JOIN member_group on member_group.id = member_group_id
-      JOIN organisation on organisation.id
+      JOIN organisation on organisation.id = organisation_id
       JOIN scheme on scheme.id = scheme_id
       JOIN journey on member.id = member_id
       WHERE ${dateClause} ${subIdClause}
