@@ -38,7 +38,7 @@ export class RewardAllocationJob {
   private async processMemberTravelOnDate(date: string, journeys: SavedJourney[]): Promise<void> {
     const memberId = journeys[0].member_id;
     const { devices, existingRewards } = await this.repository.selectMemberRewardsGeneratedOn(memberId, date);
-    const usedDeviceGroups = devices.reduce((index, id) => setNested(true, index, this.deviceIdGroups[id]), {});
+    const usedDeviceGroups = devices.reduce((index, id) => setNested(true, index, this.getDeviceGroup(id)), {});
     const journeysProcessed: JourneyProcessedRow[] = [];
 
     let rewardsGenerated = 0;
@@ -48,14 +48,15 @@ export class RewardAllocationJob {
     for (const journey of journeys) {
       const deviceGroup = this.getDeviceGroup(journey.device_id);
       const hasUsedThisDeviceGroup = usedDeviceGroups[deviceGroup];
-      const carbonSaving = this.carbonSavingPolicy.getCarbonSaving(journey.mode, journey.distance);
-      const currentTotal = existingRewards + rewardsGenerated;
-      const rewardPoints = this.rewardPointPolicy.getRewardPoints(journey.mode, journey.distance, currentTotal);
 
       if (hasUsedThisDeviceGroup) {
         journeysProcessed.push([0, 0, journey.id]);
       }
       else {
+        const carbonSaving = this.carbonSavingPolicy.getCarbonSaving(journey.mode, journey.distance);
+        const currentTotal = existingRewards + rewardsGenerated;
+        const rewardPoints = this.rewardPointPolicy.getRewardPoints(journey.mode, journey.distance, currentTotal);
+
         journeysProcessed.push([rewardPoints, carbonSaving, journey.id]);
         rewardsGenerated += rewardPoints;
         carbonSavingGenerated += carbonSaving;
