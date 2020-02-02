@@ -74,15 +74,14 @@ export class JourneysController {
   /**
    * Return total miles, points earned and carbon savings by day.
    */
-  public async getReport({ type, id }: ReportRequest): Promise<GetResponse<ReportJsonRow[]>> {
-    const from = LocalDate.now().minusDays(7);
-    const until = LocalDate.now();
-    const parsedId = id ? +id : undefined;
+  public async getReport({ type, id, from, to }: ReportRequest): Promise<GetResponse<ReportJsonRow[]>> {
+    const fromDate = from ? LocalDate.parse(from) : LocalDate.now().minusDays(30);
+    const untilDate = to ? LocalDate.parse(to) : LocalDate.now();
     const report = await this.repository.selectJourneysGroupedByTravelDate(
-      from.toJSON(),
-      until.toJSON(),
+      fromDate.toJSON(),
+      untilDate.toJSON(),
       type,
-      parsedId
+      +id
     );
 
     const links = {};
@@ -90,7 +89,7 @@ export class JourneysController {
     const data = [] as ReportJsonRow[];
 
     for (const name of itemNames) {
-      for (let date = from; !date.isAfter(until); date = date.plusDays(1)) {
+      for (let date = fromDate; !date.isAfter(untilDate); date = date.plusDays(1)) {
         const dateString = date.toJSON();
         data.push({
           date: dateString,
@@ -113,7 +112,9 @@ export interface JourneysPostResponse {
 
 export interface ReportRequest {
   type: "global" | "scheme" | "organisation",
-  id?: string
+  id: string,
+  from?: string,
+  to?: string
 }
 
 export interface ReportJsonRow {
