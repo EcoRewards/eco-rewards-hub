@@ -55,7 +55,7 @@ export class MemberController {
   /**
    * Create multiple new members in a single request
    */
-  public async post(request: MemberPostRequest): Promise<MemberPostResponse> {
+  public async post(request: MemberPostRequest): Promise<MemberResponse> {
     const member = this.modelFactory.createFromPartial(request);
     const memberWithId = await this.genericRepository.save(member);
 
@@ -69,14 +69,40 @@ export class MemberController {
 
     return { data, links, code: 201 };
   }
+
+  /**
+   * Update a Member
+   */
+  public async put(request: MemberPutRequest): Promise<MemberResponse> {
+    const links = {};
+    const member = await this.getModel(request.id);
+    if (member) {
+      member.default_transport_mode = request.defaultTransportMode;
+      member.default_distance = request.defaultDistance;
+    }
+
+    const savedModel = await this.genericRepository.save(Object.assign(member, MemberView));
+
+    const view = await this.viewFactory.create();
+    const data = view.create(links, savedModel);
+
+    return { data, links };
+  }
 }
 
 type AMember = NonNullId<Member> | undefined;
 
-export type MemberPostResponse = HttpResponse<MemberJsonView>;
+export type MemberResponse = HttpResponse<MemberJsonView>;
 
 export interface MemberPostRequest {
   group: string,
+  defaultTransportMode: string,
+  defaultDistance: number,
+  smartcard: string
+}
+
+export interface MemberPutRequest {
+  id: string,
   defaultTransportMode: string,
   defaultDistance: number,
   smartcard: string
