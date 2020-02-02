@@ -4,10 +4,10 @@ import { MemberJsonView, toMemberId, Member } from "../Member";
 import { MemberViewFactory } from "../MemberViewFactory";
 import { MemberRepository } from "../repository/MemberRepository";
 import {
-  GenericRepository, HttpResponse,
+  GenericRepository,
+  HttpError,
+  HttpResponse,
   MemberModelFactory,
-  MembersPostRequest,
-  MembersPostResponse,
   MemberView,
   NonNullId
 } from "../..";
@@ -73,26 +73,29 @@ export class MemberController {
   /**
    * Update a Member
    */
-  public async put(request: MemberPutRequest): Promise<MemberResponse> {
+  public async put(request: MemberPutRequest): Promise<PutResponse> {
     const links = {};
     const member = await this.getModel(request.id);
-    if (member) {
-      member.default_transport_mode = request.defaultTransportMode;
-      member.default_distance = request.defaultDistance;
-    }
 
-    const savedModel = await this.genericRepository.save(Object.assign(member, MemberView));
+    if (!member) {
+      return { data: { error: "Not found"}, links, code: 404 };
+    }
+    member.default_transport_mode = request.defaultTransportMode;
+    member.default_distance = request.defaultDistance;
+
+    const savedModel = await this.genericRepository.save(member);
 
     const view = await this.viewFactory.create();
     const data = view.create(links, savedModel);
 
-    return { data, links };
+    return { data, links, code: 200 };
   }
 }
 
 type AMember = NonNullId<Member> | undefined;
 
 export type MemberResponse = HttpResponse<MemberJsonView>;
+export type PutResponse = HttpResponse<MemberJsonView | HttpError>;
 
 export interface MemberPostRequest {
   group: string,
