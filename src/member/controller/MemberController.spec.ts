@@ -103,8 +103,18 @@ describe("MemberController", () => {
       defaultTransportMode: "train"
     });
 
-    chai.expect(result.data.defaultDistance).equal(10);
-    chai.expect(result.data.defaultTransportMode).equal("train");
+    const expected = {
+      carbonSaving: 0,
+      defaultDistance: 10,
+      defaultTransportMode: "train",
+      group: "/group/1",
+      id: "/member/0000000018",
+      rewards: 0,
+      totalMiles: 5
+    };
+
+    chai.expect(result.code).equal(200);
+    chai.expect(result.data).to.deep.equal(expected);
   });
 
   it("return a result by id", async () => {
