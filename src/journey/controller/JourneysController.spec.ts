@@ -265,9 +265,9 @@ describe("JourneysController", () => {
       {} as any,
       {} as any
     );
-    const { data }: any = await controller.getReport({ type: "global" });
+    const { data }: any = await controller.getReport({ type: "global", id: "0" });
 
-    chai.expect(data.length).to.deep.equal(16);
+    chai.expect(data.length).to.deep.equal(62);
   });
 
 });
