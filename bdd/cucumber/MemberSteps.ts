@@ -77,3 +77,19 @@ When("I export the members as CSV", async function () {
 Then("the CSV should have at least {string} members", async function (quantity: string) {
   chai.expect(this.memberCsv.split("\n").length + 1).to.be.greaterThan(+quantity);
 });
+
+When("I change my distance {string} and I change my default transport {string}",
+    async function (defaultDistance: string, defaultTransportMode: string) {
+    const id = "654321002222230099";
+    const response = await World.api.put("/member/" + id, { id, defaultDistance, defaultTransportMode });
+    this.createdMember = response.data.data;
+});
+
+Then("I should see a default distance {string} and default transport mode {string}",
+    async function (distance: string, transport: string) {
+    const id = "654321002222230099";
+    const response = await World.api.get("/member/" + id);
+
+    chai.expect(response.data.defaultDistance).to.be.equal(10);
+    chai.expect(response.data.defaultTransportMode).to.be.equal("train");
+});

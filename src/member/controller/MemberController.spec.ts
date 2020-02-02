@@ -96,6 +96,17 @@ describe("MemberController", () => {
     chai.expect(result.data.id).equal("/member/654321002222230099");
   });
 
+  it("should update a member ", async () => {
+    const result = await controller.put({
+      id: "0000000018",
+      defaultDistance: 10,
+      defaultTransportMode: "train"
+    });
+
+    chai.expect(result.data.defaultDistance).equal(10);
+    chai.expect(result.data.defaultTransportMode).equal("train");
+  });
+
   it("return a result by id", async () => {
     const result = await controller.get({ id: "0000000018" });
     const expected = {

@@ -105,5 +105,5 @@ export interface MemberPutRequest {
   id: string,
   defaultTransportMode: string,
   defaultDistance: number,
-  smartcard: string
+  smartcard?: string
 }
