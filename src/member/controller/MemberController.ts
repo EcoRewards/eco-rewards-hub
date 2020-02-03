@@ -78,7 +78,7 @@ export class MemberController {
     const member = await this.getModel(request.id);
 
     if (!member) {
-      return { data: { error: "Not found"}, links, code: 404 };
+      return { data: { error: "Not found" }, links, code: 404 };
     }
     member.default_transport_mode = request.defaultTransportMode;
     member.default_distance = request.defaultDistance;
@@ -107,6 +107,5 @@ export interface MemberPostRequest {
 export interface MemberPutRequest {
   id: string,
   defaultTransportMode: string,
-  defaultDistance: number,
-  smartcard?: string
+  defaultDistance: number
 }
