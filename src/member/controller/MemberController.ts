@@ -4,10 +4,10 @@ import { MemberJsonView, toMemberId, Member } from "../Member";
 import { MemberViewFactory } from "../MemberViewFactory";
 import { MemberRepository } from "../repository/MemberRepository";
 import {
-  GenericRepository, HttpResponse,
+  GenericRepository,
+  HttpError,
+  HttpResponse,
   MemberModelFactory,
-  MembersPostRequest,
-  MembersPostResponse,
   MemberView,
   NonNullId
 } from "../..";
@@ -55,7 +55,7 @@ export class MemberController {
   /**
    * Create multiple new members in a single request
    */
-  public async post(request: MemberPostRequest): Promise<MemberPostResponse> {
+  public async post(request: MemberPostRequest): Promise<MemberResponse> {
     const member = this.modelFactory.createFromPartial(request);
     const memberWithId = await this.genericRepository.save(member);
 
@@ -69,15 +69,43 @@ export class MemberController {
 
     return { data, links, code: 201 };
   }
+
+  /**
+   * Update a Member
+   */
+  public async put(request: MemberPutRequest): Promise<PutResponse> {
+    const links = {};
+    const member = await this.getModel(request.id);
+
+    if (!member) {
+      return { data: { error: "Not found" }, links, code: 404 };
+    }
+    member.default_transport_mode = request.defaultTransportMode;
+    member.default_distance = request.defaultDistance;
+
+    const savedModel = await this.genericRepository.save(member);
+
+    const view = await this.viewFactory.create();
+    const data = view.create(links, savedModel);
+
+    return { data, links, code: 200 };
+  }
 }
 
 type AMember = NonNullId<Member> | undefined;
 
-export type MemberPostResponse = HttpResponse<MemberJsonView>;
+export type MemberResponse = HttpResponse<MemberJsonView>;
+export type PutResponse = HttpResponse<MemberJsonView | HttpError>;
 
 export interface MemberPostRequest {
   group: string,
   defaultTransportMode: string,
   defaultDistance: number,
   smartcard: string
+}
+
+export interface MemberPutRequest {
+  id: string,
+  defaultTransportMode: string,
+  defaultDistance: number
 }
