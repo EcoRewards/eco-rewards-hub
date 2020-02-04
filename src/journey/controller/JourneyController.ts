@@ -19,7 +19,7 @@ import btoa = require("btoa");
  */
 @autobind
 export class JourneyController {
-  private readonly dateFormat = DateTimeFormatter.ofPattern("yyyyMMDDHHmm");
+  private readonly dateFormat = DateTimeFormatter.ofPattern("yyyyMMddHHmm");
   private readonly statusResponseCommand = Buffer.from("SETDT");
 
   constructor(
