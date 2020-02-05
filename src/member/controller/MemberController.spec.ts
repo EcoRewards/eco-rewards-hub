@@ -96,6 +96,37 @@ describe("MemberController", () => {
     chai.expect(result.data.id).equal("/member/654321002222230099");
   });
 
+  it("should update a member", async () => {
+    const result = await controller.put({
+      id: "0000000018",
+      defaultDistance: 10,
+      defaultTransportMode: "train"
+    });
+
+    const expected = {
+      carbonSaving: 0,
+      defaultDistance: 10,
+      defaultTransportMode: "train",
+      group: "/group/1",
+      id: "/member/0000000018",
+      rewards: 0,
+      totalMiles: 5
+    };
+
+    chai.expect(result.code).equal(200);
+    chai.expect(result.data).to.deep.equal(expected);
+  });
+
+  it("should return a 404 if a member can't be found", async () => {
+    const result = await controller.put({
+      id: "0000000026",
+      defaultDistance: 10,
+      defaultTransportMode: "train"
+    });
+
+    chai.expect(result.code).equal(404);
+  });
+
   it("return a result by id", async () => {
     const result = await controller.get({ id: "0000000018" });
     const expected = {

@@ -127,6 +127,7 @@ export class ServiceContainer {
       .get("/health", this.wrap(health.get))
       .post("/login", this.wrap(login.post))
       .get("/member/:id", this.wrap(memberController.get))
+      .put("/member/:id", this.wrap(memberController.put))
       .post("/member", this.wrap(memberController.post))
       .get("/members", this.wrap(membersController.getAll))
       .post("/members", this.wrap(membersController.post))
