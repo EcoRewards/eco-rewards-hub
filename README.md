@@ -26,6 +26,8 @@ npm start
 
 ## CLI commands
 
+There are some CLI commands to help get set up:
+
 ```
 npm run cli -- create-scheme [name]
 npm run cli -- create-organisation [name] [schemeId]
