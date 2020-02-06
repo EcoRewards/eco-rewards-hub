@@ -3,7 +3,7 @@ import { World } from "./World";
 import * as chai from "chai";
 
 Given(/^I create a scheme "([^"]*)"$/, async function(name: string) {
-  const response = await World.api.post("scheme", { name: name });
+  const response = await World.api.post("scheme", { name: name, vacClientId: 155 });
 
   this.schemes[name] = response.data.data;
 });
