@@ -38,7 +38,7 @@ export class ExternalMemberRepository {
       `SELECT vac_client_id 
        FROM member_group 
        JOIN organisation ON member_group.organisation_id = organisation.id
-       JOIN scheme ON organisation_scheme.id = scheme.id 
+       JOIN scheme ON organisation.scheme_id = scheme.id 
        WHERE member_group.id = ?
        LIMIT 1`,
       [groupId]
