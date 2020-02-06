@@ -13,7 +13,8 @@ export class SchemeView implements View<Scheme, SchemeJsonView> {
   public create(links: object, record: NonNullId<Scheme>): SchemeJsonView {
     return {
       id: fromSchemeId(record.id),
-      name: record.name
+      name: record.name,
+      vacClientId: record.vac_client_id
     };
   }
 

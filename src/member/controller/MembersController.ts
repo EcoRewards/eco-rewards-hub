@@ -31,7 +31,7 @@ export class MembersController {
 
     const [view] = await Promise.all([
       this.viewFactory.create(),
-      this.externalRepository.exportAll(membersWithId)
+      this.externalRepository.exportAll(membersWithId, membersWithId[0].member_group_id)
     ]);
 
     const links = {};

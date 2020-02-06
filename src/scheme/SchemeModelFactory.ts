@@ -12,7 +12,8 @@ export class SchemeModelFactory implements ModelFactory<SchemeJsonView, Scheme> 
   public async create(view: SchemeJsonView): Promise<Scheme> {
     return {
       id: view.id ? toSchemeId(view.id) : null,
-      name: view.name
+      name: view.name,
+      vac_client_id: view.vacClientId
     };
   }
 
