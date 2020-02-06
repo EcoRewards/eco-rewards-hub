@@ -1,13 +1,15 @@
 export interface Scheme {
   id: SchemeId | null,
-  name: string
+  name: string,
+  vac_client_id: number
 }
 
 export type SchemeId = number;
 
 export type SchemeJsonView = {
   id?: string,
-  name: string
+  name: string,
+  vacClientId: number
 };
 
 export function fromSchemeId(id: SchemeId): string {

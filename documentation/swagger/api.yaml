@@ -877,6 +877,9 @@ definitions:
       name:
         type: "string"
         example: "Norfolk County Council"
+      vacClientId:
+        type: "number"
+        example: 155
 
   Organisation:
     type: "object"

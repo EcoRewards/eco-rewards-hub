@@ -5,8 +5,8 @@ import { SchemeView } from "../scheme/SchemeView";
 describe("OrganisationView", () => {
   const view = new OrganisationView(
     {
-      1: { id: 1, name: "scheme" },
-      2: { id: 2, name: "scheme2" }
+      1: { id: 1, name: "scheme", vac_client_id: 155 },
+      2: { id: 2, name: "scheme2", vac_client_id: 155 }
     },
     new SchemeView()
   );

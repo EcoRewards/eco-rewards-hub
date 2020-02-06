@@ -19,7 +19,7 @@ export class CreateSchemeCommand {
       throw Error("Scheme name must be at least 3 characters long");
     }
 
-    return this.repository.save({ id: null, name });
+    return this.repository.save({ id: null, name, vac_client_id: 155 });
   }
 
 }

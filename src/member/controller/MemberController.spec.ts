@@ -55,8 +55,8 @@ const groupView = new GroupView({
     2: { id: 2, name: "org2", scheme_id: 2 }
   },
   new OrganisationView({
-    1: { id: 1, name: "scheme1" },
-    2: { id: 2, name: "scheme2" }
+    1: { id: 1, name: "scheme1", vac_client_id: 1 },
+    2: { id: 2, name: "scheme2", vac_client_id: 1 }
   }, new SchemeView())
 );
 

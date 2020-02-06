@@ -1,4 +1,4 @@
-import { Member, MemberId } from "../Member";
+import { Member } from "../Member";
 import { NonNullId } from "../../database/GenericRepository";
 
 /**
@@ -10,6 +10,9 @@ export class MemberRepository {
     private readonly db: any
   ) {}
 
+  /**
+   * Select a Member by their smart card number
+   */
   public async selectBySmartcard(smartcard: string): Promise<NonNullId<Member> | undefined> {
     const [[row]] = await this.db.query("SELECT * FROM member WHERE smartcard = ?", [smartcard]);
 

@@ -233,16 +233,17 @@ export class ServiceContainer {
   }
 
   private async getMembersController(): Promise<MembersController> {
-    const [memberRepository, memberViewFactory] = await Promise.all([
+    const [memberRepository, memberViewFactory, externalMemberRepository] = await Promise.all([
       this.getGenericMemberRepository(),
-      this.getMemberViewFactory()
+      this.getMemberViewFactory(),
+      this.getExternalMemberRepository()
     ]);
 
     return new MembersController(
       memberRepository,
       memberViewFactory,
       new MemberModelFactory(),
-      this.getExternalMemberRepository()
+      externalMemberRepository
     );
   }
 
@@ -260,10 +261,11 @@ export class ServiceContainer {
   }
 
   private async getMemberController(): Promise<MemberController> {
-    const [genericRepository, memberRepository, memberViewFactory] = await Promise.all([
+    const [genericRepository, memberRepository, memberViewFactory, externalMemberRepository] = await Promise.all([
       this.getGenericMemberRepository(),
       this.getMemberRepository(),
-      this.getMemberViewFactory()
+      this.getMemberViewFactory(),
+      this.getExternalMemberRepository()
     ]);
 
     return new MemberController(
@@ -271,7 +273,7 @@ export class ServiceContainer {
       genericRepository,
       memberViewFactory,
       new MemberModelFactory(),
-      this.getExternalMemberRepository()
+      externalMemberRepository
     );
   }
 
@@ -421,7 +423,7 @@ export class ServiceContainer {
   }
 
   @memoize
-  private getExternalMemberRepository(): ExternalMemberRepository {
+  private async getExternalMemberRepository(): Promise<ExternalMemberRepository> {
     return new ExternalMemberRepository(
       Axios.create({
         baseURL: process.env.EXTERNAL_MEMBER_API_URL,
@@ -431,6 +433,7 @@ export class ServiceContainer {
           "Api-key": process.env.EXTERNAL_MEMBER_API_KEY
         }
       }),
+      await this.getDatabase(),
       this.getLogger()
     );
   }
