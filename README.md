@@ -33,6 +33,7 @@ npm run cli -- create-scheme [name]
 npm run cli -- create-organisation [name] [schemeId]
 npm run cli -- create-group [name] [organisationId]
 npm run cli -- create-user [name] [email] [password] [role]
+npm run cli -- export-all-members
 ``` 
 
 ## Functional requirements
