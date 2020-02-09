@@ -51,6 +51,7 @@ import { ExternalMemberRepository } from "../member/repository/ExternalMemberRep
 import Axios from "axios";
 import { JourneyController } from "../journey/controller/JourneyController";
 import { TapReader } from "../journey/TapReader";
+import { DeviceStatus } from "../journey/DeviceStatus";
 
 require("dotenv").config();
 
@@ -294,10 +295,11 @@ export class ServiceContainer {
   }
 
   private async getJourneyController(): Promise<JourneyController> {
-    const [userRepository, journeyRepository, memberRepository] = await Promise.all([
+    const [userRepository, journeyRepository, memberRepository, statusRepository] = await Promise.all([
       this.getGenericAdminUserRepository(),
       this.getJourneyRepository(),
-      this.getGenericMemberRepository()
+      this.getGenericMemberRepository(),
+      this.getDeviceStatusRepository()
     ]);
 
     return new JourneyController(
@@ -305,6 +307,7 @@ export class ServiceContainer {
       new JourneyViewFactory(userRepository),
       journeyRepository,
       memberRepository,
+      statusRepository,
       Axios.create(),
       this.getLogger()
     );
@@ -410,6 +413,11 @@ export class ServiceContainer {
   @memoize
   public async getGenericMemberRepository(): Promise<GenericRepository<Member>> {
     return new GenericRepository(await this.getDatabase(), "member");
+  }
+
+  @memoize
+  public async getDeviceStatusRepository(): Promise<GenericRepository<DeviceStatus>> {
+    return new GenericRepository(await this.getDatabase(), "device_status");
   }
 
   @memoize

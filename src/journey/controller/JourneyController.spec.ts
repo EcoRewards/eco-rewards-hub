@@ -68,6 +68,7 @@ describe("JourneyController", () => {
       journeyViewFactory,
       journeyRepository,
       memberRepository,
+      journeyRepository,
       {} as any,
       { info: () => {} } as any,
     );
@@ -93,6 +94,7 @@ describe("JourneyController", () => {
       {} as any,
       {} as any,
       {} as any,
+      journeyRepository,
       mockHttp as any,
       { info: () => {} } as any,
     );
