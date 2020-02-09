@@ -79,17 +79,19 @@ Then("the CSV should have at least {string} members", async function (quantity: 
 });
 
 When("I change my distance {string} and I change my default transport {string}",
-    async function (defaultDistance: string, defaultTransportMode: string) {
-    const id = this.createdMember.id;
-    const response = await World.api.put(id, { defaultDistance, defaultTransportMode });
-    this.createdMember = response.data.data;
+  async function (defaultDistance: string, defaultTransportMode: string) {
+  const id = this.createdMember.id;
+  const response = await World.api.put(id, { defaultDistance, defaultTransportMode });
+  this.createdMember = response.data.data;
 });
 
-Then("I should see a default distance {string} and default transport mode {string}",
-    async function (distance: string, transport: string) {
+Then(
+  "I should see a default distance {string}, default transport mode {string} and previous transport mode {string}",
+  async function (distance: string, transport: string, previousMode: string) {
     const id = this.createdMember.id;
     const response = await World.api.get(id);
 
     chai.expect(response.data.data.defaultDistance).to.be.equal(+distance);
     chai.expect(response.data.data.defaultTransportMode).to.be.equal(transport);
+    chai.expect(response.data.data.previousTransportMode).to.be.equal(previousMode);
 });

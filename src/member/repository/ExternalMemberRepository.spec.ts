@@ -45,7 +45,8 @@ describe("ExternalMemberRepository", () => {
         default_transport_mode: "bus",
         default_distance: 4.2,
         smartcard: null,
-        total_miles: 90
+        total_miles: 90,
+        previous_transport_mode: null
       },
       {
         id: 2,
@@ -55,7 +56,8 @@ describe("ExternalMemberRepository", () => {
         default_transport_mode: "bus",
         default_distance: 4.2,
         smartcard: "1234567890123456",
-        total_miles: 50
+        total_miles: 50,
+        previous_transport_mode: null
       }
     ];
     const repository = new ExternalMemberRepository(api, db, logger);
@@ -75,7 +77,8 @@ describe("ExternalMemberRepository", () => {
         default_transport_mode: "bus",
         default_distance: 4.2,
         smartcard: null,
-        total_miles: 90
+        total_miles: 90,
+        previous_transport_mode: null
       }
     ];
     db.result = undefined;
@@ -96,7 +99,8 @@ describe("ExternalMemberRepository", () => {
         default_transport_mode: "bus",
         default_distance: 4.2,
         smartcard: null,
-        total_miles: 5.5
+        total_miles: 5.5,
+        previous_transport_mode: null
       }
     ];
     api.exception = "fail";

@@ -54,8 +54,8 @@ export class MembersController {
     const accepts = ctx.request.accept.types();
 
     if (accepts && accepts.includes("text/csv")) {
-      const header =
-        "id,scheme,organisation,group,default_distance,default_transport_mode,rewards,carbon_saving,total_miles\n";
+      const header = "id,scheme,organisation,group,default_distance,default_transport_mode,previous_transport_mode,"
+        + "rewards,carbon_saving,total_miles\n";
       const csvData = data.map(m => [
         m.id.substr(m.id.lastIndexOf("/") + 1),
         links[links[links[m.group].organisation].scheme].name,
@@ -63,6 +63,7 @@ export class MembersController {
         links[m.group].name,
         m.defaultDistance,
         m.defaultTransportMode,
+        m.previousTransportMode || "",
         m.rewards,
         m.carbonSaving,
         m.totalMiles

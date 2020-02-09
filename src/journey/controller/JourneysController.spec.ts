@@ -161,7 +161,8 @@ describe("JourneysController", () => {
       default_transport_mode: "",
       member_group_id: 1,
       smartcard: null,
-      total_miles: 5.0
+      total_miles: 5.0,
+      previous_transport_mode: null
     },
     2: {
       id: 2,
@@ -171,7 +172,8 @@ describe("JourneysController", () => {
       default_transport_mode: "bus",
       member_group_id: 1,
       smartcard: null,
-      total_miles: 10
+      total_miles: 10,
+      previous_transport_mode: null
     }
   }, {});
 
