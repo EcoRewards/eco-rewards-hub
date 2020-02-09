@@ -12,7 +12,8 @@ describe("JourneyCsvToMySqlStream", () => {
       default_transport_mode: "",
       member_group_id: 1,
       smartcard: null,
-      total_miles: 50
+      total_miles: 50,
+      previous_transport_mode: null
     },
     2: {
       id: 2,
@@ -22,7 +23,8 @@ describe("JourneyCsvToMySqlStream", () => {
       default_transport_mode: "bus",
       member_group_id: 1,
       smartcard: null,
-      total_miles: 50
+      total_miles: 50,
+      previous_transport_mode: null
     }
   }, {});
 

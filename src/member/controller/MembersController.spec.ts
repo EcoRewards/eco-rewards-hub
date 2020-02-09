@@ -140,11 +140,12 @@ describe("MembersController", () => {
     const lines = context.body.split("\n");
 
     chai.expect(lines[0]).equal(
-      "id,scheme,organisation,group,default_distance,default_transport_mode,rewards,carbon_saving,total_miles"
+      "id,scheme,organisation,group,default_distance,default_transport_mode,previous_transport_mode," +
+      "rewards,carbon_saving,total_miles"
     );
-    chai.expect(lines[1]).equal("0000000018,scheme2,org2,group2,5.4,bus,1700,4.3,5.2");
-    chai.expect(lines[2]).equal("0000000026,scheme2,org2,group2,5.4,bus,1700,4.3,5.2");
-    chai.expect(lines[3]).equal("0000000034,scheme2,org2,group2,5.4,bus,1700,4.3,5.2");
+    chai.expect(lines[1]).equal("0000000018,scheme2,org2,group2,5.4,bus,,1700,4.3,5.2");
+    chai.expect(lines[2]).equal("0000000026,scheme2,org2,group2,5.4,bus,,1700,4.3,5.2");
+    chai.expect(lines[3]).equal("0000000034,scheme2,org2,group2,5.4,bus,,1700,4.3,5.2");
   });
 
 });

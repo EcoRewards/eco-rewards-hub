@@ -18,7 +18,8 @@ export class MemberModelFactory {
       default_transport_mode: view.defaultTransportMode,
       default_distance: view.defaultDistance,
       smartcard: view.smartcard || null,
-      total_miles: 0
+      total_miles: 0,
+      previous_transport_mode: null
     };
   }
 

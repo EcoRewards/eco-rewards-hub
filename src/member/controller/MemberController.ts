@@ -80,11 +80,12 @@ export class MemberController {
     if (!member) {
       return { data: { error: "Not found" }, links, code: 404 };
     }
+
+    member.previous_transport_mode = member.default_transport_mode;
     member.default_transport_mode = request.defaultTransportMode;
     member.default_distance = request.defaultDistance;
 
     const savedModel = await this.genericRepository.save(member);
-
     const view = await this.viewFactory.create();
     const data = view.create(links, savedModel);
 

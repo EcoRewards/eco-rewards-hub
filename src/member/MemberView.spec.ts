@@ -29,7 +29,8 @@ describe("MemberView", () => {
       default_distance: 5.4,
       default_transport_mode: "train",
       smartcard: null,
-      total_miles: 1.0
+      total_miles: 1.0,
+      previous_transport_mode: null
     });
 
     chai.expect(actual.id).to.equal("/member/0000000018");
@@ -50,7 +51,8 @@ describe("MemberView", () => {
       default_distance: 5.4,
       default_transport_mode: "train",
       smartcard: "123123123123123123",
-      total_miles: 0
+      total_miles: 0,
+      previous_transport_mode: null
     });
 
     chai.expect(actual.id).to.equal("/member/123123123123123123");
@@ -66,7 +68,8 @@ describe("MemberView", () => {
       default_distance: 5.4,
       default_transport_mode: "train",
       smartcard: null,
-      total_miles: 1
+      total_miles: 1,
+      previous_transport_mode: null
     });
 
     chai.expect(links["/group/1"]).to.equal(undefined);
