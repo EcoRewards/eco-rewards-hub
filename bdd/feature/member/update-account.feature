@@ -11,6 +11,6 @@ Feature:
 
   Scenario: Update a member
     When I create an account with smartcard "654321002222230999"
-    Then I should see a default distance "1.5" and default transport mode "bus"
+    Then I should see a default distance "1.5", default transport mode "bus" and previous transport mode ""
     When I change my distance "10" and I change my default transport "train"
     Then I should see a default distance "10", default transport mode "train" and previous transport mode "bus"
