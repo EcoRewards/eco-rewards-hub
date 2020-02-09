@@ -1,18 +1,18 @@
 import { HttpResponse } from "../../service/controller/HttpResponse";
-import { JourneyJsonView, Journey } from "../Journey";
-import { Base64 } from "js-base64";
+import { Journey, JourneyJsonView } from "../Journey";
 import { TapReader, toHex } from "../TapReader";
 import { JourneyFactory } from "../JourneyFactory";
 import { Context } from "koa";
 import { JourneyViewFactory } from "../JourneyViewFactory";
 import { GenericRepository } from "../../database/GenericRepository";
-import { AdminUserId, JourneyCsvToMySqlStream, Member } from "../..";
+import { Member } from "../../member/Member";
 import { indexBy } from "ts-array-utils";
 import autobind from "autobind-decorator";
-import { LocalDateTime, ZoneId, DateTimeFormatter } from "@js-joda/core";
+import { DateTimeFormatter, LocalDateTime, ZoneId } from "@js-joda/core";
 import { AxiosInstance } from "axios";
 import { Logger } from "pino";
 import btoa = require("btoa");
+import { DeviceStatus } from "../DeviceStatus";
 
 /**
  * Endpoint for receiving LORaWAN data from The Things API
@@ -27,6 +27,7 @@ export class JourneyController {
     private readonly viewFactory: JourneyViewFactory,
     private readonly journeyRepository: GenericRepository<Journey>,
     private readonly memberRepository: GenericRepository<Member>,
+    private readonly statusRepository: GenericRepository<DeviceStatus>,
     private readonly http: AxiosInstance,
     private readonly logger: Logger
   ) {}
@@ -46,10 +47,11 @@ export class JourneyController {
    */
   public post(request: JourneyPostRequest, ctx: Context): Promise<HttpResponse<JourneyJsonView[]>> {
     const buffer = Buffer.from(request.payload_raw, "base64");
-    this.logger.info("Tap: " + Array.from(buffer).map(toHex));
+    const rawData = Array.from(buffer).map(toHex).join(" ");
+    this.logger.info("Tap: " + rawData);
 
     if (buffer[8] === 0x20) {
-      return this.processStatus(request);
+      return this.processStatus(request, rawData);
     }
     else {
       return this.processTaps(buffer, ctx);
@@ -69,10 +71,17 @@ export class JourneyController {
     return { data, links };
   }
 
-  private async processStatus(request: JourneyPostRequest): Promise<HttpResponse<JourneyJsonView[]>> {
+  private async processStatus(request: JourneyPostRequest, rawData: string): Promise<HttpResponse<JourneyJsonView[]>> {
     const dateTime = LocalDateTime.now(ZoneId.UTC).format(this.dateFormat);
     const dateTimeBinary = Buffer.from(dateTime, "hex");
     const payload = Buffer.concat([this.statusResponseCommand, dateTimeBinary]);
+
+    const deviceStatus = {
+      id: null,
+      device_id: request.dev_id,
+      status: rawData,
+      received: dateTime
+    };
 
     const response = {
       "dev_id": request.dev_id,
@@ -82,7 +91,10 @@ export class JourneyController {
     };
 
     try {
-      await this.http.post(request.downlink_url, response);
+      await Promise.all([
+        this.http.post(request.downlink_url, response),
+        this.statusRepository.insertAll([deviceStatus])
+      ]);
     }
     catch (e) {
       this.logger.warn(e);
