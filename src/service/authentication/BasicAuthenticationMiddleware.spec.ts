@@ -8,13 +8,16 @@ import { AdminRole } from "../../user/AdminUser";
 
 describe("BasicAuthenticationMiddleware", async () => {
   const cryptography = new Cryptography();
+  const logger = {
+    info: () => {}
+  } as any;
 
   it("authorizes valid requests", async () => {
     const index = {
       "1": { id: 1, email: "1", name: "user1", role: "provider" as AdminRole, password: await cryptography.hash("password1") },
     };
 
-    const middleware = new BasicAuthenticationMiddleware(index, cryptography);
+    const middleware = new BasicAuthenticationMiddleware(index, cryptography, logger);
     let hasBeenCalled = false;
     const next = () => hasBeenCalled = true;
     const ctx = createContext("basic " + toBase64("1:password1"));
@@ -29,7 +32,7 @@ describe("BasicAuthenticationMiddleware", async () => {
       "1": { id: 1, email: "1", name: "user1", role: "provider" as AdminRole, password: await cryptography.hash("password1") },
     };
 
-    const middleware = new BasicAuthenticationMiddleware(index, cryptography);
+    const middleware = new BasicAuthenticationMiddleware(index, cryptography, logger);
     let hasBeenCalled = false;
     const next = () => hasBeenCalled = true;
     const ctx = createContext("basic " + toBase64("1:password2"));
@@ -49,7 +52,7 @@ describe("BasicAuthenticationMiddleware", async () => {
       "1": { id: 1, email: "1", name: "user1", role: "provider" as AdminRole, password: await cryptography.hash("password1") },
     };
 
-    const middleware = new BasicAuthenticationMiddleware(index, cryptography);
+    const middleware = new BasicAuthenticationMiddleware(index, cryptography, logger);
     let hasBeenCalled = false;
     const next = () => hasBeenCalled = true;
     const ctx = createContext("basic " + toBase64("2:password1"));
@@ -69,7 +72,7 @@ describe("BasicAuthenticationMiddleware", async () => {
       "1": { id: 1, email: "1", name: "user1", role: "provider" as AdminRole, password: await cryptography.hash("password1") },
     };
 
-    const middleware = new BasicAuthenticationMiddleware(index, cryptography);
+    const middleware = new BasicAuthenticationMiddleware(index, cryptography, logger);
     let hasBeenCalled = false;
     const next = () => hasBeenCalled = true;
     const ctx = createContext("", "/health");
@@ -85,7 +88,7 @@ describe("BasicAuthenticationMiddleware", async () => {
       "1": { id: 1, email: "1", name: "user1", role: "provider" as AdminRole, password: await cryptography.hash("password1") },
     };
 
-    const middleware = new BasicAuthenticationMiddleware(index, cryptography);
+    const middleware = new BasicAuthenticationMiddleware(index, cryptography, logger);
     let hasBeenCalled = false;
     const next = () => hasBeenCalled = true;
     const ctx = createContext("");

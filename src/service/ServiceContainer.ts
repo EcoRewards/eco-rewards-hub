@@ -333,7 +333,7 @@ export class ServiceContainer {
     const repository = await this.getAdminUserRepository();
     const index = await repository.getUserIndex();
 
-    return new BasicAuthenticationMiddleware(index, this.getCryptography());
+    return new BasicAuthenticationMiddleware(index, this.getCryptography(), this.getLogger());
   }
 
   @memoize

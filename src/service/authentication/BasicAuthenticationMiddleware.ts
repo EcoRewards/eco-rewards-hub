@@ -3,6 +3,7 @@ import * as auth from "basic-auth";
 import { Cryptography } from "../../cryptography/Cryptography";
 import autobind from "autobind-decorator";
 import { AdminUserIndex } from "../../user/AdminUserRepository";
+import { Logger } from "pino";
 
 /**
  * Implementation of RFC7617, Basic HTTP authentication as a Koa middleware
@@ -19,7 +20,8 @@ export class BasicAuthenticationMiddleware {
 
   constructor(
     private readonly userCredentials: AdminUserIndex,
-    private readonly crypto: Cryptography
+    private readonly crypto: Cryptography,
+    private readonly logger: Logger
   ) {}
 
   /**
@@ -41,6 +43,8 @@ export class BasicAuthenticationMiddleware {
         return next();
       }
     }
+
+    this.logger.info(`401 ${ctx.method} ${ctx.url}`);
 
     return ctx.throw(
       401,
