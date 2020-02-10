@@ -80,7 +80,7 @@ export class JourneyController {
       id: null,
       device_id: request.dev_id,
       status: rawData,
-      received: dateTime
+      received: LocalDateTime.now(ZoneId.UTC).toJSON()
     };
 
     const response = {
