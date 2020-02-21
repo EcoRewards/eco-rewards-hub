@@ -81,7 +81,12 @@ Then("the CSV should have at least {string} members", async function (quantity: 
 When("I change my distance {string} and I change my default transport {string}",
   async function (defaultDistance: string, defaultTransportMode: string) {
   const id = this.createdMember.id;
-  const response = await World.api.put(id, { defaultDistance, defaultTransportMode });
+  const response = await World.api.put(id, {
+    defaultDistance, 
+    defaultTransportMode,
+    previousTransportMode: "bus",
+    group: this.createdMember.group
+  });
   this.createdMember = response.data.data;
 });
 
