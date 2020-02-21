@@ -100,15 +100,17 @@ describe("MemberController", () => {
     const result = await controller.put({
       id: "0000000018",
       defaultDistance: 10,
-      defaultTransportMode: "train"
+      defaultTransportMode: "train",
+      group: "/group/2",
+      previousTransportMode: "car"
     });
 
     const expected = {
       carbonSaving: 0,
       defaultDistance: 10,
       defaultTransportMode: "train",
-      previousTransportMode: "bus",
-      group: "/group/1",
+      previousTransportMode: "car",
+      group: "/group/2",
       id: "/member/0000000018",
       rewards: 0,
       totalMiles: 5
@@ -122,7 +124,9 @@ describe("MemberController", () => {
     const result = await controller.put({
       id: "0000000026",
       defaultDistance: 10,
-      defaultTransportMode: "train"
+      defaultTransportMode: "train",
+      group: "/group/1",
+      previousTransportMode: "bus"
     });
 
     chai.expect(result.code).equal(404);

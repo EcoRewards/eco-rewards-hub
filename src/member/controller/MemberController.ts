@@ -9,7 +9,7 @@ import {
   HttpResponse,
   MemberModelFactory,
   MemberView,
-  NonNullId
+  NonNullId, toGroupId
 } from "../..";
 import { ExternalMemberRepository } from "../repository/ExternalMemberRepository";
 
@@ -81,8 +81,9 @@ export class MemberController {
       return { data: { error: "Not found" }, links, code: 404 };
     }
 
-    member.previous_transport_mode = member.default_transport_mode;
+    member.member_group_id = toGroupId(request.group);
     member.default_transport_mode = request.defaultTransportMode;
+    member.previous_transport_mode = request.previousTransportMode;
     member.default_distance = request.defaultDistance;
 
     const savedModel = await this.genericRepository.save(member);
@@ -107,6 +108,8 @@ export interface MemberPostRequest {
 
 export interface MemberPutRequest {
   id: string,
+  group: string,
   defaultTransportMode: string,
+  previousTransportMode: string,
   defaultDistance: number
 }
