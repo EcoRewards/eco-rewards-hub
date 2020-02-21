@@ -673,6 +673,10 @@ paths:
                 type: "number"
               defaultTransportMode:
                 type: "string"
+              previousTransportMode:
+                type: "string"
+              group:
+                type: "string"
       responses:
         200:
           description: "successful operation"
