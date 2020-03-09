@@ -52,6 +52,8 @@ import Axios from "axios";
 import { JourneyController } from "../journey/controller/JourneyController";
 import { TapReader } from "../journey/TapReader";
 import { DeviceStatus } from "../journey/DeviceStatus";
+import { DeviceStatusJsonView } from "../device/DeviceStatus";
+import { DeviceStatusViewFactory } from "../device/DeviceStatusViewFactory";
 
 require("dotenv").config();
 
@@ -99,6 +101,7 @@ export class ServiceContainer {
       memberController,
       groupReadController,
       groupWriteController,
+      deviceReadController,
     ] = await Promise.all([
       this.getHealthController(),
       this.getLoginController(),
@@ -106,6 +109,7 @@ export class ServiceContainer {
       this.getMemberController(),
       this.getGroupReadController(),
       this.getGroupWriteController(),
+      this.getDeviceStatusReadController(),
     ]);
 
     const [
@@ -150,6 +154,7 @@ export class ServiceContainer {
       .post("/journey", this.wrap(journeyController.post))
       .get("/journeys", this.wrap(journeysController.getAll))
       .post("/journeys", this.wrap(journeysController.post))
+      .get("/devices", this.wrap(deviceReadController.getAll))
       .get("/:type/:id/report", this.wrap(journeysController.getReport));
   }
 
@@ -245,6 +250,13 @@ export class ServiceContainer {
       memberViewFactory,
       new MemberModelFactory(),
       externalMemberRepository
+    );
+  }
+
+  private async getDeviceStatusReadController(): Promise<ReadController<DeviceStatus, DeviceStatusJsonView>> {
+    return new ReadController(
+      await this.getDeviceStatusRepository(),
+      new DeviceStatusViewFactory()
     );
   }
 
