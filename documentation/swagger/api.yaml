@@ -574,7 +574,6 @@ paths:
           $ref: '#/responses/500'
       security:
         - basicAuth: []
-
   /member/{memberId}:
     get:
       summary: "Return a member"
@@ -743,7 +742,6 @@ paths:
           $ref: '#/responses/500'
       security:
         - basicAuth: []
-
   /journeys:
     post:
       summary: Uploads member journeys.
@@ -800,6 +798,31 @@ paths:
                 type: "object"
         401:
           $ref: '#/responses/401'
+        500:
+          $ref: '#/responses/500'
+      security:
+        - basicAuth: []
+
+  /devices:
+    get:
+      summary: "Return all device statuses"
+      description: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "List of device statuses"
+          schema:
+            type: "object"
+            properties:
+              data:
+                type: "array"
+                items:
+                  $ref: "#/definitions/DeviceStatus"
+              links:
+                type: "object"
         500:
           $ref: '#/responses/500'
       security:
@@ -981,3 +1004,20 @@ definitions:
       carbonSaving:
         type: "number"
         example: "null"
+
+  DeviceStatus:
+    type: "object"
+    required:
+      - deviceId
+      - status
+      - received
+    properties:
+      deviceId:
+        type: "string"
+        example: "112345"
+      status:
+        type: "string"
+        example: "04 12 88 04 00 00 00 25 20 20 03 09 02 38 00 00 17 65 38 46 00 06 00 00 00 00"
+      received:
+        type: "string"
+        example: "2020-03-09 02:38:22"
