@@ -52,16 +52,16 @@ export class DatabaseBackupJob implements Job {
   private getExpiryPath(localDate: LocalDateTime): string {
     if (localDate.hour() === 0) {
       if (localDate.dayOfMonth() === 1) {
-        return "yearly/";
-      }
-
-      if (localDate.dayOfWeek().value() === 1) {
         return "monthly/";
       }
 
-      return "weekly/";
+      if (localDate.dayOfWeek().value() === 1) {
+        return "weekly/";
+      }
+
+      return "daily/";
     }
 
-    return "daily/";
+    return "hourly/";
   }
 }
