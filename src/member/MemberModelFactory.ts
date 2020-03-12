@@ -19,7 +19,7 @@ export class MemberModelFactory {
       default_distance: view.defaultDistance,
       smartcard: view.smartcard || null,
       total_miles: 0,
-      previous_transport_mode: null
+      previous_transport_mode: view.previousTransportMode || null
     };
   }
 
@@ -28,6 +28,7 @@ export class MemberModelFactory {
 export interface PartialMemberJsonView {
   group: string,
   defaultTransportMode: string,
+  previousTransportMode?: string,
   defaultDistance: number,
   smartcard?: string
 }

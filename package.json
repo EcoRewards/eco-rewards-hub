@@ -52,7 +52,7 @@
     "@types/mocha": "^5.2.7",
     "@types/mysql": "^2.15.9",
     "@types/node": "^12.12.29",
-    "@types/pino": "^5.15.5",
+    "@types/pino": "^5.17.0",
     "axios": "^0.19.2",
     "barrelsby": "^2.2.0",
     "btoa": "^1.2.1",

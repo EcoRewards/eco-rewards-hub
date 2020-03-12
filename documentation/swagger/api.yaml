@@ -696,6 +696,36 @@ paths:
           $ref: '#/responses/500'
       security:
         - basicAuth: []
+  /member:
+    post:
+      summary: "Create a member"
+      description: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Member details"
+          required: true
+          schema:
+            $ref: "#/definitions/Member"
+      responses:
+        201:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              data:
+                $ref: "#/definitions/Group"
+              links:
+                type: "object"
+        400:
+          $ref: '#/responses/400'
+        500:
+          $ref: '#/responses/500'
+
 
   /journey:
     post:
