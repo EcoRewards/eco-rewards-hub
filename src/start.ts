@@ -6,6 +6,7 @@ container
   .getKoaService()
   .then(service => service.start())
   .then(() => container.getJourneyProcessingJob())
+  .then(scheduler => scheduler.start())
   .then(() => container.getDatabaseBackupJob())
   .then(scheduler => scheduler.start())
   .catch(e => console.error(e));
