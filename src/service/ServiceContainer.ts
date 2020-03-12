@@ -54,6 +54,8 @@ import { TapReader } from "../journey/TapReader";
 import { DeviceStatus } from "../journey/DeviceStatus";
 import { DeviceStatusJsonView } from "../device/DeviceStatus";
 import { DeviceStatusViewFactory } from "../device/DeviceStatusViewFactory";
+import { DatabaseBackupJob } from "../database/job/DatabaseBackupJob";
+import * as S3 from "aws-sdk/clients/s3";
 
 require("dotenv").config();
 
@@ -81,7 +83,7 @@ export class ServiceContainer {
     );
   }
 
-  public async getJobScheduler(): Promise<JobScheduler> {
+  public async getJourneyProcessingJob(): Promise<JobScheduler> {
     const db = await this.getDatabase();
     const rewardAllocationJob = new RewardAllocationJob(
       new RewardRepository(db, this.getLogger()),
@@ -90,6 +92,20 @@ export class ServiceContainer {
     );
 
     return new JobScheduler(rewardAllocationJob, 1000, this.getLogger());
+  }
+
+  public async getDatabaseBackupJob(): Promise<JobScheduler> {
+    const backupJob = new DatabaseBackupJob(this.getDatabaseConfig(), this.getAws());
+
+    return new JobScheduler(backupJob, 3600 * 1000, this.getLogger());
+  }
+
+  @memoize
+  private getAws(): S3 {
+    return new S3({
+      accessKeyId: process.env.AWS_ACCESS_KEY,
+      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+    });
   }
 
   private async getRoutes(): Promise<Router> {

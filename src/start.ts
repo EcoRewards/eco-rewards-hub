@@ -5,6 +5,7 @@ const container = new ServiceContainer();
 container
   .getKoaService()
   .then(service => service.start())
-  .then(() => container.getJobScheduler())
+  .then(() => container.getJourneyProcessingJob())
+  .then(() => container.getDatabaseBackupJob())
   .then(scheduler => scheduler.start())
   .catch(e => console.error(e));
