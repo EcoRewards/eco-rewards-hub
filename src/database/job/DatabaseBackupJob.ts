@@ -32,15 +32,14 @@ export class DatabaseBackupJob implements Job {
       compressFile: true,
     });
 
-    let expires = this.getExpiry(localDate);
+    let s3directory = this.getExpiryPath(localDate);
 
     const upload = promisify(this.aws.upload.bind(this.aws));
 
     await upload({
       Bucket: "eco-rewards-backups",
-      Key: filename,
+      Key: s3directory + filename,
       Body: fs.createReadStream(path),
-      Expires: new Date(expires.toJSON())
     });
   }
 
@@ -50,19 +49,19 @@ export class DatabaseBackupJob implements Job {
    * Midnight backups last a week
    * Hourly backups last a day
    */
-  private getExpiry(localDate: LocalDateTime): LocalDateTime {
+  private getExpiryPath(localDate: LocalDateTime): string {
     if (localDate.hour() === 0) {
       if (localDate.dayOfMonth() === 1) {
-        return localDate.plusYears(1);
+        return "yearly/";
       }
 
       if (localDate.dayOfWeek().value() === 1) {
-        return localDate.plusMonths(1);
+        return "monthly/";
       }
 
-      return localDate.plusWeeks(1);
+      return "weekly/";
     }
 
-    return localDate.plusDays(1);
+    return "daily/";
   }
 }
