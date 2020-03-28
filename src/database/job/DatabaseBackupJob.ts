@@ -41,8 +41,6 @@ export class DatabaseBackupJob implements Job {
       Key: s3directory + filename,
       Body: fs.createReadStream(path),
     });
-
-    fs.unlink(path, () => {});
   }
 
   /**
