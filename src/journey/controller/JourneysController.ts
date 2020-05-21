@@ -75,7 +75,7 @@ export class JourneysController {
    * Return total miles, points earned and carbon savings by day.
    */
   public async getReport({ type, id, from, to }: ReportRequest): Promise<GetResponse<ReportJsonRow[]>> {
-    const fromDate = from ? LocalDate.parse(from) : LocalDate.now().minusDays(30);
+    const fromDate = from ? LocalDate.parse(from) : LocalDate.now().minusDays(7);
     const untilDate = to ? LocalDate.parse(to) : LocalDate.now();
     const report = await this.repository.selectJourneysGroupedByTravelDate(
       fromDate.toJSON(),

@@ -2,7 +2,7 @@ import { View } from "../service/controller/ReadController";
 import { fromOrganisationId, Organisation, OrganisationJsonView } from "./Organisation";
 import { fromSchemeId, Scheme } from "../scheme/Scheme";
 import { NonNullId } from "../database/GenericRepository";
-import { SchemeView } from "..";
+import { SchemeView } from "../scheme/SchemeView";
 
 /**
  * Creates organisation view models

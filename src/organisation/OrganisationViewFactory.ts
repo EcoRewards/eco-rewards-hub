@@ -3,7 +3,7 @@ import { Organisation, OrganisationJsonView } from "./Organisation";
 import { OrganisationView } from "./OrganisationView";
 import { GenericRepository } from "../database/GenericRepository";
 import { Scheme } from "../scheme/Scheme";
-import { SchemeViewFactory } from "..";
+import { SchemeViewFactory } from "../scheme/SchemeViewFactory";
 
 /**
  * Creates an OrganisationViewFactory

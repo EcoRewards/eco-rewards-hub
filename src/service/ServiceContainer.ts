@@ -354,7 +354,7 @@ export class ServiceContainer {
 
   @memoize
   private getLogger(): Logger {
-    return pino({ prettyPrint: { translateTime: true } });
+    return pino({ prettyPrint: { timeTransOnly: true } });
   }
 
   private async getAuthenticationMiddleware(): Promise<BasicAuthenticationMiddleware> {

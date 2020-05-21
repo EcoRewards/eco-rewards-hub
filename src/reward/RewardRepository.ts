@@ -1,7 +1,6 @@
 import { MemberId } from "../member/Member";
 import { Journey } from "../journey/Journey";
-import { Connection } from "mysql";
-import { NonNullId } from "..";
+import { NonNullId } from "../database/GenericRepository";
 import { pushNested } from "ts-array-utils";
 import { Logger } from "pino";
 

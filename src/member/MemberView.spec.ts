@@ -2,7 +2,7 @@ import * as chai from "chai";
 import { MemberView } from "./MemberView";
 import { OrganisationView } from "../organisation/OrganisationView";
 import { GroupView } from "../group/GroupView";
-import { SchemeView } from "..";
+import { SchemeView } from "../scheme/SchemeView";
 
 describe("MemberView", () => {
   const groupView = new GroupView({
