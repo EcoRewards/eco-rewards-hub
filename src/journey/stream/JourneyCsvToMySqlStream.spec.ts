@@ -26,15 +26,18 @@ describe("JourneyCsvToMySqlStream", () => {
       total_miles: 50,
       previous_transport_mode: null
     }
-  }, {});
+  }, {}, {} as any, {} as any);
 
-  it("returns errors", () => {
+  it("returns errors", (done) => {
     const stream = new JourneyCsvToMySqlStream(factory, 1);
 
     stream.write(["0001112221", "2019-12-09T15:10:05"]);
-    stream.end();
 
-    chai.expect(stream.getErrors()).to.deep.equal(["Invalid account number: 0001112221"]);
+    stream.end(() => {
+      chai.expect(stream.getErrors()).to.deep.equal(["Invalid account number: 0001112221"]);
+      done();
+    });
+
   });
 
   it("passes through values", async () => {

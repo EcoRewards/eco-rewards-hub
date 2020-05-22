@@ -1,4 +1,3 @@
-@wip
 Feature:
   As a device
   I want to report my status

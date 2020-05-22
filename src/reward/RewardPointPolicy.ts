@@ -1,5 +1,3 @@
-import { CarbonSavingPolicy } from "./CarbonSavingPolicy";
-
 /**
  * Rules on a reward point allocation
  */

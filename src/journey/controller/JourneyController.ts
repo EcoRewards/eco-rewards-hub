@@ -13,6 +13,7 @@ import { AxiosInstance } from "axios";
 import { Logger } from "pino";
 import btoa = require("btoa");
 import { DeviceStatus } from "../DeviceStatus";
+import { MemberModelFactory } from "../../member/MemberModelFactory";
 
 /**
  * Endpoint for receiving LORaWAN data from The Things API
@@ -35,11 +36,11 @@ export class JourneyController {
   /**
    * Get an index of members and create a new JourneyFactory for the JourneyCsvToMySqlStream
    */
-  public async getFactory(): Promise<JourneyFactory> {
+  public async getJourneyFactory(): Promise<JourneyFactory> {
     const members = await this.memberRepository.getIndexedById();
     const membersBySmartcard = Object.values(members).reduce(indexBy(m => m.smartcard || ""), {});
 
-    return new JourneyFactory(members, membersBySmartcard);
+    return new JourneyFactory(members, membersBySmartcard, this.memberRepository, new MemberModelFactory());
   }
 
   /**
@@ -60,9 +61,9 @@ export class JourneyController {
 
   private async processTaps(buffer: Buffer, ctx: Context): Promise<HttpResponse<JourneyJsonView[]>> {
     const deviceId = Array.from(buffer).slice(0, 4).map(toHex).join("");
-    const taps = this.tapReader.getTaps(buffer);
-    const factory = await this.getFactory();
-    const journeys = Object.entries(taps).map(t => factory.create(t, ctx.adminUserId, deviceId));
+    const taps = Object.entries(this.tapReader.getTaps(buffer));
+    const journeyFactory = await this.getJourneyFactory();
+    const journeys = await Promise.all(taps.map(t => journeyFactory.create(t, ctx.adminUserId, deviceId)));
     const savedJourneys = await this.journeyRepository.insertAll(journeys);
     const view = await this.viewFactory.create();
     const links = {};

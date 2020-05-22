@@ -64,10 +64,11 @@ When("I tap with a smartcard {string} on device {string}", async function (membe
   const device = deviceId.padStart(8, "0");
   const tsn = "AAAAAAAA";
   const tx1minsSinceEpoch = "000001";
-  const hex = device + tsn + member + tx1minsSinceEpoch;
+  const memberCardNo = member.length === 16 ? "4C" + member : member;
+  const hex = device + tsn + memberCardNo + tx1minsSinceEpoch;
   const buffer = Buffer.from(hex, "hex");
   const payload = btoa(buffer);
   const response = await World.api.post("/journey", { payload_raw: payload });
 
-  chai.expect(response.data.data[0].mode).to.deep.equal("bus");
+  chai.expect(response.data.data[0].mode).not.equals("");
 });
