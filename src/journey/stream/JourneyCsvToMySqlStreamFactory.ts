@@ -4,6 +4,7 @@ import { AdminUserId } from "../../user/AdminUser";
 import { GenericRepository } from "../../database/GenericRepository";
 import { Member } from "../../member/Member";
 import { indexBy } from "ts-array-utils";
+import { MemberModelFactory } from "../../member/MemberModelFactory";
 
 export class JourneyCsvToMySqlStreamFactory {
 
@@ -17,7 +18,7 @@ export class JourneyCsvToMySqlStreamFactory {
   public async create(adminUserId: AdminUserId): Promise<JourneyCsvToMySqlStream> {
     const members = await this.repository.getIndexedById();
     const membersBySmartcard = Object.values(members).reduce(indexBy(m => m.smartcard || ""), {});
-    const factory = new JourneyFactory(members, membersBySmartcard);
+    const factory = new JourneyFactory(members, membersBySmartcard, this.repository, new MemberModelFactory());
 
     return new JourneyCsvToMySqlStream(factory, adminUserId);
   }

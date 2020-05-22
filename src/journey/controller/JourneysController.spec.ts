@@ -175,7 +175,7 @@ describe("JourneysController", () => {
       total_miles: 10,
       previous_transport_mode: null
     }
-  }, {});
+  }, {}, {} as any, {} as any);
 
   const journeyRepository = new MockJourneyRepository();
   const badJourneyRepository = new MockExceptionJourneyRepository();
