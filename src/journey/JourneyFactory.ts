@@ -10,7 +10,7 @@ import { MemberModelFactory } from "../member/MemberModelFactory";
 export class JourneyFactory {
 
   private static readonly BRACKNELL_RESIDENTS_GROUP = "18";
-  private static readonly BRACKNELL_RAIL_GROUP = "5";
+  private static readonly BRACKNELL_RAIL_GROUP = "10";
 
   constructor(
     private readonly membersById: Record<MemberId, NonNullId<Member>>,

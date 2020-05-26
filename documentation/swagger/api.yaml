@@ -625,12 +625,16 @@ paths:
               - group
               - smartcard
               - defaultTransportMode
+              - previousTransportMode
               - defaultDistance
             properties:
               group:
                 type: "string"
                 example: "/group/1"
               defaultTransportMode:
+                type: "string"
+                example: "bus"
+              previousTransportMode:
                 type: "string"
                 example: "bus"
               defaultDistance:
