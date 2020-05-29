@@ -102,6 +102,7 @@ export type PutResponse = HttpResponse<MemberJsonView | HttpError>;
 export interface MemberPostRequest {
   group: string,
   defaultTransportMode: string,
+  previousTransportMode?: string,
   defaultDistance: number,
   smartcard: string
 }
