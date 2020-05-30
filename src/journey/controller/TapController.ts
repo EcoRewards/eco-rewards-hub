@@ -19,7 +19,7 @@ import { MemberModelFactory } from "../../member/MemberModelFactory";
  * Endpoint for receiving LORaWAN data from The Things API
  */
 @autobind
-export class JourneyController {
+export class TapController {
   private readonly dateFormat = DateTimeFormatter.ofPattern("yyyyMMddHHmm");
   private readonly statusResponseCommand = Buffer.from("SETDT");
 
@@ -32,16 +32,6 @@ export class JourneyController {
     private readonly http: AxiosInstance,
     private readonly logger: Logger
   ) {}
-
-  /**
-   * Get an index of members and create a new JourneyFactory for the JourneyCsvToMySqlStream
-   */
-  public async getJourneyFactory(): Promise<JourneyFactory> {
-    const members = await this.memberRepository.getIndexedById();
-    const membersBySmartcard = Object.values(members).reduce(indexBy(m => m.smartcard || ""), {});
-
-    return new JourneyFactory(members, membersBySmartcard, this.memberRepository, new MemberModelFactory());
-  }
 
   /**
    * Read the raw payload and store the journeys.
@@ -70,6 +60,13 @@ export class JourneyController {
     const data = savedJourneys.map(j => view.create(links, j));
 
     return { data, links };
+  }
+
+  private async getJourneyFactory(): Promise<JourneyFactory> {
+    const members = await this.memberRepository.getIndexedById();
+    const membersBySmartcard = Object.values(members).reduce(indexBy(m => m.smartcard || ""), {});
+
+    return new JourneyFactory(members, membersBySmartcard, this.memberRepository, new MemberModelFactory());
   }
 
   private async processStatus(request: JourneyPostRequest, rawData: string): Promise<HttpResponse<JourneyJsonView[]>> {

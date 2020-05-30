@@ -68,7 +68,7 @@ When("I tap with a smartcard {string} on device {string}", async function (membe
   const hex = device + tsn + memberCardNo + tx1minsSinceEpoch;
   const buffer = Buffer.from(hex, "hex");
   const payload = btoa(buffer);
-  const response = await World.api.post("/journey", { payload_raw: payload });
+  const response = await World.api.post("/tap", { payload_raw: payload });
 
   chai.expect(response.data.data[0].mode).not.equals("");
 });

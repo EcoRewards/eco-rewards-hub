@@ -1,6 +1,6 @@
 import * as chai from "chai";
 import { JourneyViewFactory } from "../JourneyViewFactory";
-import { JourneyController } from "./JourneyController";
+import { TapController } from "./TapController";
 import btoa = require("btoa");
 
 class MockRepository {
@@ -40,7 +40,7 @@ class MockHttp {
   }
 }
 
-describe("JourneyController", () => {
+describe("TapController", () => {
   const journeyRepository = new MockRepository() as any;
   const memberRepository = new MockRepository({
     "222223001": {
@@ -63,7 +63,7 @@ describe("JourneyController", () => {
   const journeyViewFactory = new JourneyViewFactory(adminRepository);
 
   it("handles post requests", async () => {
-    const controller = new JourneyController(
+    const controller = new TapController(
       reader,
       journeyViewFactory,
       journeyRepository,
@@ -89,7 +89,7 @@ describe("JourneyController", () => {
 
   it("handles status requests", async () => {
     const mockHttp = new MockHttp();
-    const controller = new JourneyController(
+    const controller = new TapController(
       {} as any,
       {} as any,
       {} as any,

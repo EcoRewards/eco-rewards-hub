@@ -49,7 +49,7 @@ import { MemberController } from "../member/controller/MemberController";
 import { MemberRepository } from "../member/repository/MemberRepository";
 import { ExternalMemberRepository } from "../member/repository/ExternalMemberRepository";
 import Axios from "axios";
-import { JourneyController } from "../journey/controller/JourneyController";
+import { TapController } from "../journey/controller/TapController";
 import { TapReader } from "../journey/TapReader";
 import { DeviceStatus } from "../journey/DeviceStatus";
 import { DeviceStatusJsonView } from "../device/DeviceStatus";
@@ -134,14 +134,14 @@ export class ServiceContainer {
       schemeWriteController,
       schemeReadController,
       journeysController,
-      journeyController
+      tapController
     ] = await Promise.all([
       this.getOrganisationReadController(),
       this.getOrganisationWriteController(),
       this.getSchemeWriteController(),
       this.getSchemeReadController(),
       this.getJourneysController(),
-      this.getJourneyController()
+      this.getTapController()
     ]);
 
     return router
@@ -167,7 +167,7 @@ export class ServiceContainer {
       .put("/scheme/:id", this.wrap(schemeWriteController.put))
       .delete("/scheme/:id", this.wrap(schemeWriteController.delete))
       .post("/scheme", this.wrap(schemeWriteController.post))
-      .post("/journey", this.wrap(journeyController.post))
+      .post("/tap", this.wrap(tapController.post))
       .get("/journeys", this.wrap(journeysController.getAll))
       .post("/journeys", this.wrap(journeysController.post))
       .get("/devices", this.wrap(deviceReadController.getAll))
@@ -322,7 +322,7 @@ export class ServiceContainer {
     );
   }
 
-  private async getJourneyController(): Promise<JourneyController> {
+  private async getTapController(): Promise<TapController> {
     const [userRepository, journeyRepository, memberRepository, statusRepository] = await Promise.all([
       this.getGenericAdminUserRepository(),
       this.getJourneyRepository(),
@@ -330,7 +330,7 @@ export class ServiceContainer {
       this.getDeviceStatusRepository()
     ]);
 
-    return new JourneyController(
+    return new TapController(
       new TapReader(this.getLogger()),
       new JourneyViewFactory(userRepository),
       journeyRepository,
