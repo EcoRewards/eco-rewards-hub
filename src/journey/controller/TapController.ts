@@ -42,7 +42,7 @@ export class TapController {
       return { data: [], links: {} };
     }
     else {
-      const journeys = await this.tapProcessor.getJourneys(buffer, ctx);
+      const journeys = await this.tapProcessor.getJourneys(buffer, ctx.adminUserId);
       const view = await this.viewFactory.create();
       const links = {};
       const data = journeys.map(j => view.create(links, j));
