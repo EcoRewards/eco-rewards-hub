@@ -23,20 +23,6 @@ export class MultiPartFormReader {
     });
   }
 
-  /**
-   * Extracts the first file multipart request
-   */
-  public getFirstFile(input: IncomingMessage): Promise<ReadableStream> {
-    const busboy = new Busboy({ headers: input.headers });
-    const form = {};
-
-    input.pipe(busboy);
-
-    return new Promise(resolve => {
-      busboy.on("file", (name, file) => resolve(file));
-    });
-  }
-
 }
 
 export type MultiPartForm = Record<string, string | number | ReadableStream>;

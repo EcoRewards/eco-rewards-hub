@@ -37,11 +37,12 @@ export class JourneysController {
   }
 
   private async processInput(input: IncomingMessage, adminUserId: AdminUserId): Promise<string[]> {
-    const [csvToMySql, file] = await Promise.all([
+    const [csvToMySql, form] = await Promise.all([
       this.factory.create(adminUserId),
-      this.formProcessor.getFirstFile(input)
+      this.formProcessor.getForm(input)
     ]);
 
+    const file = Object.values(form)[0] as ReadableStream;
     const inserts = file
       .pipe(parse({ bom: true, skip_empty_lines: true }))
       .pipe(csvToMySql);

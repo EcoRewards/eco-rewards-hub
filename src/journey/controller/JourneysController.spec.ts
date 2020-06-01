@@ -135,19 +135,20 @@ class MockExceptionJourneyRepository {
 
 class MockMultiPartFileExtractor {
 
-  async getFirstFile() {
+  async getForm() {
     const lines = [
       "0000000026,2019-12-09T15:10:05",
       null
     ];
     let i = 0;
-    return new Readable({
-      objectMode: true,
-      read: function () {
-        this.push(lines[i++]);
-      }
-    });
-
+    return {
+      file: new Readable({
+        objectMode: true,
+        read: function () {
+          this.push(lines[i++]);
+        }
+      })
+    };
   }
 }
 
