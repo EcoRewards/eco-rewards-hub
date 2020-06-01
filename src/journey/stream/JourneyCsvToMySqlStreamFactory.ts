@@ -18,7 +18,7 @@ export class JourneyCsvToMySqlStreamFactory {
   public async create(adminUserId: AdminUserId): Promise<JourneyCsvToMySqlStream> {
     const members = await this.repository.getIndexedById();
     const membersBySmartcard = Object.values(members).reduce(indexBy(m => m.smartcard || ""), {});
-    const factory = new JourneyFactory(members, membersBySmartcard, this.repository, new MemberModelFactory());
+    const factory = new JourneyFactory(members, membersBySmartcard);
 
     return new JourneyCsvToMySqlStream(factory, adminUserId);
   }

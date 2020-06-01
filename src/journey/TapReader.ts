@@ -64,4 +64,7 @@ export function toHex(byte: number): string {
   return byte.toString(16).padStart(2, "0");
 }
 
+/**
+ * Index of member ID / smartcard => travel date
+ */
 export type MemberJourneys = Record<string, string>;

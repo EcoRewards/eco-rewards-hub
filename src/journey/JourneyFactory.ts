@@ -1,36 +1,34 @@
 import { Member, MemberId, toMemberId } from "../member/Member";
 import { Journey } from "./Journey";
 import { AdminUserId } from "../user/AdminUser";
-import { GenericRepository, NonNullId } from "../database/GenericRepository";
-import { MemberModelFactory } from "../member/MemberModelFactory";
+import { NonNullId } from "../database/GenericRepository";
 
 /**
  * Creates journeys by taking in CSV data and overlaying that with member defaults.
  */
 export class JourneyFactory {
 
-  private static readonly BRACKNELL_RESIDENTS_GROUP = "18";
-  private static readonly BRACKNELL_RAIL_GROUP = "10";
-
   constructor(
     private readonly membersById: Record<MemberId, NonNullId<Member>>,
-    private readonly membersBySmartcard: Record<string, NonNullId<Member>>,
-    private readonly memberRepository: GenericRepository<Member>,
-    private readonly memberFactory: MemberModelFactory,
+    private readonly membersBySmartcard: Record<string, NonNullId<Member>>
   ) { }
 
   /**
    * Ensure the member exists, and there is either a default mode and distance or one has been
    * set in the CSV data.
    */
-  public async create(
+  public create(
     [memberId, date, mode, distance]: CsvInput,
     adminUserId: AdminUserId,
     deviceId?: string
-  ): Promise<Journey> {
+  ): Journey {
 
     const id = memberId.length >= 16 ? memberId : toMemberId(memberId);
-    const member = await this.getMember(id);
+    const member = this.membersById[id] || this.membersBySmartcard[id];
+
+    if (!member) {
+      throw Error("Cannot find member: " + id);
+    }
 
     const actualMode = mode || member.default_transport_mode;
 
@@ -59,38 +57,6 @@ export class JourneyFactory {
     };
   }
 
-  private async getMember(id: string | number): Promise<NonNullId<Member>> {
-    if (this.membersById[id]) {
-      return this.membersById[id];
-    }
-    else if (this.membersBySmartcard[id]) {
-      return this.membersBySmartcard[id];
-    }
-    else if (typeof id === "string" && id.substr(0, 8) === "63380000") {
-      const member = this.memberFactory.createFromPartial({
-        smartcard: id,
-        group: JourneyFactory.BRACKNELL_RESIDENTS_GROUP,
-        defaultDistance: 1,
-        defaultTransportMode: "walk",
-        previousTransportMode: "walk"
-      });
-
-      return this.memberRepository.save(member);
-    }
-    else if (typeof id === "string" && id.substr(0, 10) === "6335970109") {
-      const member = this.memberFactory.createFromPartial({
-        smartcard: id,
-        group: JourneyFactory.BRACKNELL_RAIL_GROUP,
-        defaultDistance: 1,
-        defaultTransportMode: "walk",
-        previousTransportMode: "walk"
-      });
-
-      return this.memberRepository.save(member);
-    }
-
-    throw Error("Cannot find member: " + id);
-  }
 }
 
 export type CsvInput = [string, string, string?, (string | number)?];

@@ -50,9 +50,7 @@ describe("JourneyFactory", () => {
         total_miles: 50,
         previous_transport_mode: null
       }
-    },
-    mockRepository,
-    new MemberModelFactory()
+    }
   );
 
   it("throws an error when given an invalid ID", async () => {
@@ -75,20 +73,6 @@ describe("JourneyFactory", () => {
       error = e.message;
     }
     chai.expect(error).to.equal("Cannot find member: 1");
-  });
-
-  it("creates a new member for Bracknell residents", async () => {
-    const actual = await factory.create(["6338000000000000", "2019-12-09T15:10:05"], 1);
-
-    chai.expect(actual.member_id).to.be.greaterThan(0);
-    chai.expect(actual.distance).to.equal(1);
-  });
-
-  it("creates a new member for Bracknell rail users", async () => {
-    const actual = await factory.create(["633597010900000000", "2019-12-09T15:10:05"], 1);
-
-    chai.expect(actual.member_id).to.be.greaterThan(0);
-    chai.expect(actual.distance).to.equal(1);
   });
 
   it("applies a default distance if none is given", async () => {
