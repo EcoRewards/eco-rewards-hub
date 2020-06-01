@@ -111,7 +111,7 @@
       "src/*.ts",
       "src/**/*.spec.ts",
       "src/service/ServiceContainer.ts",
-      "src/journey/controller/MultiPartFileExtractor.ts",
+      "src/journey/controller/MultiPartFormReade.ts",
       "src/cli/CliContainer.ts",
       "bdd/**/*.ts"
     ]
