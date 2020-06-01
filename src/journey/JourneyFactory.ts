@@ -52,7 +52,7 @@ export class JourneyFactory {
       travel_date: date,
       member_id: member.id,
       distance: +actualDistance,
-      mode: actualMode,
+      mode: actualMode.toLowerCase(),
       rewards_earned: null,
       carbon_saving: null,
       device_id: deviceId || ""
@@ -93,4 +93,4 @@ export class JourneyFactory {
   }
 }
 
-export type CsvInput = [string, string, string?, string?];
+export type CsvInput = [string, string, string?, (string | number)?];

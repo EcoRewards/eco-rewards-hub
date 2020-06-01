@@ -28,7 +28,7 @@ import { RequestLoggingMiddleware } from "./logging/RequestLoggingMiddleware";
 import { Group, GroupJsonView } from "../group/Group";
 import { GroupViewFactory } from "../group/GroupViewFactory";
 import { GroupModelFactory } from "../group/GroupModelFactory";
-import { Member, MemberJsonView } from "../member/Member";
+import { Member } from "../member/Member";
 import { MemberViewFactory } from "../member/MemberViewFactory";
 import { MembersController } from "../member/controller/MembersController";
 import { MemberModelFactory } from "../member/MemberModelFactory";
@@ -36,7 +36,7 @@ import { BlacklistBodyParser } from "./parser/BlacklistBodyParser";
 import { JourneysController } from "../journey/controller/JourneysController";
 import { JourneyRepository } from "../journey/repository/JourneyRepository";
 import { JourneyCsvToMySqlStreamFactory } from "../journey/stream/JourneyCsvToMySqlStreamFactory";
-import { MultiPartFileExtractor } from "../journey/controller/MultiPartFileExtractor";
+import { MultiPartFormReader } from "../journey/controller/MultiPartFormReader";
 import { AdminUser } from "../user/AdminUser";
 import { Journey } from "../journey/Journey";
 import { JourneyViewFactory } from "../journey/JourneyViewFactory";
@@ -56,6 +56,8 @@ import { DeviceStatusJsonView } from "../device/DeviceStatus";
 import { DeviceStatusViewFactory } from "../device/DeviceStatusViewFactory";
 import { DatabaseBackupJob } from "../database/job/DatabaseBackupJob";
 import * as S3 from "aws-sdk/clients/s3";
+import { JourneyController } from "../journey/controller/JourneyController";
+import { promisify } from "util";
 
 require("dotenv").config();
 
@@ -78,7 +80,7 @@ export class ServiceContainer {
       this.getSwaggerDocument(),
       new ErrorLoggingMiddleware(this.getLogger()),
       new RequestLoggingMiddleware(this.getLogger()),
-      new BlacklistBodyParser(["/journeys"]),
+      new BlacklistBodyParser(["/journey", "/journeys"]),
       this.getLogger()
     );
   }
@@ -134,6 +136,7 @@ export class ServiceContainer {
       schemeWriteController,
       schemeReadController,
       journeysController,
+      journeyController,
       tapController
     ] = await Promise.all([
       this.getOrganisationReadController(),
@@ -141,6 +144,7 @@ export class ServiceContainer {
       this.getSchemeWriteController(),
       this.getSchemeReadController(),
       this.getJourneysController(),
+      this.getJourneyController(),
       this.getTapController()
     ]);
 
@@ -170,6 +174,7 @@ export class ServiceContainer {
       .post("/tap", this.wrap(tapController.post))
       .get("/journeys", this.wrap(journeysController.getAll))
       .post("/journeys", this.wrap(journeysController.post))
+      .post("/journey", this.wrap(journeyController.post))
       .get("/devices", this.wrap(deviceReadController.getAll))
       .get("/:type/:id/report", this.wrap(journeysController.getReport));
   }
@@ -317,11 +322,26 @@ export class ServiceContainer {
     return new JourneysController(
       new JourneyRepository(streamDatabase, database),
       new JourneyCsvToMySqlStreamFactory(memberRepository),
-      new MultiPartFileExtractor(),
+      new MultiPartFormReader(),
       new JourneyViewFactory(userRepository)
     );
   }
 
+  private async getJourneyController(): Promise<JourneyController> {
+    const [journeyRepository, memberRepository] = await Promise.all([
+      this.getJourneyRepository(),
+      this.getGenericMemberRepository()
+    ]);
+
+    const aws = this.getAws();
+
+    return new JourneyController(
+      memberRepository,
+      journeyRepository,
+      new MultiPartFormReader(),
+      promisify(aws.upload.bind(aws))
+    );
+  }
   private async getTapController(): Promise<TapController> {
     const [userRepository, journeyRepository, memberRepository, statusRepository] = await Promise.all([
       this.getGenericAdminUserRepository(),
@@ -354,7 +374,7 @@ export class ServiceContainer {
 
   @memoize
   private getLogger(): Logger {
-    return pino({ prettyPrint: { timeTransOnly: true } });
+    return pino({ prettyPrint: { translateTime: true } });
   }
 
   private async getAuthenticationMiddleware(): Promise<BasicAuthenticationMiddleware> {

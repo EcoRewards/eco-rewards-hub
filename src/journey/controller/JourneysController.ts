@@ -6,12 +6,12 @@ import { JourneyRepository } from "../repository/JourneyRepository";
 import { Context } from "koa";
 import autobind from "autobind-decorator";
 import { IncomingMessage } from "http";
-import { MultiPartFileExtractor } from "./MultiPartFileExtractor";
+import { MultiPartFormReader } from "./MultiPartFormReader";
 import { JourneyViewFactory } from "../JourneyViewFactory";
 import { GetAllResponse, GetResponse } from "../../service/controller/ReadController";
 import { JourneyJsonView } from "../Journey";
 import { LocalDate } from "@js-joda/core";
-import { indexBy } from "ts-array-utils";
+import ReadableStream = NodeJS.ReadableStream;
 
 /**
  * /journeys endpoints
@@ -22,7 +22,7 @@ export class JourneysController {
   constructor(
     private readonly repository: JourneyRepository,
     private readonly factory: JourneyCsvToMySqlStreamFactory,
-    private readonly fileExtractor: MultiPartFileExtractor,
+    private readonly formProcessor: MultiPartFormReader,
     private readonly viewFactory: JourneyViewFactory
   ) { }
 
@@ -37,11 +37,12 @@ export class JourneysController {
   }
 
   private async processInput(input: IncomingMessage, adminUserId: AdminUserId): Promise<string[]> {
-    const [csvToMySql, file] = await Promise.all([
+    const [csvToMySql, form] = await Promise.all([
       this.factory.create(adminUserId),
-      this.fileExtractor.getFile(input)
+      this.formProcessor.getForm(input)
     ]);
 
+    const file = Object.values(form)[0] as ReadableStream;
     const inserts = file
       .pipe(parse({ bom: true, skip_empty_lines: true }))
       .pipe(csvToMySql);

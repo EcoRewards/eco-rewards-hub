@@ -4,7 +4,7 @@ import * as compress from "koa-compress";
 import * as cors from "@koa/cors";
 import * as Router from "koa-router";
 import { BasicAuthenticationMiddleware } from "./authentication/BasicAuthenticationMiddleware";
-import { ui, validate } from "swagger2-koa";
+import { ui } from "swagger2-koa";
 import { Document } from "swagger2/dist/schema";
 import * as bodyParser from "koa-bodyparser";
 import autobind from "autobind-decorator";

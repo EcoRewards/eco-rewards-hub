@@ -1,6 +1,5 @@
 import * as chai from "chai";
 import { TapReader } from "./TapReader";
-import btoa = require("btoa");
 
 describe("TapReader", () => {
   const logger = {

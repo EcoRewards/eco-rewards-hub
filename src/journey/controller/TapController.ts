@@ -11,9 +11,9 @@ import autobind from "autobind-decorator";
 import { DateTimeFormatter, LocalDateTime, ZoneId } from "@js-joda/core";
 import { AxiosInstance } from "axios";
 import { Logger } from "pino";
-import btoa = require("btoa");
 import { DeviceStatus } from "../DeviceStatus";
 import { MemberModelFactory } from "../../member/MemberModelFactory";
+import btoa = require("btoa");
 
 /**
  * Endpoint for receiving LORaWAN data from The Things API

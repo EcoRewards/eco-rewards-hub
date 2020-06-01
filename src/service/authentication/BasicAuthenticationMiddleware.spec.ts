@@ -3,8 +3,8 @@ import { Cryptography } from "../../cryptography/Cryptography";
 import { BasicAuthenticationMiddleware } from "./BasicAuthenticationMiddleware";
 import { Base64 } from "js-base64";
 import { Context } from "koa";
-import toBase64 = Base64.toBase64;
 import { AdminRole } from "../../user/AdminUser";
+import toBase64 = Base64.toBase64;
 
 describe("BasicAuthenticationMiddleware", async () => {
   const cryptography = new Cryptography();

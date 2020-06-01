@@ -15,7 +15,8 @@ export class BasicAuthenticationMiddleware {
     "/health",
     "/login",
     "/groups",
-    "/member"
+    "/member",
+    "/journey"
   ];
 
   constructor(

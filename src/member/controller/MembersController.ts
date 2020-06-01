@@ -1,11 +1,11 @@
-import { GenericRepository, NonNullId } from "../../database/GenericRepository";
+import { GenericRepository } from "../../database/GenericRepository";
 import { Member, MemberJsonView } from "../Member";
 import { MemberViewFactory } from "../MemberViewFactory";
 import { HttpResponse } from "../../service/controller/HttpResponse";
 import { MemberModelFactory } from "../MemberModelFactory";
 import autobind from "autobind-decorator";
 import { ExternalMemberRepository } from "../repository/ExternalMemberRepository";
-import { GetAllResponse, View } from "../..";
+import { GetAllResponse } from "../..";
 import { Context } from "koa";
 
 /**

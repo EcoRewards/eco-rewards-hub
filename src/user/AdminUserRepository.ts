@@ -1,6 +1,5 @@
 import { indexBy } from "ts-array-utils";
 import { AdminUser } from "./AdminUser";
-import { NonNullId } from "../database/GenericRepository";
 
 /**
  * Provides access to the admin user credentials
