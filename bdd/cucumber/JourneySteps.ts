@@ -1,9 +1,9 @@
 import { Then, When } from "cucumber";
 import { World } from "./World";
 import * as chai from "chai";
+import { JourneyJsonView } from "../../src";
 import FormData = require("form-data");
 import btoa = require("btoa");
-import { JourneyJsonView } from "../../src";
 
 When("I upload a file", async function ({ rawTable }: any) {
   const members = this.createdMembers;
@@ -72,3 +72,25 @@ When("I tap with a smartcard {string} on device {string}", async function (membe
 
   chai.expect(response.data.data[0].mode).not.equals("");
 });
+
+Then(
+  /^I add "([^"]*)" miles usage by "([^"]*)" for member "([^"]*)" on "([^"]*)"$/,
+  async function (distance: string, mode: string, memberId: string, date: string) {
+    const formData = new FormData();
+    formData.append("mode", mode);
+    formData.append("memberId", memberId);
+    formData.append("distance", distance);
+    formData.append("date", date);
+
+    try {
+      const response = await World.api.post(
+        "/journey",
+        formData,
+        { headers: formData.getHeaders() }
+      );
+    }
+    catch (e) {
+      console.log(e.response.data.data);
+    }
+  }
+);

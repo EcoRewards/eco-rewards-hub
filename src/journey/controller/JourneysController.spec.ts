@@ -135,7 +135,7 @@ class MockExceptionJourneyRepository {
 
 class MockMultiPartFileExtractor {
 
-  async getFile() {
+  async getFirstFile() {
     const lines = [
       "0000000026,2019-12-09T15:10:05",
       null

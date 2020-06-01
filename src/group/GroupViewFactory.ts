@@ -3,7 +3,6 @@ import { Group, GroupJsonView } from "./Group";
 import { GenericRepository } from "../database/GenericRepository";
 import { Organisation } from "../organisation/Organisation";
 import { GroupView } from "./GroupView";
-import { SchemeViewFactory } from "../scheme/SchemeViewFactory";
 import { OrganisationViewFactory } from "../organisation/OrganisationViewFactory";
 
 /**

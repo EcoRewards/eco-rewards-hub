@@ -1,5 +1,4 @@
 import * as chai from "chai";
-import { JourneyFactory } from "../JourneyFactory";
 import { JourneyCsvToMySqlStreamFactory } from "./JourneyCsvToMySqlStreamFactory";
 
 class MockDb {

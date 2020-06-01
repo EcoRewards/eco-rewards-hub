@@ -1,6 +1,5 @@
 import * as chai from "chai";
 import { RewardPointPolicy } from "./RewardPointPolicy";
-import { CarbonSavingPolicy } from "./CarbonSavingPolicy";
 
 describe("RewardPointPolicy", () => {
   const policy = new RewardPointPolicy();

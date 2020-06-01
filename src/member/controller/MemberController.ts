@@ -1,6 +1,6 @@
 import autobind from "autobind-decorator";
 import { GetRequest, GetResponse } from "../../service/controller/ReadController";
-import { MemberJsonView, toMemberId, Member } from "../Member";
+import { Member, MemberJsonView, toMemberId } from "../Member";
 import { MemberViewFactory } from "../MemberViewFactory";
 import { MemberRepository } from "../repository/MemberRepository";
 import {
@@ -9,7 +9,8 @@ import {
   HttpResponse,
   MemberModelFactory,
   MemberView,
-  NonNullId, toGroupId
+  NonNullId,
+  toGroupId
 } from "../..";
 import { ExternalMemberRepository } from "../repository/ExternalMemberRepository";
 

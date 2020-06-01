@@ -1,5 +1,4 @@
 import * as chai from "chai";
-import * as pino from "pino";
 import { HealthController } from "./HealthController";
 
 describe("HealthController", () => {

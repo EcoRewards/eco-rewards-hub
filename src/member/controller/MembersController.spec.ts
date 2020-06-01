@@ -7,7 +7,7 @@ import { MemberView } from "../MemberView";
 import { MemberModelFactory } from "../MemberModelFactory";
 import { Member, MemberJsonView } from "../Member";
 import { SchemeView } from "../../scheme/SchemeView";
-import { GetAllResponse, GetResponse } from "../..";
+import { GetAllResponse } from "../..";
 
 class MockOrganisationRepository {
   data: Scheme[] = [];

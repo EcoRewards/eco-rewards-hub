@@ -1,12 +1,9 @@
 import autobind from "autobind-decorator";
 import { HttpError, HttpResponse } from "../../service/controller/HttpResponse";
-import { GenericRepository } from "../../database/GenericRepository";
 import { Cryptography } from "../../cryptography/Cryptography";
-import { AdminUser } from "../AdminUser";
-import { keyValue } from "ts-array-utils";
 import { Base64 } from "js-base64";
-import toBase64 = Base64.toBase64;
 import { AdminUserRepository } from "../AdminUserRepository";
+import toBase64 = Base64.toBase64;
 
 /**
  * Controller that checks a users login. This is a convenience method for the front end, it just checks the credentials

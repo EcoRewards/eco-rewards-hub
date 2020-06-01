@@ -19,7 +19,6 @@ export * from "./journey/JourneyViewFactory";
 export * from "./journey/TapReader";
 export * from "./journey/controller/TapController";
 export * from "./journey/controller/JourneysController";
-export * from "./journey/controller/MultiPartFileExtractor";
 export * from "./journey/repository/JourneyRepository";
 export * from "./journey/stream/JourneyCsvToMySqlStream";
 export * from "./journey/stream/JourneyCsvToMySqlStreamFactory";

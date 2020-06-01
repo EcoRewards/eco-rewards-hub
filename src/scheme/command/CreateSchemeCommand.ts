@@ -1,6 +1,5 @@
 import { Scheme } from "../Scheme";
 import { GenericRepository } from "../../database/GenericRepository";
-import { SchemeModelFactory } from "../SchemeModelFactory";
 
 /**
  * Command to create a Scheme and save it in the database

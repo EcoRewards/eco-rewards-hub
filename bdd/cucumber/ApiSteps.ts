@@ -1,6 +1,5 @@
-import * as chai from "chai";
 import axios from "axios";
-import { Given, Then, When } from "cucumber";
+import { Given } from "cucumber";
 import { World } from "./World";
 import { config } from "../../config/service";
 

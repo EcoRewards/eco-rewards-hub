@@ -837,6 +837,49 @@ paths:
       security:
         - basicAuth: []
 
+  /journey:
+    post:
+      summary: Uploads a member journey.
+      consumes:
+        - multipart/form-data
+      produces:
+        - application/json
+      parameters:
+        - in: formData
+          name: body
+          schema:
+            type: "object"
+            required:
+              - memberId
+              - mode
+              - distance
+              - date
+            properties:
+              memberId:
+                type: "string"
+                example: "654321002222240099"
+              mode:
+                type: "string"
+                example: "bus"
+              distance:
+                type: "number"
+                example: 1.5
+              date:
+                type: "string"
+                example: "2020-05-05 10:00:00"
+      responses:
+        201:
+          description: "Successfully processed journey."
+          schema:
+            type: "object"
+            properties:
+              data:
+                type: "string"
+        401:
+          $ref: '#/responses/401'
+        500:
+          $ref: '#/responses/500'
+
   /devices:
     get:
       summary: "Return all device statuses"

@@ -105,6 +105,6 @@ export class CliContainer {
 
   @memoize
   private getLogger(): Logger {
-    return pino({ prettyPrint: { timeTransOnly: true } });
+    return pino({ prettyPrint: { translateTime: true } });
   }
 }

@@ -49,7 +49,7 @@ export class RewardAllocationJob {
       const deviceGroup = this.getDeviceGroup(journey.device_id);
       const hasUsedThisDeviceGroup = usedDeviceGroups[deviceGroup];
 
-      if (hasUsedThisDeviceGroup) {
+      if (hasUsedThisDeviceGroup && journey.device_id !== "") {
         journeysProcessed.push([0, 0, journey.id]);
       }
       else {
