@@ -2,13 +2,12 @@ import { JourneyFactory } from "../JourneyFactory";
 import { indexBy } from "ts-array-utils";
 import { Member } from "../../member/Member";
 import { GenericRepository } from "../../database/GenericRepository";
-import { MemberModelFactory } from "../../member/MemberModelFactory";
 import { Context } from "koa";
 import { Journey } from "../Journey";
 import { MultiPartFormReader } from "./MultiPartFormReader";
+import autobind from "autobind-decorator";
 import sharp = require("sharp");
 import ReadableStream = NodeJS.ReadableStream;
-import autobind from "autobind-decorator";
 
 @autobind
 export class JourneyController {
@@ -52,7 +51,7 @@ export class JourneyController {
     const members = await this.memberRepository.getIndexedById();
     const membersBySmartcard = Object.values(members).reduce(indexBy(m => m.smartcard || ""), {});
 
-    return new JourneyFactory(members, membersBySmartcard, this.memberRepository, new MemberModelFactory());
+    return new JourneyFactory(members, membersBySmartcard);
   }
 
   private validateForm(form: PostJourneyRequest) {

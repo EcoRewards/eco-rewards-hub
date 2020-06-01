@@ -58,6 +58,7 @@ import { DatabaseBackupJob } from "../database/job/DatabaseBackupJob";
 import * as S3 from "aws-sdk/clients/s3";
 import { JourneyController } from "../journey/controller/JourneyController";
 import { promisify } from "util";
+import { TapProcessor } from "../journey/TapProcessor";
 
 require("dotenv").config();
 
@@ -343,18 +344,20 @@ export class ServiceContainer {
     );
   }
   private async getTapController(): Promise<TapController> {
-    const [userRepository, journeyRepository, memberRepository, statusRepository] = await Promise.all([
+    const [userRepository, journeyRepository, memberRepository, statusRepository, externalApi] = await Promise.all([
       this.getGenericAdminUserRepository(),
       this.getJourneyRepository(),
       this.getGenericMemberRepository(),
-      this.getDeviceStatusRepository()
+      this.getDeviceStatusRepository(),
+      this.getExternalMemberRepository()
     ]);
 
+    const reader = new TapReader(this.getLogger());
+    const memberFactory = new MemberModelFactory();
+
     return new TapController(
-      new TapReader(this.getLogger()),
+      new TapProcessor(reader, journeyRepository, memberRepository, memberFactory, externalApi),
       new JourneyViewFactory(userRepository),
-      journeyRepository,
-      memberRepository,
       statusRepository,
       Axios.create(),
       this.getLogger()

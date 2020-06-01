@@ -2,6 +2,8 @@ import * as chai from "chai";
 import { JourneyViewFactory } from "../JourneyViewFactory";
 import { TapController } from "./TapController";
 import btoa = require("btoa");
+import { TapProcessor } from "../TapProcessor";
+import { MemberModelFactory } from "../../member/MemberModelFactory";
 
 class MockRepository {
 
@@ -40,6 +42,12 @@ class MockHttp {
   }
 }
 
+class MockExternalApi {
+  async exportAll() {
+
+  }
+}
+
 describe("TapController", () => {
   const journeyRepository = new MockRepository() as any;
   const memberRepository = new MockRepository({
@@ -61,14 +69,14 @@ describe("TapController", () => {
 
   const reader = new MockTapReader() as any;
   const journeyViewFactory = new JourneyViewFactory(adminRepository);
+  const memberFactory = new MemberModelFactory();
+  const externalMemberRepository = new MockExternalApi() as any;
 
   it("handles post requests", async () => {
     const controller = new TapController(
-      reader,
+      new TapProcessor(reader, journeyRepository, memberRepository, memberFactory, externalMemberRepository),
       journeyViewFactory,
-      journeyRepository,
-      memberRepository,
-      journeyRepository,
+      {} as any,
       {} as any,
       { info: () => {} } as any,
     );
@@ -93,10 +101,8 @@ describe("TapController", () => {
       {} as any,
       {} as any,
       {} as any,
-      {} as any,
-      journeyRepository,
       mockHttp as any,
-      { info: () => {} } as any,
+      { info: () => {}, warn: () => {} } as any
     );
 
     const ctx = { adminUserId: 1, req: {} };

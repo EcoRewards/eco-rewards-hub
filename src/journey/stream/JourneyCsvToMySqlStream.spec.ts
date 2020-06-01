@@ -26,7 +26,7 @@ describe("JourneyCsvToMySqlStream", () => {
       total_miles: 50,
       previous_transport_mode: null
     }
-  }, {}, {} as any, {} as any);
+  }, {});
 
   it("returns errors", (done) => {
     const stream = new JourneyCsvToMySqlStream(factory, 1);
