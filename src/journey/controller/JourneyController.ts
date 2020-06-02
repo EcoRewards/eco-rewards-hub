@@ -37,11 +37,13 @@ export class JourneyController {
     if (form.image) {
       const resize = sharp().resize({ width: 500, withoutEnlargement: true }).jpeg({ quality: 90 });
 
-      await this.storage({
-        Bucket: "eco-rewards-images",
-        Key: savedJourney.id + ".jpg",
-        Body: form.image.pipe(resize),
-      });
+      try {
+        await this.storage({
+          Bucket: "eco-rewards-images",
+          Key: savedJourney.id + ".jpg",
+          Body: form.image.pipe(resize),
+        });
+      } catch {}
     }
 
     return { code: 201, data: "success" };
