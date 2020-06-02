@@ -74,7 +74,8 @@ describe("TapController", () => {
 
   it("handles post requests", async () => {
     const controller = new TapController(
-      new TapProcessor(reader, journeyRepository, memberRepository, memberFactory, externalMemberRepository),
+      reader,
+      new TapProcessor(journeyRepository, memberRepository, memberFactory, externalMemberRepository),
       journeyViewFactory,
       {} as any,
       {} as any,
@@ -98,6 +99,7 @@ describe("TapController", () => {
   it("handles status requests", async () => {
     const mockHttp = new MockHttp();
     const controller = new TapController(
+      reader,
       {} as any,
       {} as any,
       {} as any,

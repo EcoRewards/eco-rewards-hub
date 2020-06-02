@@ -1,6 +1,6 @@
 import { HttpResponse } from "../../service/controller/HttpResponse";
-import { JourneyJsonView } from "../Journey";
-import { toHex } from "../TapReader";
+import { Journey, JourneyJsonView } from "../Journey";
+import { TapReader, toHex } from "../TapReader";
 import { Context } from "koa";
 import { JourneyViewFactory } from "../JourneyViewFactory";
 import { GenericRepository } from "../../database/GenericRepository";
@@ -21,6 +21,7 @@ export class TapController {
   private readonly statusResponseCommand = Buffer.from("SETDT");
 
   constructor(
+    private readonly tapReader: TapReader,
     private readonly tapProcessor: TapProcessor,
     private readonly viewFactory: JourneyViewFactory,
     private readonly statusRepository: GenericRepository<DeviceStatus>,
@@ -34,21 +35,24 @@ export class TapController {
   public async post(request: JourneyPostRequest, ctx: Context): Promise<HttpResponse<JourneyJsonView[]>> {
     const buffer = Buffer.from(request.payload_raw, "base64");
     const rawData = Array.from(buffer).map(toHex).join(" ");
+    const links = {};
+    let data: JourneyJsonView[] = [];
+
     this.logger.info("Tap: " + rawData);
 
     if (buffer[8] === 0x20) {
       await this.processStatus(request, rawData);
-
-      return { data: [], links: {} };
     }
     else {
-      const journeys = await this.tapProcessor.getJourneys(buffer, ctx.adminUserId);
+      const deviceId = Array.from(buffer).slice(0, 4).map(toHex).join("");
+      const taps = this.tapReader.getTaps(buffer);
+      const journeys = await this.tapProcessor.getJourneys(taps, deviceId, ctx.adminUserId);
       const view = await this.viewFactory.create();
-      const links = {};
-      const data = journeys.map(j => view.create(links, j));
 
-      return { data, links };
+      data = journeys.map(j => view.create(links, j));
     }
+
+    return { data, links };
   }
 
   private async processStatus(request: JourneyPostRequest, rawData: string): Promise<void> {

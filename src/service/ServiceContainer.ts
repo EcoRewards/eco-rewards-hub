@@ -356,7 +356,8 @@ export class ServiceContainer {
     const memberFactory = new MemberModelFactory();
 
     return new TapController(
-      new TapProcessor(reader, journeyRepository, memberRepository, memberFactory, externalApi),
+      reader,
+      new TapProcessor(journeyRepository, memberRepository, memberFactory, externalApi),
       new JourneyViewFactory(userRepository),
       statusRepository,
       Axios.create(),
