@@ -74,13 +74,13 @@ When("I tap with a smartcard {string} on device {string}", async function (membe
 });
 
 Then(
-  /^I add "([^"]*)" miles usage by "([^"]*)" for member "([^"]*)" on "([^"]*)"$/,
-  async function (distance: string, mode: string, memberId: string, date: string) {
+  /^I add "([^"]*)" miles usage by "([^"]*)" for member "([^"]*)"$/,
+  async function (distance: string, mode: string, memberId: string) {
     const formData = new FormData();
     formData.append("mode", mode);
     formData.append("memberId", memberId);
     formData.append("distance", distance);
-    formData.append("date", date);
+    formData.append("date", new Date().toJSON().substr(0, 10));
 
     try {
       const response = await World.api.post(
