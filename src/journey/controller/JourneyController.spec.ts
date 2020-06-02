@@ -127,6 +127,63 @@ describe("JourneyController", () => {
     chai.expect(result.data.errors[0]).to.deep.equal("Travel date cannot be in the future");
   });
 
+  it("checks the travel distance for bus", async () => {
+    const controller = new JourneyController(
+      memberRepository,
+      journeyRepository,
+      new MockMultiPartFileExtractor({
+        memberId: "2222230019",
+        date: new Date().toJSON().substr(0, 10),
+        mode: "bus",
+        distance: 55
+      }) as any,
+      mockStorage
+    );
+
+    const ctx = { req: {} };
+    const result = await controller.post({ }, ctx as any) as any;
+
+    chai.expect(result.data.errors[0]).to.deep.equal("Travel distance must need exceed 50 miles or 500 miles for train journeys");
+  });
+
+  it("checks the travel distance for train", async () => {
+    const controller = new JourneyController(
+      memberRepository,
+      journeyRepository,
+      new MockMultiPartFileExtractor({
+        memberId: "2222230019",
+        date: new Date().toJSON().substr(0, 10),
+        mode: "train",
+        distance: 555
+      }) as any,
+      mockStorage
+    );
+
+    const ctx = { req: {} };
+    const result = await controller.post({ }, ctx as any) as any;
+
+    chai.expect(result.data.errors[0]).to.deep.equal("Travel distance must need exceed 50 miles or 500 miles for train journeys");
+  });
+
+  it("checks the travel distance is not negative", async () => {
+    const controller = new JourneyController(
+      memberRepository,
+      journeyRepository,
+      new MockMultiPartFileExtractor({
+        memberId: "2222230019",
+        date: new Date().toJSON().substr(0, 10),
+        mode: "bus",
+        distance: -5
+      }) as any,
+      mockStorage
+    );
+
+    const ctx = { req: {} };
+    const result = await controller.post({ }, ctx as any) as any;
+
+    chai.expect(result.data.errors[0]).to.deep.equal("Travel distance must not be negative");
+  });
+
   it("uploads images", async () => {
     const controller = new JourneyController(
       memberRepository,

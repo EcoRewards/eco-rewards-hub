@@ -87,6 +87,16 @@ export class JourneyController {
     if (!form.distance) {
       errors.push("Travel distance must be set");
     }
+    else {
+      const maxDistance = form.mode === "train" ? 500 : 50;
+
+      if (form.distance > maxDistance) {
+        errors.push("Travel distance must need exceed 50 miles or 500 miles for train journeys");
+      }
+      if (form.distance < 0) {
+        errors.push("Travel distance must not be negative");
+      }
+    }
 
     return errors;
   }
