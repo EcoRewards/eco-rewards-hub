@@ -57,7 +57,7 @@ describe("JourneyController", () => {
       journeyRepository,
       new MockMultiPartFileExtractor({
         memberId: "2222230019",
-        date: "2020-06-01",
+        date: new Date().toJSON().substr(0, 10),
         mode: "bus",
         distance: 1.0
       }) as any,
@@ -89,13 +89,51 @@ describe("JourneyController", () => {
     chai.expect(result.data.errors[3]).to.deep.equal("Travel distance must be set");
   });
 
+  it("checks the travel date is within the last 7 days", async () => {
+    const controller = new JourneyController(
+      memberRepository,
+      journeyRepository,
+      new MockMultiPartFileExtractor({
+        memberId: "2222230019",
+        date: "2000-01-01",
+        mode: "bus",
+        distance: 1.0
+      }) as any,
+      mockStorage
+    );
+
+    const ctx = { req: {} };
+    const result = await controller.post({ }, ctx as any) as any;
+
+    chai.expect(result.data.errors[0]).to.deep.equal("Travel date must be within the last 7 days");
+  });
+
+  it("checks the travel date is not in the future", async () => {
+    const controller = new JourneyController(
+      memberRepository,
+      journeyRepository,
+      new MockMultiPartFileExtractor({
+        memberId: "2222230019",
+        date: "2999-01-01",
+        mode: "bus",
+        distance: 1.0
+      }) as any,
+      mockStorage
+    );
+
+    const ctx = { req: {} };
+    const result = await controller.post({ }, ctx as any) as any;
+
+    chai.expect(result.data.errors[0]).to.deep.equal("Travel date cannot be in the future");
+  });
+
   it("uploads images", async () => {
     const controller = new JourneyController(
       memberRepository,
       journeyRepository,
       new MockMultiPartFileExtractor({
         memberId: "2222230019",
-        date: "2020-06-01",
+        date: new Date().toJSON().substr(0, 10),
         mode: "bus",
         distance: 1.0,
         image: new Readable({

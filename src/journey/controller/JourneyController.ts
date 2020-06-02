@@ -62,12 +62,28 @@ export class JourneyController {
     if (!form.memberId) {
       errors.push("Member ID must be set");
     }
+
     if (!form.date || form.date.match(/\d{4}-\d{2}-\d{2}/) === null) {
       errors.push("Travel date must be set");
     }
+    else {
+      const travelDate = new Date(form.date);
+      const now = new Date();
+      const eightDaysAgo = new Date(now.getTime() - (1000 * 3600 * 24 * 8));
+
+      if (travelDate.getTime() > now.getTime()) {
+        errors.push("Travel date cannot be in the future");
+      }
+
+      if (travelDate.getTime() < eightDaysAgo.getTime()) {
+        errors.push("Travel date must be within the last 7 days");
+      }
+    }
+
     if (!form.mode) {
       errors.push("Travel mode must be set");
     }
+
     if (!form.distance) {
       errors.push("Travel distance must be set");
     }
