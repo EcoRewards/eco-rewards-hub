@@ -82,10 +82,10 @@ export class MemberController {
       return { data: { error: "Not found" }, links, code: 404 };
     }
 
-    member.member_group_id = toGroupId(request.group);
-    member.default_transport_mode = request.defaultTransportMode;
-    member.previous_transport_mode = request.previousTransportMode;
-    member.default_distance = request.defaultDistance;
+    member.member_group_id = request.group ? toGroupId(request.group) : member.member_group_id;
+    member.default_transport_mode = request.defaultTransportMode ?? member.default_transport_mode;
+    member.previous_transport_mode = request.previousTransportMode ?? member.previous_transport_mode;
+    member.default_distance = request.defaultDistance ?? member.default_distance;
 
     const savedModel = await this.genericRepository.save(member);
     const view = await this.viewFactory.create();
@@ -110,8 +110,8 @@ export interface MemberPostRequest {
 
 export interface MemberPutRequest {
   id: string,
-  group: string,
-  defaultTransportMode: string,
-  previousTransportMode: string,
-  defaultDistance: number
+  group?: string,
+  defaultTransportMode?: string,
+  previousTransportMode?: string,
+  defaultDistance?: number
 }
