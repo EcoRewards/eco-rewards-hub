@@ -2,6 +2,7 @@ module.exports = {
     apps : [{
         name: "eco-rewards-hub",
         script: "dist/src/start.js",
+        node_args: "--tls-min-v1.0",
         env: {
             NODE_ENV: "development",
         },
