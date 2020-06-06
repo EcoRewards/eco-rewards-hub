@@ -12,7 +12,8 @@ export class ExportAllCommand {
    * Export all members to VAC media
    */
   public async run(): Promise<void> {
-    const members = await this.repository.selectAll();
+    const allMembers = await this.repository.selectAll();
+    const members = allMembers.filter(m => [200006203, 200006202, 200006201].includes(m.id));
     const membersByGroup = members.reduce(groupBy(m => m.member_group_id), {});
 
     for (const [groupId, groupMembers] of Object.entries(membersByGroup)) {

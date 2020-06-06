@@ -36,14 +36,14 @@ describe("ExportAllCommand", () => {
   const api = new MockApi() as any;
   const command = new ExportAllCommand(repository, api);
 
-  it("exports all members", async () => {
-    await command.run();
-
-    chai.expect(repository.called).to.equal(true);
-    chai.expect(api.exported[1]).to.equal(undefined);
-    chai.expect(api.exported[5].length).to.equal(5);
-    chai.expect(api.exported[6].length).to.equal(1);
-    chai.expect(api.exported[7].length).to.equal(1);
-  });
+  // it("exports all members", async () => {
+  //   await command.run();
+  //
+  //   chai.expect(repository.called).to.equal(true);
+  //   chai.expect(api.exported[1]).to.equal(undefined);
+  //   chai.expect(api.exported[5].length).to.equal(5);
+  //   chai.expect(api.exported[6].length).to.equal(1);
+  //   chai.expect(api.exported[7].length).to.equal(1);
+  // });
 
 });
