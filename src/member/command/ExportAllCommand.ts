@@ -13,7 +13,7 @@ export class ExportAllCommand {
    */
   public async run(): Promise<void> {
     const allMembers = await this.repository.selectAll();
-    const members = allMembers.filter(m => [200006203, 200006202, 200006201].includes(m.id));
+    const members = allMembers.filter(m => m.id >= 2000041141 && m.id <= 2000062006);
     const membersByGroup = members.reduce(groupBy(m => m.member_group_id), {});
 
     for (const [groupId, groupMembers] of Object.entries(membersByGroup)) {
