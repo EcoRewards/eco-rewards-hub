@@ -57,7 +57,7 @@ export class MembersController {
       const header = "id,scheme,organisation,group,default_distance,default_transport_mode,previous_transport_mode,"
         + "rewards,carbon_saving,total_miles\n";
       const csvData = data.map(m => [
-        m.id.substr(m.id.lastIndexOf("/") + 1),
+        this.formatId(m.id),
         links[links[links[m.group].organisation].scheme].name,
         links[links[m.group].organisation].name,
         links[m.group].name,
@@ -77,6 +77,19 @@ export class MembersController {
     }
   }
 
+  private formatId(id: string) {
+    id = id.substr(id.lastIndexOf("/") + 1);
+
+    if (id.length === 16) {
+      return [id.substr(0, 4), id.substr(4, 4), id.substr(8, 4), id.substr(12, 4)].join("-");
+    }
+    else if (id.length === 18) {
+      return [id.substr(0, 6), id.substr(6, 4), id.substr(10, 4), id.substr(14, 4)].join("-");
+    }
+    else {
+      return id;
+    }
+  }
 }
 
 export interface MembersPostRequest {

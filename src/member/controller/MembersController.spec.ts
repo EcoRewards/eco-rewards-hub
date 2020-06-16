@@ -35,7 +35,7 @@ class MockOrganisationRepository {
         rewards: 1700,
         default_distance: 5.4,
         default_transport_mode: "bus",
-        smartcard: null,
+        smartcard: "6335970140550010",
         total_miles: 5.2
       },
       {
@@ -45,7 +45,7 @@ class MockOrganisationRepository {
         rewards: 1700,
         default_distance: 5.4,
         default_transport_mode: "bus",
-        smartcard: null,
+        smartcard: "633597014055001083",
         total_miles: 5.2
       },
     ];
@@ -120,8 +120,8 @@ describe("MembersController", () => {
     chai.expect(result.data[1].defaultTransportMode).equal("bus");
     chai.expect(result.data[2].defaultTransportMode).equal("bus");
     chai.expect(result.data[0].id).equal("/member/0000000018");
-    chai.expect(result.data[1].id).equal("/member/0000000026");
-    chai.expect(result.data[2].id).equal("/member/0000000034");
+    chai.expect(result.data[1].id).equal("/member/6335970140550010");
+    chai.expect(result.data[2].id).equal("/member/633597014055001083");
   });
 
   it("return members as csv", async () => {
@@ -144,8 +144,8 @@ describe("MembersController", () => {
       "rewards,carbon_saving,total_miles"
     );
     chai.expect(lines[1]).equal("0000000018,scheme2,org2,group2,5.4,bus,,1700,4.3,5.2");
-    chai.expect(lines[2]).equal("0000000026,scheme2,org2,group2,5.4,bus,,1700,4.3,5.2");
-    chai.expect(lines[3]).equal("0000000034,scheme2,org2,group2,5.4,bus,,1700,4.3,5.2");
+    chai.expect(lines[2]).equal("6335-9701-4055-0010,scheme2,org2,group2,5.4,bus,,1700,4.3,5.2");
+    chai.expect(lines[3]).equal("633597-0140-5500-1083,scheme2,org2,group2,5.4,bus,,1700,4.3,5.2");
   });
 
 });
