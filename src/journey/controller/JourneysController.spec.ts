@@ -232,7 +232,17 @@ describe("JourneysController", () => {
       multiPartFileExtractor as any,
       new JourneyViewFactory(new MockRepository() as any)
     );
-    const result = await controller.getAll({}, {} as any) as GetAllResponse<JourneyJsonView>;
+    const context = {
+      body: "",
+      request: {
+        accept: {
+          types: () => []
+        }
+      },
+      set: () => {}
+    };
+
+    const result = await controller.getAll({}, context as any) as GetAllResponse<JourneyJsonView>;
     const expected = [
       {
         "carbonSaving": null,
