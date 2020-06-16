@@ -82,8 +82,6 @@ export class MemberController {
       return { data: { error: "Not found" }, links, code: 404 };
     }
 
-    console.log(request);
-
     member.member_group_id = request.group ? toGroupId(request.group) : member.member_group_id;
     member.default_transport_mode = request.defaultTransportMode ?? member.default_transport_mode;
     member.previous_transport_mode = request.previousTransportMode ?? member.previous_transport_mode;

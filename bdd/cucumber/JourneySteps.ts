@@ -94,3 +94,12 @@ Then(
     }
   }
 );
+
+When("I export the journeys as CSV", async function () {
+  const response = await World.api.get("/journeys", { headers: { Accept: "text/csv" } });
+  this.journeyCsv = response.data;
+});
+
+Then("the CSV should have at least {string} journeys", async function (quantity: string) {
+  chai.expect(this.journeyCsv.split("\n").length + 1).to.be.greaterThan(+quantity);
+});

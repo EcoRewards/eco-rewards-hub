@@ -5,6 +5,8 @@ import { Readable } from "stream";
 import { JourneyFactory } from "../JourneyFactory";
 import { JourneyViewFactory } from "../JourneyViewFactory";
 import { LocalDate } from "@js-joda/core";
+import { GetAllResponse } from "../../service/controller/ReadController";
+import { JourneyJsonView } from "../Journey";
 
 class MockFactory {
   constructor(
@@ -230,7 +232,17 @@ describe("JourneysController", () => {
       multiPartFileExtractor as any,
       new JourneyViewFactory(new MockRepository() as any)
     );
-    const result = await controller.getAll();
+    const context = {
+      body: "",
+      request: {
+        accept: {
+          types: () => []
+        }
+      },
+      set: () => {}
+    };
+
+    const result = await controller.getAll({}, context as any) as GetAllResponse<JourneyJsonView>;
     const expected = [
       {
         "carbonSaving": null,
@@ -259,6 +271,32 @@ describe("JourneysController", () => {
     ];
 
     chai.expect(result.data).to.deep.equal(expected);
+  });
+
+  it("returns all results as a CSV", async () => {
+    const controller = new JourneysController(
+      journeyRepository as any,
+      {} as any,
+      multiPartFileExtractor as any,
+      new JourneyViewFactory(new MockRepository() as any)
+    );
+    const context = {
+      body: "",
+      request: {
+        accept: {
+          types: () => ["text/csv"]
+        }
+      },
+      set: () => {}
+    };
+
+    await controller.getAll({}, context as any);
+
+    const lines = context.body.split("\n");
+
+    chai.expect(lines[0]).equal("source,uploaded,processed,travelDate,memberId,distance,mode,rewardsEarned,carbonSaving,deviceId");
+    chai.expect(lines[1]).equal("Bob,2019-12-11T22:04:50,,2019-12-11T10:02:20,0000000018,1.56,Train,,,");
+    chai.expect(lines[2]).equal("Bob,2019-12-11T22:04:50,,2019-12-11T10:02:20,654321-0022-2223-0099,1.56,Train,,,");
   });
 
   it("returns a report", async () => {

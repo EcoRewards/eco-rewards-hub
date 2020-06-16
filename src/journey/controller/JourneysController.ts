@@ -12,6 +12,7 @@ import { GetAllResponse, GetResponse } from "../../service/controller/ReadContro
 import { JourneyJsonView } from "../Journey";
 import { LocalDate } from "@js-joda/core";
 import ReadableStream = NodeJS.ReadableStream;
+import { formatIdForCsv, MemberJsonView } from "../../member/Member";
 
 /**
  * /journeys endpoints
@@ -60,7 +61,7 @@ export class JourneysController {
   /**
    * Return a list of items
    */
-  public async getAll(): Promise<GetAllResponse<JourneyJsonView>> {
+  public async getAll(request: {}, ctx: Context): Promise<GetAllResponse<JourneyJsonView> | void> {
     const links = {};
     const [models, view] = await Promise.all([
       this.repository.selectAll(),
@@ -68,8 +69,21 @@ export class JourneysController {
     ]);
 
     const data = models.map(m => view.create(links, m));
+    const accepts = ctx.request.accept.types();
 
-    return { data, links };
+    if (accepts && accepts.includes("text/csv")) {
+      const head = "source,uploaded,processed,travelDate,memberId,distance,mode,rewardsEarned,carbonSaving,deviceId\n";
+      const csvData = data
+        .map(j => (j.memberId = formatIdForCsv(j.memberId)) && j)
+        .map(j => Object.values(j).join(","))
+        .join("\n");
+
+      ctx.set("Content-disposition", "attachment; filename=journeys.csv");
+      ctx.status = 200;
+      ctx.body = head + csvData;
+    } else {
+      return { data, links };
+    }
   }
 
   /**
