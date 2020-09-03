@@ -12,11 +12,12 @@ import { Logger } from "pino";
 export class BasicAuthenticationMiddleware {
 
   private readonly whitelist = [
-    "/health",
-    "/login",
-    "/groups",
-    "/member",
-    "/journey"
+    ctx => ctx.request.path === "/health",
+    ctx => ctx.request.path === "/login",
+    ctx => ctx.request.path === "/groups",
+    ctx => ctx.request.path === "/member",
+    ctx => ctx.request.path === "/journey",
+    ctx => /^\/organisation\/[\d+]\/report/.test(ctx.request.path)
   ];
 
   constructor(
@@ -29,7 +30,7 @@ export class BasicAuthenticationMiddleware {
    * Authenticate a request
    */
   public async auth(ctx: Context, next: Next) {
-    if (this.whitelist.includes(ctx.request.path) || ctx.request.method === "OPTIONS") {
+    if (ctx.request.method === "OPTIONS" || this.whitelist.some(fn => fn(ctx))) {
       return next();
     }
 
