@@ -69,7 +69,7 @@ export class RewardRepository {
 
       const journeyUpdates = journeysProcessed.map(journey => {
         return connection.query(
-          "`UPDATE journey SET processed = NOW(), distance = ?, rewards_earned = ?, carbon_saving = ? WHERE id = ?",
+          "UPDATE journey SET processed = NOW(), distance = ?, rewards_earned = ?, carbon_saving = ? WHERE id = ?",
           journey
         );
       });
