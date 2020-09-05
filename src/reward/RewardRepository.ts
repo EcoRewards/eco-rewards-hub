@@ -69,7 +69,8 @@ export class RewardRepository {
 
       const journeyUpdates = journeysProcessed.map(journey => {
         return connection.query(
-          "UPDATE journey SET processed = NOW(), rewards_earned = ?, carbon_saving = ? WHERE id = ?", journey
+          "`UPDATE journey SET processed = NOW(), distance = ?, rewards_earned = ?, carbon_saving = ? WHERE id = ?",
+          journey
         );
       });
 
@@ -91,7 +92,7 @@ export class RewardRepository {
 export type SavedJourney = NonNullId<Journey>;
 export type TravelDate = string;
 export type UnprocessedJourneyIndex = Record<MemberId, Record<TravelDate, SavedJourney[]>>;
-export type JourneyProcessedRow = [number, number, number];
+export type JourneyProcessedRow = [number, number, number, number];
 export type MemberPreviousJourneys = {
   existingRewards: number,
   devices: string[]

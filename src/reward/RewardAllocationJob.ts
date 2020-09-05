@@ -50,14 +50,14 @@ export class RewardAllocationJob {
       const hasUsedThisDeviceGroup = usedDeviceGroups[deviceGroup];
 
       if (hasUsedThisDeviceGroup && journey.device_id !== "") {
-        journeysProcessed.push([0, 0, journey.id]);
+        journeysProcessed.push([0, 0, 0, journey.id]);
       }
       else {
         const carbonSaving = this.carbonSavingPolicy.getCarbonSaving(journey.mode, journey.distance);
         const currentTotal = existingRewards + rewardsGenerated;
         const rewardPoints = this.rewardPointPolicy.getRewardPoints(journey.mode, journey.distance, currentTotal);
 
-        journeysProcessed.push([rewardPoints, carbonSaving, journey.id]);
+        journeysProcessed.push([journey.distance, rewardPoints, carbonSaving, journey.id]);
         rewardsGenerated += rewardPoints;
         carbonSavingGenerated += carbonSaving;
         totalDistance += journey.distance;

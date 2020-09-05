@@ -57,7 +57,7 @@ describe("RewardRepository", () => {
   it("cleans up relationships", async () => {
     const db = new MockDb();
     const repository = new RewardRepository(db, logger);
-    await repository.updateRewards(1, [[1, 1, 1]], 50, 1, 1);
+    await repository.updateRewards(1, [[1, 1, 1, 1]], 50, 1, 1);
 
     const [sql] = db.sqlQueries;
 
