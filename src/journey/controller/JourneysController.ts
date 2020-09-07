@@ -94,7 +94,7 @@ export class JourneysController {
     const untilDate = to ? LocalDate.parse(to) : LocalDate.now();
     const report = await this.repository.selectJourneysGroupedByTravelDate(
       fromDate.toJSON(),
-      untilDate.toJSON(),
+      untilDate.plusDays(1).toJSON(),
       type,
       +id
     );
