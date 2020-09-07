@@ -10,7 +10,7 @@ import { MultiPartFormReader } from "./MultiPartFormReader";
 import { JourneyViewFactory } from "../JourneyViewFactory";
 import { GetAllResponse, GetResponse } from "../../service/controller/ReadController";
 import { JourneyJsonView } from "../Journey";
-import { LocalDate } from "@js-joda/core";
+import {LocalDate, LocalTime} from "@js-joda/core";
 import ReadableStream = NodeJS.ReadableStream;
 import { formatIdForCsv, MemberJsonView } from "../../member/Member";
 
@@ -94,7 +94,7 @@ export class JourneysController {
     const untilDate = to ? LocalDate.parse(to) : LocalDate.now();
     const report = await this.repository.selectJourneysGroupedByTravelDate(
       fromDate.toJSON(),
-      untilDate.plusDays(1).toJSON(),
+      untilDate.atTime(LocalTime.parse("23:59")).toJSON(),
       type,
       +id
     );
