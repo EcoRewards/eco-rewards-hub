@@ -68,20 +68,20 @@ export class JourneysController {
       this.viewFactory.create()
     ]);
 
-    const data = models.map(m => view.create(links, m));
     const accepts = ctx.request.accept.types();
 
     if (accepts && accepts.includes("text/csv")) {
-      const head = "source,uploaded,processed,travelDate,memberId,distance,mode,rewardsEarned,carbonSaving,deviceId\n";
-      const csvData = data
-        .map(j => (j.memberId = formatIdForCsv(j.memberId)) && j)
-        .map(j => Object.values(j).join(","))
+      const head = "source,uploaded,processed,travelDate,memberId,distance,mode,rewardsEarned,carbonSaving,deviceId,groupId,organisationId,schemeId\n";
+      const csvData = models
+        .map(m => view.createCsv(links, m).join(","))
         .join("\n");
 
       ctx.set("Content-disposition", "attachment; filename=journeys.csv");
       ctx.status = 200;
       ctx.body = head + csvData;
     } else {
+      const data = models.map(m => view.create(links, m));
+
       return { data, links };
     }
   }
