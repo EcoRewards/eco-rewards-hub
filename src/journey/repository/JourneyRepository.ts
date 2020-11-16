@@ -60,10 +60,19 @@ export class JourneyRepository {
   /**
    * Select all rows from the journey table and replace the member ID with the smartcard number if it's set
    */
-  public async selectAll(): Promise<NonNullId<Journey>[]> {
+  public async selectAll(): Promise<JourneyWithGroupOrgAndScheme[]> {
     const [rows] = await this.db.query(`
-      SELECT journey.*, IFNULL(smartcard, member_id) AS member_id 
-      FROM journey JOIN member ON member.id = member_id 
+      SELECT 
+        journey.*, 
+        IFNULL(smartcard, member_id) AS member_id, 
+        member_group.name AS group_id, 
+        organisation.name AS organisation_id, 
+        scheme.name AS scheme_id
+      FROM journey 
+      JOIN member ON member.id = member_id 
+      JOIN member_group ON member.member_group_id = member_group.id 
+      JOIN organisation ON member_group.organisation_id = organisation.id 
+      JOIN scheme ON organisation.scheme_id = scheme.id 
       ORDER BY journey.id DESC 
       LIMIT 10000
     `);
@@ -115,3 +124,9 @@ export interface ReportRow {
 }
 
 export type ReportRowsIndexed = Record<string, Record<string, ReportRow>>;
+
+export type JourneyWithGroupOrgAndScheme = NonNullId<Journey> & {
+  group_id: string,
+  organisation_id: string,
+  scheme_id: string
+};

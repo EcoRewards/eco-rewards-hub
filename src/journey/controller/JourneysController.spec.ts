@@ -294,9 +294,9 @@ describe("JourneysController", () => {
 
     const lines = context.body.split("\n");
 
-    chai.expect(lines[0]).equal("source,uploaded,processed,travelDate,memberId,distance,mode,rewardsEarned,carbonSaving,deviceId");
-    chai.expect(lines[1]).equal("Bob,2019-12-11T22:04:50,,2019-12-11T10:02:20,0000000018,1.56,Train,,,");
-    chai.expect(lines[2]).equal("Bob,2019-12-11T22:04:50,,2019-12-11T10:02:20,654321-0022-2223-0099,1.56,Train,,,");
+    chai.expect(lines[0]).equal("source,uploaded,processed,travelDate,memberId,distance,mode,rewardsEarned,carbonSaving,deviceId,groupId,organisationId,schemeId");
+    chai.expect(lines[1]).equal("Bob,2019-12-11T22:04:50,,2019-12-11T10:02:20,0000000018,1.56,Train,,,,,,");
+    chai.expect(lines[2]).equal("Bob,2019-12-11T22:04:50,,2019-12-11T10:02:20,654321-0022-2223-0099,1.56,Train,,,,,,");
   });
 
   it("returns a report", async () => {
