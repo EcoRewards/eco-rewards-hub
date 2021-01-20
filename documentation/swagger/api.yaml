@@ -698,6 +698,51 @@ paths:
           $ref: '#/responses/404'
         500:
           $ref: '#/responses/500'
+    patch:
+      summary: "Edit a member"
+      description: "Change all a members properties"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          schema:
+            type: "object"
+            properties:
+              totalMiles:
+                type: "number"
+              distance:
+                type: "number"
+              carbonSaving:
+                type: "number"
+              defaultDistance:
+                type: "number"
+              defaultTransportMode:
+                type: "string"
+              previousTransportMode:
+                type: "string"
+              group:
+                type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              data:
+                $ref: "#/definitions/Group"
+              links:
+                type: "object"
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        404:
+          $ref: '#/responses/404'
+        500:
+          $ref: '#/responses/500'
       security:
         - basicAuth: []
   /member:

@@ -7,6 +7,7 @@ import { Member } from "../Member";
 import { MemberController } from "./MemberController";
 import { MemberModelFactory } from "../MemberModelFactory";
 import { SchemeView } from "../../scheme/SchemeView";
+import { Context } from "koa";
 
 class MockMemberRepository {
   data: Scheme[] = [];
@@ -85,6 +86,10 @@ describe("MemberController", () => {
     new MockExternalApi() as any
   );
 
+  const ctx = {
+    method: "PATCH"
+  } as Context;
+
   it("should create a member", async () => {
     const result = await controller.post({
       smartcard: "654321002222230099",
@@ -97,13 +102,13 @@ describe("MemberController", () => {
   });
 
   it("should update a member", async () => {
-    const result = await controller.put({
+    const result = await controller.update({
       id: "0000000018",
       defaultDistance: 10,
       defaultTransportMode: "train",
       group: "/group/2",
       previousTransportMode: "car"
-    });
+    }, ctx);
 
     const expected = {
       carbonSaving: 0,
@@ -120,14 +125,65 @@ describe("MemberController", () => {
     chai.expect(result.data).to.deep.equal(expected);
   });
 
+  it("should update a member with the miles", async () => {
+    const putCtx = {
+      method: "PUT"
+    } as Context;
+
+    const result = await controller.update({
+      id: "0000000018",
+      rewards: 10,
+      totalMiles: 150,
+      carbonSaving: 150
+    }, putCtx);
+
+    const expected = {
+      carbonSaving: 150,
+      defaultDistance: 0,
+      defaultTransportMode: "bus",
+      group: "/group/1",
+      previousTransportMode: "",
+      id: "/member/0000000018",
+      rewards: 10,
+      totalMiles: 150
+    };
+
+    chai.expect(result.code).equal(200);
+    chai.expect(result.data).to.deep.equal(expected);
+  });
+
+  it("should not update a member miles on a PATCH request", async () => {
+    const result = await controller.update({
+      id: "0000000018",
+      rewards: 10,
+      totalMiles: 150,
+      carbonSaving: 150,
+      defaultDistance: 10
+    }, ctx);
+
+    const expected = {
+      carbonSaving: 0,
+      defaultDistance: 10,
+      defaultTransportMode: "bus",
+      group: "/group/1",
+      previousTransportMode: "",
+      id: "/member/0000000018",
+      rewards: 0,
+      totalMiles: 5
+    };
+
+    chai.expect(result.code).equal(200);
+    chai.expect(result.data).to.deep.equal(expected);
+  });
+
   it("should return a 404 if a member can't be found", async () => {
-    const result = await controller.put({
+    const result = await controller.update({
       id: "0000000026",
       defaultDistance: 10,
       defaultTransportMode: "train",
       group: "/group/1",
       previousTransportMode: "bus"
-    });
+    }, ctx);
 
     chai.expect(result.code).equal(404);
   });

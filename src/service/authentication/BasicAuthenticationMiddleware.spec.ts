@@ -1,10 +1,9 @@
 import * as chai from "chai";
 import { Cryptography } from "../../cryptography/Cryptography";
 import { BasicAuthenticationMiddleware } from "./BasicAuthenticationMiddleware";
-import { Base64 } from "js-base64";
+import { toBase64 } from "js-base64";
 import { Context } from "koa";
 import { AdminRole } from "../../user/AdminUser";
-import toBase64 = Base64.toBase64;
 
 describe("BasicAuthenticationMiddleware", async () => {
   const cryptography = new Cryptography();
@@ -83,7 +82,7 @@ describe("BasicAuthenticationMiddleware", async () => {
     chai.expect(hasBeenCalled).to.equal(true);
   });
 
-  it("does not validate whitelisted PUT requests", async () => {
+  it("does not validate whitelisted PATCH requests", async () => {
     const index = {
       "1": { id: 1, email: "1", name: "user1", role: "provider" as AdminRole, password: await cryptography.hash("password1") },
     };
@@ -92,7 +91,7 @@ describe("BasicAuthenticationMiddleware", async () => {
     let hasBeenCalled = false;
     const next = () => hasBeenCalled = true;
     const ctx = createContext("", "/member/1");
-    ctx.request.method = "PUT";
+    ctx.request.method = "PATCH";
     ctx.req.headers = {}; // no authentication header
 
     await middleware.auth(ctx , next as any);
