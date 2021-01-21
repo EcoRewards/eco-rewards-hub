@@ -13,6 +13,7 @@ import {
   toGroupId
 } from "../..";
 import { ExternalMemberRepository } from "../repository/ExternalMemberRepository";
+import { Context } from "koa";
 
 /**
  * Controller for /member
@@ -74,7 +75,7 @@ export class MemberController {
   /**
    * Update a Member
    */
-  public async put(request: MemberPutRequest): Promise<PutResponse> {
+  public async update(request: MemberPutRequest, ctx: Context): Promise<PutResponse> {
     const links = {};
     const member = await this.getModel(request.id);
 
@@ -87,12 +88,19 @@ export class MemberController {
     member.previous_transport_mode = request.previousTransportMode ?? member.previous_transport_mode;
     member.default_distance = request.defaultDistance ?? member.default_distance;
 
+    if (ctx.method === "PUT") {
+      member.carbon_saving = request.carbonSaving ?? member.carbon_saving;
+      member.rewards = request.rewards ?? member.rewards;
+      member.total_miles = request.totalMiles ?? member.total_miles;
+    }
+
     const savedModel = await this.genericRepository.save(member);
     const view = await this.viewFactory.create();
     const data = view.create(links, savedModel);
 
     return { data, links, code: 200 };
   }
+
 }
 
 type AMember = NonNullId<Member> | undefined;
@@ -114,4 +122,7 @@ export interface MemberPutRequest {
   defaultTransportMode?: string,
   previousTransportMode?: string,
   defaultDistance?: number
+  carbonSaving?: number
+  rewards?: number
+  totalMiles?: number
 }
