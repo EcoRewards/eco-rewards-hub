@@ -92,7 +92,7 @@
     "mysql2": "^2.2.5",
     "mysqldump": "^3.2.0",
     "pino": "^6.11.0",
-    "pino-pretty": "^3.6.1",
+    "pino-pretty": "^4.5.0",
     "sharp": "^0.27.0",
     "swagger2": "^2.0.0",
     "swagger2-koa": "^2.0.0",
