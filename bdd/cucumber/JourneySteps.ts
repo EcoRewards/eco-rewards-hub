@@ -63,7 +63,7 @@ Then("these members should have the following rewards", async function ({ rawTab
 When("I tap with a smartcard {string} on device {string}", async function (member: string, deviceId: string) {
   const device = deviceId.padStart(8, "0");
   const tsn = "AAAAAAAA";
-  const tx1minsSinceEpoch = "000001";
+  const tx1minsSinceEpoch = "1184000";
   const memberCardNo = member.length === 16 ? "4C" + member : member;
   const hex = device + tsn + memberCardNo + tx1minsSinceEpoch;
   const buffer = Buffer.from(hex, "hex");
