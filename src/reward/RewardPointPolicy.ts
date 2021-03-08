@@ -16,6 +16,9 @@ export class RewardPointPolicy {
     "train": 250,
     "cycling": 250,
     "walk": 250,
+    "jogging": 250,
+    "running": 250,
+    "rowing": 250,
     "work from home": 125
   };
 

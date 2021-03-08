@@ -17,6 +17,9 @@ export class CarbonSavingPolicy {
     "train": 0.04885,
     "cycling": 0,
     "walk": 0,
+    "jogging": 0,
+    "running": 0,
+    "rowing": 0,
     "work from home": 0
   };
 
