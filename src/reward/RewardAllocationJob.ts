@@ -75,6 +75,6 @@ export class RewardAllocationJob {
   }
 
   private getDeviceGroup(deviceId: string) {
-    return deviceId === "" ? "self-report" : this.deviceIdGroups[deviceId] || "none";
+    return deviceId === "none" ? "none" : this.deviceIdGroups[deviceId] || "unknown";
   }
 }

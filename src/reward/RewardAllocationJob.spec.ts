@@ -201,7 +201,7 @@ describe("RewardAllocationJob", () => {
     mockRepository.journeyIndex = {
       1: {
         "2019-12-15": [
-          { id: 1, member_id: 1, mode: "Bus", distance: 2.4, device_id: "" },
+          { id: 1, member_id: 1, mode: "Bus", distance: 2.4, device_id: "none" },
           { id: 2, member_id: 1, mode: "Train", distance: 2.4, device_id: "123456" },
           { id: 3, member_id: 1, mode: "Train", distance: 2.4, device_id: "234567" },
         ]
