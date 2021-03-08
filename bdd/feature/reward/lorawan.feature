@@ -52,23 +52,6 @@ Feature:
       | member              | rewards | carbon saving |
       | 634321002222230090  | 400     | 0.66          |
 
-  @wip
-  Scenario: Smartcard tap after manual report
-    When I create an account with smartcard "634321002222230091"
-    And I add "1.5" miles usage by "bus" for member "634321002222230091"
-    And I wait until the rewards have been processed
-    And these members should have the following rewards
-      | member              | rewards | carbon saving |
-      | 634321002222230091  | 250     | 0.33          |
-    And I tap with a smartcard "634321002222230091" on device "12345678"
-    Then I should see the following journeys
-      | member              | source | travel date         | mode  | distance | device   |
-      | 634321002222230091  | Test   | 2021-03-09 03:44:00 | bus   | 1.5      | 12345678 |
-    And I wait until the rewards have been processed
-    And these members should have the following rewards
-      | member              | rewards | carbon saving |
-      | 634321002222230091  | 500     | 0.66          |
-
   Scenario: Smartcard of unregistered card
     And I tap with a smartcard "6338000000000000" on device "123456"
     Then I should see a member "6338000000000000"
