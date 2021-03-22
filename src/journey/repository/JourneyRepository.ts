@@ -74,7 +74,7 @@ export class JourneyRepository {
       JOIN organisation ON member_group.organisation_id = organisation.id 
       JOIN scheme ON organisation.scheme_id = scheme.id 
       ORDER BY journey.id DESC 
-      LIMIT 1000
+      LIMIT 10000
     `);
 
     return rows;

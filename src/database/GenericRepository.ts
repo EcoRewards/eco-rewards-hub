@@ -61,7 +61,7 @@ export class GenericRepository<T extends DatabaseRecord> {
    * Select all rows from the given table
    */
   public async selectAll(): Promise<NonNullId<T>[]> {
-    const [rows] = await this.db.query(`SELECT * FROM ${this.table} ORDER BY id DESC LIMIT 5000`);
+    const [rows] = await this.db.query(`SELECT * FROM ${this.table} ORDER BY id DESC LIMIT 10000`);
 
     return rows;
   }
