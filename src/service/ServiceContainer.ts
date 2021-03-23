@@ -158,6 +158,7 @@ export class ServiceContainer {
       .post("/member", this.wrap(memberController.post))
       .get("/members", this.wrap(membersController.getAll))
       .post("/members", this.wrap(membersController.post))
+      .patch("/members", this.wrap(membersController.patch))
       .get("/groups", this.wrap(groupReadController.getAll))
       .get("/group/:id", this.wrap(groupReadController.get))
       .put("/group/:id", this.wrap(groupWriteController.put))

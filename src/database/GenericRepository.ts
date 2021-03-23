@@ -108,6 +108,16 @@ export class GenericRepository<T extends DatabaseRecord> {
     }
   }
 
+  /**
+   * Update a number of records in the given ID range
+   */
+  public async updateRange(startId: number, endId: number, data: Partial<Omit<T, "id">>): Promise<void> {
+    const cols = Object.keys(data).map(k => `${k} = ?`).join();
+    const values = Object.values(data);
+
+    await this.db.query(`UPDATE ${this.table} SET ${cols} WHERE id >= ${+startId} AND id <= ${+endId}`, values);
+  }
+
 }
 
 export interface DatabaseRecord {

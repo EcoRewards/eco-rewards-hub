@@ -23,6 +23,25 @@ export class MemberModelFactory {
     };
   }
 
+  /**
+   * Create a member based off the fields that have been provided
+   */
+  public createPartialModel(view: Partial<PartialMemberJsonView>): Partial<Member> {
+    const mapping = {
+      group: group => ({ member_group_id: toGroupId(group) }),
+      defaultTransportMode: mode => ({ default_transport_mode: mode }),
+      defaultDistance: distance => ({ default_distance: distance }),
+      previousTransportMode: mode => ({ previous_transport_mode: mode })
+    };
+
+    return Object.keys(view).reduce((model, field) => {
+      if (typeof mapping[field] === "function") {
+        Object.assign(model, mapping[field](view[field]));
+      }
+
+      return model;
+    }, {});
+  }
 }
 
 export interface PartialMemberJsonView {
