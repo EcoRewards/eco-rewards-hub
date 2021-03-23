@@ -166,6 +166,22 @@ describe("GenericRepository", () => {
     chai.expect(db.connectionReleased).to.equal(true);
   });
 
+  it("generates an update", async () => {
+    const db = new MockDb();
+    const repository = new GenericRepository(db, "table");
+    const record = {
+      field1: "value1",
+      field2: 2
+    };
+
+    await repository.updateRange(1, 3, record);
+
+    const sql = db.sqlQueries[0];
+
+    chai.expect(sql).to.equal(
+      "UPDATE table SET field1 = ?,field2 = ? WHERE id >= 1 AND id <= 3"
+    );
+  });
 });
 
 class MockDb {

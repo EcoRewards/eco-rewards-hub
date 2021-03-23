@@ -82,7 +82,7 @@ When("I change my distance {string} and I change my default transport {string}",
   async function (defaultDistance: string, defaultTransportMode: string) {
   const id = this.createdMember.id;
   const response = await World.api.put(id, {
-    defaultDistance, 
+    defaultDistance,
     defaultTransportMode,
     previousTransportMode: "bus",
     group: this.createdMember.group
@@ -99,4 +99,12 @@ Then(
     chai.expect(response.data.data.defaultDistance).to.be.equal(+distance);
     chai.expect(response.data.data.defaultTransportMode).to.be.equal(transport);
     chai.expect(response.data.data.previousTransportMode).to.be.equal(previousMode);
+});
+
+When("I change the members group to {string}", async function (groupName: string) {
+  const group = this.groups[groupName].id;
+  const startId = this.createdMembers[0].id;
+  const endId = this.createdMembers[this.createdMembers.length - 1].id;
+
+  await World.api.patch("/members", { startId, endId, group });
 });

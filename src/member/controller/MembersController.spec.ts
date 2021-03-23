@@ -16,6 +16,10 @@ class MockOrganisationRepository {
     return records.map((record, i) => ({ ...record, id: i + 1 }));
   }
 
+  public async updateRange() {
+
+  }
+
   public async selectAll() {
     return [
       {
@@ -146,6 +150,18 @@ describe("MembersController", () => {
     chai.expect(lines[1]).equal("0000000018,scheme2,org2,group2,5.4,bus,,1700,4.3,5.2");
     chai.expect(lines[2]).equal("6335-9701-4055-0010,scheme2,org2,group2,5.4,bus,,1700,4.3,5.2");
     chai.expect(lines[3]).equal("633597-0140-5500-1083,scheme2,org2,group2,5.4,bus,,1700,4.3,5.2");
+  });
+
+  it("should update members", async () => {
+    const result = await controller.patch({
+      startId: "0000000018",
+      endId: "0000000026",
+      defaultDistance: 1,
+      defaultTransportMode: "bus",
+      group: "/group/2"
+    });
+
+    chai.expect(result.data).equal("OK");
   });
 
 });

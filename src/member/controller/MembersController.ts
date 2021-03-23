@@ -1,5 +1,5 @@
 import { GenericRepository } from "../../database/GenericRepository";
-import { formatIdForCsv, Member, MemberJsonView } from "../Member";
+import { formatIdForCsv, Member, MemberJsonView, toMemberId } from "../Member";
 import { MemberViewFactory } from "../MemberViewFactory";
 import { HttpResponse } from "../../service/controller/HttpResponse";
 import { MemberModelFactory } from "../MemberModelFactory";
@@ -7,6 +7,7 @@ import autobind from "autobind-decorator";
 import { ExternalMemberRepository } from "../repository/ExternalMemberRepository";
 import { GetAllResponse } from "../..";
 import { Context } from "koa";
+import * as luhn from "luhn-generator";
 
 /**
  * Controller for bulk creation of members and the get request
@@ -76,6 +77,22 @@ export class MembersController {
       return { data, links };
     }
   }
+
+  /**
+   * Update a number of users
+   */
+  public async patch({ startId, endId, ...view }: MembersPatchRequest): Promise<HttpResponse<string>> {
+    const startMemberId = toMemberId(startId + "");
+    const endMemberId = toMemberId(endId + "");
+    const model = this.modelFactory.createPartialModel(view);
+
+    await this.repository.updateRange(startMemberId, endMemberId, model);
+
+    const links = {};
+    const data = "OK";
+
+    return { data, links, code: 201 };
+  }
 }
 
 export interface MembersPostRequest {
@@ -83,6 +100,14 @@ export interface MembersPostRequest {
   defaultTransportMode: string,
   defaultDistance: number,
   quantity: number
+}
+
+export interface MembersPatchRequest {
+  startId: number | string,
+  endId: number | string,
+  group: string,
+  defaultTransportMode: string,
+  defaultDistance: number
 }
 
 export type MembersPostResponse = HttpResponse<MemberJsonView[]>;
