@@ -32,8 +32,9 @@ export class TapController {
   /**
    * Read the raw payload and store the journeys.
    */
-  public async post(request: JourneyPostRequest, ctx: Context): Promise<HttpResponse<JourneyJsonView[]>> {
-    const buffer = Buffer.from(request.payload_raw, "base64");
+  public async post(req: JourneyPostRequest | JourneyPostV2, ctx: Context): Promise<HttpResponse<JourneyJsonView[]>> {
+    const formattedRequest = this.formatRequest(req);
+    const buffer = Buffer.from(formattedRequest.payload_raw, "base64");
     const rawData = Array.from(buffer).map(toHex).join(" ");
     const links = {};
     let data: JourneyJsonView[] = [];
@@ -41,9 +42,8 @@ export class TapController {
     this.logger.info("Tap: " + rawData);
 
     if (buffer[8] === 0x20) {
-      await this.processStatus(request, rawData);
-    }
-    else {
+      await this.processStatus(formattedRequest, rawData);
+    } else {
       const deviceId = Array.from(buffer).slice(0, 4).map(toHex).join("");
       const taps = this.tapReader.getTaps(buffer);
       const journeys = await this.tapProcessor.getJourneys(taps, deviceId, ctx.adminUserId);
@@ -53,6 +53,15 @@ export class TapController {
     }
 
     return { data, links };
+  }
+
+  private formatRequest(request: any): JourneyPostRequest {
+    return request.payload_raw ? request : {
+      payload_raw: request.data.uplink_message.frm_payload,
+      dev_id: request.data.end_device_ids.device_id,
+      port: -1,
+      downlink_url: `https://smartberks.eu1.cloud.thethings.industries/api/v3/as/applications/ecorewards/webhooks/test/devices/${request.data.end_device_ids.device_id}/down/push`,
+    };
   }
 
   private async processStatus(request: JourneyPostRequest, rawData: string): Promise<void> {
@@ -67,11 +76,19 @@ export class TapController {
       received: LocalDateTime.now(ZoneId.UTC).toJSON()
     };
 
-    const response = {
+    const response = request.port !== -1 ? {
       "dev_id": request.dev_id,
       "port": 2,
       "confirmed": false,
       "payload_raw": btoa(payload)
+    } : {
+      "downlinks": [
+        {
+          "frm_payload": btoa(payload),
+          "f_port": 2,
+          "priority": "NORMAL"
+        }
+      ]
     };
 
     try {
@@ -79,8 +96,7 @@ export class TapController {
         this.http.post(request.downlink_url, response),
         this.statusRepository.insertAll([deviceStatus])
       ]);
-    }
-    catch (e) {
+    } catch (e) {
       this.logger.warn(e);
     }
   }
@@ -91,5 +107,19 @@ export interface JourneyPostRequest {
   payload_raw: string,
   dev_id: string,
   port: number,
-  downlink_url: string
+  downlink_url: string,
+}
+
+interface JourneyPostV2 {
+  data: {
+    end_device_ids: {
+      device_id: string,
+      application_ids: {
+        application_id: string
+      }
+    },
+    uplink_message: {
+      frm_payload: string,
+    },
+  },
 }
