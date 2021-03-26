@@ -107,7 +107,7 @@ describe("TapController", () => {
       { info: () => {}, warn: () => {} } as any
     );
 
-    const ctx = { adminUserId: 1, req: {} };
+    const ctx = { adminUserId: 1, req: {}, header: {} };
     const request = {
       "dev_id": "1",
       "port": 1,
