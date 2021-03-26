@@ -42,7 +42,9 @@ export class TapController {
     this.logger.info("Tap: " + rawData);
 
     if (buffer[8] === 0x20) {
-      await this.processStatus(formattedRequest, rawData);
+      const header = ctx.header["X-Downlink-Apikey"] && { Authorization: ctx.header["X-Downlink-Apikey"] };
+
+      await this.processStatus(formattedRequest, rawData, header);
     } else {
       const deviceId = Array.from(buffer).slice(0, 4).map(toHex).join("");
       const taps = this.tapReader.getTaps(buffer);
@@ -64,7 +66,7 @@ export class TapController {
     };
   }
 
-  private async processStatus(request: JourneyPostRequest, rawData: string): Promise<void> {
+  private async processStatus(request: JourneyPostRequest, rawData: string, headers?: Headers): Promise<void> {
     const dateTime = LocalDateTime.now(ZoneId.UTC).format(this.dateFormat);
     const dateTimeBinary = Buffer.from(dateTime, "hex");
     const payload = Buffer.concat([this.statusResponseCommand, dateTimeBinary]);
@@ -93,7 +95,7 @@ export class TapController {
 
     try {
       await Promise.all([
-        this.http.post(request.downlink_url, response),
+        this.http.post(request.downlink_url, response,  { headers }),
         this.statusRepository.insertAll([deviceStatus])
       ]);
     } catch (e) {
@@ -121,3 +123,5 @@ interface JourneyPostV2 {
     frm_payload: string,
   },
 }
+
+type Headers = Record<string, string>;
