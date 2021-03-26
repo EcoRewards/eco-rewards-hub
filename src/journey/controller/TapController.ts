@@ -42,8 +42,7 @@ export class TapController {
     this.logger.info("Tap: " + rawData);
 
     if (buffer[8] === 0x20) {
-      console.log(ctx.header);
-      const header = ctx.header["X-Downlink-Apikey"] && { Authorization: ctx.header["X-Downlink-Apikey"] };
+      const header = ctx.header["x-downlink-apikey"] && { Authorization: ctx.header["X-Downlink-Apikey"] };
 
       await this.processStatus(formattedRequest, rawData, header);
     } else {
