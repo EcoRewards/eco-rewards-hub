@@ -56,6 +56,7 @@ export class TapController {
   }
 
   private formatRequest(request: any): JourneyPostRequest {
+    console.log(request);
     return request.payload_raw ? request : {
       payload_raw: request.data.uplink_message.frm_payload,
       dev_id: request.data.end_device_ids.device_id,
