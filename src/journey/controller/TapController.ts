@@ -56,12 +56,11 @@ export class TapController {
   }
 
   private formatRequest(request: any): JourneyPostRequest {
-    console.log(request);
     return request.payload_raw ? request : {
-      payload_raw: request.data.uplink_message.frm_payload,
-      dev_id: request.data.end_device_ids.device_id,
+      payload_raw: request.uplink_message.frm_payload,
+      dev_id: request.end_device_ids.device_id,
       port: -1,
-      downlink_url: `https://smartberks.eu1.cloud.thethings.industries/api/v3/as/applications/ecorewards/webhooks/test/devices/${request.data.end_device_ids.device_id}/down/push`,
+      downlink_url: `https://smartberks.eu1.cloud.thethings.industries/api/v3/as/applications/ecorewards/webhooks/test/devices/${request.end_device_ids.device_id}/down/push`,
     };
   }
 
@@ -112,15 +111,13 @@ export interface JourneyPostRequest {
 }
 
 interface JourneyPostV2 {
-  data: {
-    end_device_ids: {
-      device_id: string,
-      application_ids: {
-        application_id: string
-      }
-    },
-    uplink_message: {
-      frm_payload: string,
-    },
+  end_device_ids: {
+    device_id: string,
+    application_ids: {
+      application_id: string
+    }
+  },
+  uplink_message: {
+    frm_payload: string,
   },
 }
