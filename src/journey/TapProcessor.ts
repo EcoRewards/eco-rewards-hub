@@ -29,6 +29,10 @@ export class TapProcessor {
    * one created as long as the IIN has a mapping defined.
    */
   public async getJourneys(taps: MemberJourneys, deviceId: string, adminId: AdminUserId): Promise<SavedJourney[]> {
+    if (Object.keys(taps).length === 0) {
+      return [];
+    }
+
     const journeyFactory = await this.getJourneyFactory(Object.keys(taps));
     const journeys = Object.entries(taps).map(t => journeyFactory.create(t, adminId, deviceId));
 
