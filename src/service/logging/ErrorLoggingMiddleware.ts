@@ -25,7 +25,7 @@ export class ErrorLoggingMiddleware {
       await next();
 
       if (ctx.status === 500) {
-        this.logger.error(ctx.body);
+        this.logger.error(ctx.body as object);
       }
     }
     catch (err) {

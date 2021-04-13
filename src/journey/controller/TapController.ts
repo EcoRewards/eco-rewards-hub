@@ -42,7 +42,9 @@ export class TapController {
     this.logger.info("Tap: " + rawData);
 
     if (buffer[8] === 0x20) {
-      const header = ctx.header["x-downlink-apikey"] && { Authorization: "Bearer " + ctx.header["x-downlink-apikey"] };
+      const header = ctx.header["x-downlink-apikey"]
+        ? { Authorization: "Bearer " + ctx.header["x-downlink-apikey"] }
+        : undefined;
 
       await this.processStatus(formattedRequest, rawData, header);
     } else {

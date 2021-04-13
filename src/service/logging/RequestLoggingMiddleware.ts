@@ -20,7 +20,10 @@ export class RequestLoggingMiddleware {
     await next();
     const ms = Date.now() - start;
 
-    this.logger.info(`${ctx.status} ${ctx.method} ${ctx.url} - ${ms}ms`);
+    if (ctx.url !== "/health") {
+      this.logger.info(`${ctx.status} ${ctx.method} ${ctx.url} - ${ms}ms`);
+    }
+
     ctx.set("X-Response-Time", `${ms}ms`);
   }
 
