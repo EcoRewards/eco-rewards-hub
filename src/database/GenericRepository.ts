@@ -76,6 +76,23 @@ export class GenericRepository<T extends DatabaseRecord> {
   }
 
   /**
+   * Select any rows that match any of the given IN () clauses
+   */
+  public async selectIn(...clauses: [string, string[] | number[]][]): Promise<NonNullId<T>[]> {
+    const clauseSql = clauses
+      .map(([field, values]) => `${field} IN (${new Array(values.length).fill("?").join()})`)
+      .join(" OR ");
+
+    const queryValues = clauses
+      .map(([_, values]) => values)
+      .flat();
+
+    const [rows] = await this.db.query(`SELECT * FROM ${this.table} WHERE ${clauseSql}`, queryValues);
+
+    return rows;
+  }
+
+  /**
    * Get an index of scheme id to scheme
    */
   public async getIndexedById(): Promise<Record<number, NonNullId<T>>> {

@@ -8,7 +8,7 @@ When("device {string} reports a status {string}", async function (deviceId: stri
   const buffer = Buffer.from(hex, "hex");
   const payload = btoa(buffer);
 
-  await World.api.post("/tap", { payload_raw: payload, dev_id: deviceId });
+  await World.api.post("/tap", { payload_raw: payload, dev_id: deviceId, downlink_url: "http://localhost" });
 });
 
 Then("the last status update from device {string} should be {string}", async function (device: string, status: string) {

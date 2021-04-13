@@ -98,6 +98,14 @@ describe("GenericRepository", () => {
     chai.expect(results).to.deep.equal(records);
   });
 
+  it("selects all records using IN clauses", async () => {
+    const db = new MockDb();
+    const repository = new GenericRepository(db, "table");
+    await repository.selectIn(["id", [1, 2, 3]], ["smartcard", ["123", "456"]]);
+
+    chai.expect(db.sqlQueries[0]).to.deep.equal("SELECT * FROM table WHERE id IN (?,?,?) OR smartcard IN (?,?)");
+  });
+
   it("selects one record", async () => {
     const records = [
       { id: 2, name: "text2" }

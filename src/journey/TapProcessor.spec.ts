@@ -10,7 +10,7 @@ class MockRepository {
     public inserts: any = []
   ) { }
 
-  async getIndexedById() {
+  async selectIn() {
     return this.records;
   }
 
@@ -35,8 +35,8 @@ class MockExternalApi {
 
 describe("TapProcessor", () => {
   const journeyRepository = new MockRepository() as any;
-  const memberRepository = new MockRepository({
-    "222223001": {
+  const memberRepository = new MockRepository([
+    {
       id: 222223001,
       rewards: 0,
       carbon_saving: 0,
@@ -46,7 +46,7 @@ describe("TapProcessor", () => {
       smartcard: null,
       total_miles: 4.2
     },
-  }) as any;
+  ]) as any;
 
   const memberFactory = new MemberModelFactory();
   const externalMemberRepository = new MockExternalApi() as any;

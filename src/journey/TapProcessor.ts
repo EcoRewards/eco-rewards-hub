@@ -29,20 +29,20 @@ export class TapProcessor {
    * one created as long as the IIN has a mapping defined.
    */
   public async getJourneys(taps: MemberJourneys, deviceId: string, adminId: AdminUserId): Promise<SavedJourney[]> {
-    const tapEntries = Object.entries(taps);
-    const journeyFactory = await this.getJourneyFactory(tapEntries);
-    const journeys = tapEntries.map(t => journeyFactory.create(t, adminId, deviceId));
+    const journeyFactory = await this.getJourneyFactory(Object.keys(taps));
+    const journeys = Object.entries(taps).map(t => journeyFactory.create(t, adminId, deviceId));
 
     return this.journeyRepository.insertAll(journeys);
   }
 
-  private async getJourneyFactory(taps: [string, string][]): Promise<JourneyFactory> {
-    const members = await this.memberRepository.getIndexedById();
-    const membersBySmartcard = Object.values(members).reduce(indexBy(m => m.smartcard || ""), {});
+  private async getJourneyFactory(memberIds: string[]): Promise<JourneyFactory> {
+    const members = await this.memberRepository.selectIn(["id", memberIds], ["smartcard", memberIds]);
+    const membersById = members.reduce(indexBy(m => m.id), {});
+    const membersBySmartcard = members.reduce(indexBy(m => m.smartcard || ""), {});
 
-    for (const [memberId] of taps) {
+    for (const memberId of memberIds) {
       // if it was a smartcard check to see if the account needs to be created
-      if (memberId.length >= 16 && !members[memberId] && !membersBySmartcard[memberId]) {
+      if (memberId.length >= 16 && !membersById[memberId] && !membersBySmartcard[memberId]) {
         const member = await this.createMember(memberId);
 
         if (member) {
@@ -51,7 +51,7 @@ export class TapProcessor {
       }
     }
 
-    return new JourneyFactory(members, membersBySmartcard);
+    return new JourneyFactory(membersById, membersBySmartcard);
   }
 
   private async createMember(id: string): Promise<undefined | NonNullId<Member>> {

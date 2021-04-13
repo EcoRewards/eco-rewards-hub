@@ -16,6 +16,10 @@ class MockRepository {
     return this.records;
   }
 
+  async selectIn() {
+    return this.records;
+  }
+
   async insertAll(rows: any) {
     this.inserts = rows;
 
@@ -50,8 +54,8 @@ class MockExternalApi {
 
 describe("TapController", () => {
   const journeyRepository = new MockRepository() as any;
-  const memberRepository = new MockRepository({
-    "222223001": {
+  const memberRepository = new MockRepository([
+    {
       id: 222223001,
       rewards: 0,
       carbon_saving: 0,
@@ -61,7 +65,7 @@ describe("TapController", () => {
       smartcard: null,
       total_miles: 4.2
     },
-  }) as any;
+  ]) as any;
 
   const adminRepository = new MockRepository({
     1: { name: "Test "}
