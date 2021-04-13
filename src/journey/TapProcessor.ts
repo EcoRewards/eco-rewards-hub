@@ -3,7 +3,7 @@ import { MemberJourneys } from "./TapReader";
 import { JourneyFactory } from "./JourneyFactory";
 import { indexBy } from "ts-array-utils";
 import { GenericRepository, NonNullId } from "../database/GenericRepository";
-import { Member } from "../member/Member";
+import { Member, toMemberId } from "../member/Member";
 import { MemberModelFactory } from "../member/MemberModelFactory";
 import { ExternalMemberRepository } from "../member/repository/ExternalMemberRepository";
 import { AdminUserId } from "../user/AdminUser";
@@ -36,7 +36,8 @@ export class TapProcessor {
   }
 
   private async getJourneyFactory(memberIds: string[]): Promise<JourneyFactory> {
-    const members = await this.memberRepository.selectIn(["id", memberIds], ["smartcard", memberIds]);
+    const ids = memberIds.map(id => id.length >= 16 ? id : toMemberId(id) + "");
+    const members = await this.memberRepository.selectIn(["id", ids], ["smartcard", ids]);
     const membersById = members.reduce(indexBy(m => m.id), {});
     const membersBySmartcard = members.reduce(indexBy(m => m.smartcard || ""), {});
 
