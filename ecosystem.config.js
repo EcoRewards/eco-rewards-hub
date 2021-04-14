@@ -15,7 +15,7 @@ module.exports = {
             "ssh_options": "StrictHostKeyChecking=no",
             "key": "deploy",
             "user": "ubuntu",
-            "host": ["3.8.141.48"],
+            "host": ["18.133.233.179"],
             "ref": "origin/master",
             "repo": "git@github.com:EcoRewards/eco-rewards-hub.git",
             "path": "/home/ubuntu/eco-rewards-hub",
