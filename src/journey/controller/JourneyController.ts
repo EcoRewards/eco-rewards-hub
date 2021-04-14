@@ -31,7 +31,8 @@ export class JourneyController {
       return { code: 400, data: { errors } };
     }
 
-    const journey = await factory.create([form.memberId!, form.date!, form.mode, form.distance], 1);
+    const deviceId = typeof form.deviceId === "string" ? form.deviceId.substr(0, 25) : "";
+    const journey = await factory.create([form.memberId!, form.date!, form.mode, form.distance], 1, deviceId);
     const savedJourney = await this.journeyRepository.save(journey);
 
     if (form.image) {
@@ -115,6 +116,7 @@ interface PostJourneyRequest {
   mode?: string,
   distance?: number
   image?: ReadableStream
+  deviceId?: string
 }
 
 export type RemoteFileStorage = (opts: {

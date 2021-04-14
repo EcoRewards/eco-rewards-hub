@@ -80,6 +80,7 @@ Then(
     formData.append("mode", mode);
     formData.append("memberId", memberId);
     formData.append("distance", distance);
+    formData.append("deviceId", "device1");
     formData.append("date", new Date().toJSON().substr(0, 10));
 
     try {
