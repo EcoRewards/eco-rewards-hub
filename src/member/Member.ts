@@ -1,5 +1,6 @@
 import { GroupId } from "../group/Group";
 import * as luhn from "luhn-generator";
+import * as memoize from "memoizee";
 
 export interface Member {
   id: MemberId | null,
@@ -26,13 +27,15 @@ export interface MemberJsonView {
   previousTransportMode: string
 }
 
-export function fromMemberId(id: MemberId | string): string {
+export function _fromMemberId(id: MemberId | string): string {
   const viewId = typeof id === "string" && id.length >= 16 ? id : luhn.generate(id, { pad: 10 });
 
   return "/member/" + viewId;
 }
 
-export function toMemberId(id: string): MemberId {
+export const fromMemberId = memoize(_fromMemberId);
+
+export function _toMemberId(id: string): MemberId {
   const accountNumber = id.substr(id.lastIndexOf("/") + 1);
 
   if (!luhn.validate(accountNumber)) {
@@ -41,6 +44,8 @@ export function toMemberId(id: string): MemberId {
 
   return +accountNumber.substring(0, 9);
 }
+
+export const toMemberId = memoize(_toMemberId);
 
 /**
  * Format a member ID for CSV. Excel and LibreOffice only support 15 digit numbers so we must add dashes to force text
