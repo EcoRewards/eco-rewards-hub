@@ -18,7 +18,9 @@ describe("JourneyView", () => {
       mode: "Train",
       rewards_earned: null,
       carbon_saving: null,
-      device_id: "123456"
+      device_id: "123456",
+      latitude: null,
+      longitude: null
     });
 
     chai.expect(actual.source).to.equal("Linus Norton");

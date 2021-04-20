@@ -207,4 +207,26 @@ describe("JourneyController", () => {
     chai.expect(journeyRepository.inserts[0].member_id).to.equal(222223001);
     chai.expect(journeyRepository.inserts[0].device_id).to.equal("");
   });
+
+  it("ignores distance checks for journeys with a lat and long (QR scans)", async () => {
+    const controller = new JourneyController(
+      memberRepository,
+      journeyRepository,
+      new MockMultiPartFileExtractor({
+        memberId: "2222230019",
+        date: new Date().toJSON().substr(0, 10),
+        mode: "bus",
+        distance: 55,
+        latitude: 1,
+        longitude: 1
+      }) as any,
+      mockStorage
+    );
+
+    const ctx = { req: {} };
+    const result = await controller.post({ }, ctx as any) as any;
+
+    chai.expect(result.data.errors).to.equal(undefined);
+  });
+
 });

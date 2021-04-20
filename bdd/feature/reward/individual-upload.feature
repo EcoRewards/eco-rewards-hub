@@ -12,7 +12,9 @@ Feature:
   Scenario: Upload by a member via an organisation
     When I create an account with smartcard "654321002222240099"
     Then I add "4.1" miles usage by "bus" for member "654321002222240099"
+    Then I scan a QR code at "43.11","1.11" for member "654321002222240099"
     And I wait until the rewards have been processed
     And these members should have the following rewards
       | member              | rewards | carbon saving |
+      | 654321002222240099  | 250     | 0.9000        |
       | 654321002222240099  | 250     | 0.9000        |

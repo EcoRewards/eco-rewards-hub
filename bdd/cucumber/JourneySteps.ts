@@ -80,7 +80,29 @@ Then(
     formData.append("mode", mode);
     formData.append("memberId", memberId);
     formData.append("distance", distance);
+    formData.append("date", new Date().toJSON().substr(0, 10));
+
+    try {
+      const response = await World.api.post(
+        "/journey",
+        formData,
+        { headers: formData.getHeaders() }
+      );
+    }
+    catch (e) {
+      console.log(e.response.data.data);
+    }
+  }
+);
+
+Then(
+  /^I scan a QR code at "([^"]*)","([^"]*)" for member "([^"]*)"$/,
+  async function (latitude: string, longitude: string, memberId: string) {
+    const formData = new FormData();
+    formData.append("memberId", memberId);
     formData.append("deviceId", "device1");
+    formData.append("latitude", +latitude);
+    formData.append("longitude", +longitude);
     formData.append("date", new Date().toJSON().substr(0, 10));
 
     try {

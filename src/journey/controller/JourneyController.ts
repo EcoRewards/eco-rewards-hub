@@ -31,8 +31,11 @@ export class JourneyController {
       return { code: 400, data: { errors } };
     }
 
-    const deviceId = typeof form.deviceId === "string" ? form.deviceId.substr(0, 25) : "";
-    const journey = await factory.create([form.memberId!, form.date!, form.mode, form.distance], 1, deviceId);
+    const journey = factory.create(
+      [form.memberId!, form.date!, form.mode, form.distance, form.latitude, form.longitude],
+      1,
+      typeof form.deviceId === "string" ? form.deviceId.substr(0, 25) : ""
+    );
     const savedJourney = await this.journeyRepository.save(journey);
 
     if (form.image) {
@@ -81,6 +84,11 @@ export class JourneyController {
       }
     }
 
+    // if GPS coordinates have been provided allow use of default mode and distance
+    if (form.latitude && form.longitude) {
+      return errors;
+    }
+
     if (!form.mode) {
       errors.push("Travel mode must be set");
     }
@@ -114,9 +122,11 @@ interface PostJourneyRequest {
   memberId?: string,
   date?: string,
   mode?: string,
-  distance?: number
-  image?: ReadableStream
-  deviceId?: string
+  distance?: number,
+  image?: ReadableStream,
+  deviceId?: string,
+  latitude?: number,
+  longitude?: number
 }
 
 export type RemoteFileStorage = (opts: {

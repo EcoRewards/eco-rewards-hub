@@ -11,7 +11,6 @@ Feature:
     And I create a group "Sussex 2020" in the organisation "East Sussex School"
     And I create a group "Sussex 2021" in the organisation "East Sussex School"
 
-  @wip
   Scenario: Bulk create and updatemembers
     Given there are "0" members in the group "Sussex 2019"
     When I create "50" members in the group "Sussex 2019"

@@ -18,7 +18,7 @@ export class JourneyFactory {
    * set in the CSV data.
    */
   public create(
-    [memberId, date, mode, distance]: CsvInput,
+    [memberId, date, mode, distance, latitude, longitude]: CsvInput,
     adminUserId: AdminUserId,
     deviceId?: string
   ): Journey {
@@ -53,10 +53,12 @@ export class JourneyFactory {
       mode: actualMode.toLowerCase(),
       rewards_earned: null,
       carbon_saving: null,
-      device_id: deviceId || ""
+      device_id: deviceId || "",
+      latitude: latitude ?? null,
+      longitude: longitude ?? null
     };
   }
 
 }
 
-export type CsvInput = [string, string, string?, (string | number)?];
+export type CsvInput = [string, string, string?, (string | number)?, number?, number?];

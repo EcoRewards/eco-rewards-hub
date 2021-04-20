@@ -207,7 +207,9 @@ describe("JourneysController", () => {
     chai.expect(values[7]).to.equal("bus");
     chai.expect(values[8]).to.equal("");
     chai.expect(values[9]).to.equal("");
-    chai.expect(values[10]).to.equal("\n");
+    chai.expect(values[10]).to.equal("");
+    chai.expect(values[11]).to.equal("");
+    chai.expect(values[12]).to.equal("\n");
   });
 
   it("catches errors", async () => {
@@ -254,7 +256,9 @@ describe("JourneysController", () => {
         "source": "Bob",
         "travelDate": "2019-12-11T10:02:20",
         "uploaded": "2019-12-11T22:04:50",
-        "deviceId": null
+        "deviceId": null,
+        "latitude": null,
+        "longitude": null
       },
       {
         "carbonSaving": null,
@@ -266,7 +270,9 @@ describe("JourneysController", () => {
         "source": "Bob",
         "travelDate": "2019-12-11T10:02:20",
         "uploaded": "2019-12-11T22:04:50",
-        "deviceId": null
+        "deviceId": null,
+        "latitude": null,
+        "longitude": null
       }
     ];
 
