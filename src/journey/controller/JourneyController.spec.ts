@@ -217,8 +217,7 @@ describe("JourneyController", () => {
         date: new Date().toJSON().substr(0, 10),
         mode: "bus",
         distance: 55,
-        latitude: 1,
-        longitude: 1
+        deviceId: "12345"
       }) as any,
       mockStorage
     );

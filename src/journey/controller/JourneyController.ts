@@ -86,8 +86,8 @@ export class JourneyController {
       }
     }
 
-    // if GPS coordinates have been provided allow use of default mode and distance
-    if (form.latitude && form.longitude) {
+    // if a device ID has been provided allow use of default mode and distance
+    if (form.deviceId) {
       return errors;
     }
 
