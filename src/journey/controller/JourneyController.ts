@@ -36,7 +36,7 @@ export class JourneyController {
     const isQrScan = typeof form.deviceId === "string" && form.deviceId.length > 5;
     const journey = factory.create(
       [form.memberId!, form.date!, form.mode, form.distance, form.latitude, form.longitude],
-      isQrScan ? JourneyController.SELF_REPORT_USER : JourneyController.QR_USER,
+      isQrScan ? JourneyController.QR_USER : JourneyController.SELF_REPORT_USER,
       isQrScan ? form.deviceId?.substr(0, 25) : ""
     );
     const savedJourney = await this.journeyRepository.save(journey);
