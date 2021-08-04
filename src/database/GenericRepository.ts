@@ -67,6 +67,22 @@ export class GenericRepository<T extends DatabaseRecord> {
   }
 
   /**
+   * Select paginated data from the table
+   */
+  public async selectPaginated(page: number, perPage: number, filter?: Filter): Promise<PaginatedRows<T>> {
+    const where = filter ? `WHERE ?? LIKE ?` : "";
+    const args = filter ? [filter.field, filter.text + "%"] : [];
+    const limit = `ORDER BY id DESC LIMIT ${(page - 1) * perPage}, ${perPage}`;
+
+    const [[rows], [[count]]] = await Promise.all([
+      this.db.query(`SELECT * FROM ${this.table} ${where} ${limit}`, args),
+      this.db.query(`SELECT COUNT(*) FROM ${this.table} ${where}`, args)
+    ]);
+
+    return { rows, pagination: { count: count["COUNT(*)"] } };
+  }
+
+  /**
    * Select a row from the given table
    */
   public async selectOne(id: number): Promise<NonNullId<T> | undefined> {
@@ -146,3 +162,15 @@ export interface SavedDatabaseRecord {
 }
 
 export type NonNullId<T extends DatabaseRecord> = T & SavedDatabaseRecord;
+
+export interface Filter {
+  field: string,
+  text: string
+}
+
+export interface PaginatedRows<T extends DatabaseRecord> {
+  rows: NonNullId<T>[],
+  pagination: {
+    count: number
+  }
+}

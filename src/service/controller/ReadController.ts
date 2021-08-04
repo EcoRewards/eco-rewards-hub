@@ -1,6 +1,6 @@
 import autobind from "autobind-decorator";
 import { HttpError, HttpResponse } from "./HttpResponse";
-import { DatabaseRecord, GenericRepository, NonNullId } from "../../database/GenericRepository";
+import { DatabaseRecord, Filter, GenericRepository, NonNullId } from "../../database/GenericRepository";
 
 /**
  * Controller that provides access to organisations
@@ -35,24 +35,43 @@ export class ReadController<M extends DatabaseRecord, V> {
   /**
    * Return a list of items
    */
-  public async getAll(): Promise<GetAllResponse<V>> {
+  public async getAll({ page, quantity, filterText, filterField }: PaginatedRequest): Promise<GetAllResponse<V>> {
     const links = {};
-    const [models, view] = await Promise.all<NonNullId<M>[], View<M, V>>([
-      this.repository.selectAll(),
+    const filter = filterField && filterText ? ({ text: filterText, field: filterField}) : undefined;
+    const [{ rows, pagination }, view] = await Promise.all([
+      this.getResults(page, quantity, filter),
       this.viewFactory.create()
     ]);
 
-    const data = models.map(m => view.create(links, m));
+    const data = rows.map(m => view.create(links, m));
 
-    return { data, links };
+    return { data, links, pagination };
+  }
+
+  private async getResults(page?: string, quantity?: string, filter?: Filter): Promise<PaginatedResults<M>> {
+    if (page && quantity) {
+      return this.repository.selectPaginated(+page, +quantity, filter);
+    } else {
+      const rows = await this.repository.selectAll();
+
+      return { rows };
+    }
   }
 
 }
 
 type OneModel<T extends DatabaseRecord> = undefined | NonNullId<T>;
+type PaginatedResults<T extends DatabaseRecord> = { rows: NonNullId<T>[], pagination?: { count: number }};
 
 export interface GetRequest {
   id: string
+}
+
+export interface PaginatedRequest {
+  page?: string,
+  quantity?: string,
+  filterText?: string,
+  filterField?: string
 }
 
 export interface ViewFactory<T extends DatabaseRecord, U> {

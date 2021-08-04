@@ -1,6 +1,6 @@
 import * as chai from "chai";
 import { ReadController, ViewFactory } from "./ReadController";
-import { GenericRepository } from "../../database/GenericRepository";
+import { Filter, GenericRepository } from "../../database/GenericRepository";
 import { Organisation, OrganisationJsonView } from "../../organisation/Organisation";
 
 class MockRepository {
@@ -19,6 +19,18 @@ class MockRepository {
       { id: 2, name: "Org 1", scheme_id: 2 },
       { id: 3, name: "Org 2", scheme_id: 3 },
     ];
+  }
+
+  public async selectPaginated(page: number, perPage: number, filter: Filter) {
+    const rows = [
+      { id: 1, name: "admin", scheme_id: 1 },
+      { id: 2, name: "Org 1", scheme_id: 2 },
+      { id: 3, name: "Org 2", scheme_id: 3 },
+    ];
+
+    const pagination = { count: 5 };
+
+    return { rows, pagination };
   }
 }
 
@@ -48,7 +60,7 @@ describe("ReadController", () => {
   );
 
   it("returns all results", async () => {
-    const result = await controller.getAll();
+    const result = await controller.getAll({});
     const expected = [
       { id: 1, name: "admin", scheme: "/scheme/1" },
       { id: 2, name: "Org 1", scheme: "/scheme/2" },
@@ -56,6 +68,18 @@ describe("ReadController", () => {
     ];
 
     chai.expect(result.data).to.deep.equal(expected);
+  });
+
+  it("returns paginated results", async () => {
+    const result = await controller.getAll({ page: "1", quantity: "2" });
+    const expected = [
+      { id: 1, name: "admin", scheme: "/scheme/1" },
+      { id: 2, name: "Org 1", scheme: "/scheme/2" },
+      { id: 3, name: "Org 2", scheme: "/scheme/3" },
+    ];
+
+    chai.expect(result.data).to.deep.equal(expected);
+    chai.expect(result.pagination?.count).to.deep.equal(5);
   });
 
   it("return a single result", async () => {

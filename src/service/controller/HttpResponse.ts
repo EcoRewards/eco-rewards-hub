@@ -5,6 +5,9 @@
 export interface HttpResponse<T> {
   data: T,
   links: Record<string, object>,
+  pagination?: {
+    count: number
+  }
   code?: number
 }
 

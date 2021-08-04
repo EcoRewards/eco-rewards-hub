@@ -185,7 +185,7 @@ export class ServiceContainer {
   // todo this needs a home and a test
   private wrap(controller: Function): Middleware {
     return async (ctx: Context, next: Next) => {
-      const input = { ...ctx.request.body, ...ctx.request.query, ...ctx.params };
+      const input = { ...ctx.request.body as Record<string, unknown>, ...ctx.request.query, ...ctx.params };
       const result = await controller(input, ctx);
 
       if (result) {
