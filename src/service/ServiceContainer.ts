@@ -59,6 +59,8 @@ import * as S3 from "aws-sdk/clients/s3";
 import { JourneyController } from "../journey/controller/JourneyController";
 import { promisify } from "util";
 import { TapProcessor } from "../journey/TapProcessor";
+import { DeviceOverviewController } from "../device/controller/DeviceOverviewController";
+import { DeviceStatusRepository } from "../device/repository/DeviceStatusRepository";
 
 require("dotenv").config();
 
@@ -121,6 +123,7 @@ export class ServiceContainer {
       groupReadController,
       groupWriteController,
       deviceReadController,
+      deviceOverviewController
     ] = await Promise.all([
       this.getHealthController(),
       this.getLoginController(),
@@ -129,6 +132,7 @@ export class ServiceContainer {
       this.getGroupReadController(),
       this.getGroupWriteController(),
       this.getDeviceStatusReadController(),
+      this.getDeviceOverviewController()
     ]);
 
     const [
@@ -179,6 +183,7 @@ export class ServiceContainer {
       .post("/journeys", this.wrap(journeysController.post))
       .post("/journey", this.wrap(journeyController.post))
       .get("/devices", this.wrap(deviceReadController.getAll))
+      .get("/device-overview", this.wrap(deviceOverviewController.get))
       .get("/:type/:id/report", this.wrap(journeysController.getReport));
   }
 
@@ -498,5 +503,9 @@ export class ServiceContainer {
       await this.getDatabase(),
       this.getLogger()
     );
+  }
+
+  private async getDeviceOverviewController() {
+    return new DeviceOverviewController(new DeviceStatusRepository(await this.getDatabase()));
   }
 }

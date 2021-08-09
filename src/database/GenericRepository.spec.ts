@@ -192,7 +192,7 @@ describe("GenericRepository", () => {
   });
 });
 
-class MockDb {
+export class MockDb {
   public sqlQueries: string[] = [];
   public transaction = false;
   public transactionCommitted = false;
@@ -232,7 +232,7 @@ class MockDb {
 
 }
 
-class MockSelectDb<T> {
+export class MockSelectDb<T> {
 
   constructor(
     private readonly results: T
