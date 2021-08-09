@@ -21,7 +21,7 @@ class MockRepository {
     ];
   }
 
-  public async selectPaginated(page: number, perPage: number, filter: Filter) {
+  public async selectPaginated(page: number, perPage: number, filters: Filter[]) {
     const rows = [
       { id: 1, name: "admin", scheme_id: 1 },
       { id: 2, name: "Org 1", scheme_id: 2 },
