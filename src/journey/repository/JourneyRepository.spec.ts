@@ -12,16 +12,19 @@ describe("JourneyRepository", () => {
 
     chai.expect(db.queries[0]).to.equal(`
       SELECT 
-        journey.*, 
-        IFNULL(smartcard, member_id) AS member_id, 
-        member_group.name AS group_id, 
-        organisation.name AS organisation_id, 
-        scheme.name AS scheme_id
+  journey.*, 
+  IFNULL(smartcard, member_id) AS member_id, 
+  member_group.name AS group_id, 
+  organisation.name AS organisation_id, 
+  scheme.name AS scheme_id
+
       FROM journey 
-      JOIN member ON member.id = member_id 
-      JOIN member_group ON member.member_group_id = member_group.id 
-      JOIN organisation ON member_group.organisation_id = organisation.id 
-      JOIN scheme ON organisation.scheme_id = scheme.id 
+      
+  JOIN member ON member.id = member_id 
+  JOIN member_group ON member.member_group_id = member_group.id 
+  JOIN organisation ON member_group.organisation_id = organisation.id 
+  JOIN scheme ON organisation.scheme_id = scheme.id 
+
       ORDER BY journey.id DESC 
     `);
   });

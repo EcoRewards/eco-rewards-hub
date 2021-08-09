@@ -2,17 +2,23 @@ import { HttpResponse } from "../../service/controller/HttpResponse";
 import * as parse from "csv-parse";
 import { AdminUserId } from "../../user/AdminUser";
 import { JourneyCsvToMySqlStreamFactory } from "../stream/JourneyCsvToMySqlStreamFactory";
-import { JourneyRepository } from "../repository/JourneyRepository";
+import { JourneyRepository, JourneyWithGroupOrgAndScheme } from "../repository/JourneyRepository";
 import { Context } from "koa";
 import autobind from "autobind-decorator";
 import { IncomingMessage } from "http";
 import { MultiPartFormReader } from "./MultiPartFormReader";
 import { JourneyViewFactory } from "../JourneyViewFactory";
-import { GetAllResponse, GetResponse } from "../../service/controller/ReadController";
-import { JourneyJsonView } from "../Journey";
+import {
+  GetAllResponse,
+  GetResponse,
+  PaginatedRequest,
+  PaginatedResults
+} from "../../service/controller/ReadController";
+import { Journey, JourneyJsonView } from "../Journey";
 import { LocalDate, LocalTime } from "@js-joda/core";
-import { formatIdForCsv } from "../../member/Member";
+import { formatIdForCsv, Member } from "../../member/Member";
 import ReadableStream = NodeJS.ReadableStream;
+import { Filter } from "../../database/GenericRepository";
 
 /**
  * /journeys endpoints
@@ -61,10 +67,15 @@ export class JourneysController {
   /**
    * Return a list of items
    */
-  public async getAll(request: {}, ctx: Context): Promise<GetAllResponse<JourneyJsonView> | void> {
+  public async getAll(
+    { page, quantity, filterText, filterField }: PaginatedRequest, ctx: Context
+  ): Promise<GetAllResponse<JourneyJsonView> | void> {
+
     const links = {};
-    const [models, view] = await Promise.all([
-      this.repository.selectAll(),
+    const filter = filterField && filterText ? ({ text: filterText, field: filterField}) : undefined;
+
+    const [{ rows, pagination }, view] = await Promise.all([
+      this.getResults(page, quantity, filter),
       this.viewFactory.create()
     ]);
 
@@ -72,7 +83,7 @@ export class JourneysController {
 
     if (accepts && accepts.includes("text/csv")) {
       const head = "source,uploaded,processed,travelDate,memberId,distance,mode,rewardsEarned,carbonSaving,deviceId,groupId,organisationId,schemeId\n";
-      const csvData = models
+      const csvData = rows
         .map(m => view.createCsv(links, m).join(","))
         .join("\n");
 
@@ -80,9 +91,23 @@ export class JourneysController {
       ctx.status = 200;
       ctx.body = head + csvData;
     } else {
-      const data = models.map(m => view.create(links, m));
+      const data = rows.map(m => view.create(links, m));
 
-      return { data, links };
+      return { data, links, pagination };
+    }
+  }
+
+  private async getResults(
+    page?: string, quantity?: string, filter?: Filter
+  ): Promise<PaginatedResults<JourneyWithGroupOrgAndScheme>> {
+    if (page && quantity) {
+      const filters = filter ? [filter, { field: "member_id", text: filter.text }] : [];
+
+      return this.repository.selectPaginated(+page, +quantity, filters);
+    } else {
+      const rows = await this.repository.selectAll();
+
+      return { rows };
     }
   }
 

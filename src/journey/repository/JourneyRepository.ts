@@ -1,6 +1,22 @@
 import { Readable } from "stream";
 import { Journey, NonNullId } from "../..";
 import { setNested } from "ts-array-utils";
+import { Filter, PaginatedRows } from "../../database/GenericRepository";
+
+const fields = `
+  journey.*, 
+  IFNULL(smartcard, member_id) AS member_id, 
+  member_group.name AS group_id, 
+  organisation.name AS organisation_id, 
+  scheme.name AS scheme_id
+`;
+
+const joins = `
+  JOIN member ON member.id = member_id 
+  JOIN member_group ON member.member_group_id = member_group.id 
+  JOIN organisation ON member_group.organisation_id = organisation.id 
+  JOIN scheme ON organisation.scheme_id = scheme.id 
+`;
 
 /**
  * Provides access to the journey table
@@ -62,21 +78,32 @@ export class JourneyRepository {
    */
   public async selectAll(): Promise<JourneyWithGroupOrgAndScheme[]> {
     const [rows] = await this.db.query(`
-      SELECT 
-        journey.*, 
-        IFNULL(smartcard, member_id) AS member_id, 
-        member_group.name AS group_id, 
-        organisation.name AS organisation_id, 
-        scheme.name AS scheme_id
+      SELECT ${fields}
       FROM journey 
-      JOIN member ON member.id = member_id 
-      JOIN member_group ON member.member_group_id = member_group.id 
-      JOIN organisation ON member_group.organisation_id = organisation.id 
-      JOIN scheme ON organisation.scheme_id = scheme.id 
+      ${joins}
       ORDER BY journey.id DESC 
     `);
 
     return rows;
+  }
+
+  /**
+   * Select paginated data from the table
+   */
+  public async selectPaginated(
+    page: number, perPage: number, filters: Filter[]
+  ): Promise<PaginatedRows<JourneyWithGroupOrgAndScheme>> {
+
+    const where = filters.length > 0 ? `WHERE ` + filters.map(() => "?? LIKE ?").join(" OR ") : "";
+    const args = filters.flatMap(filter => [filter.field, filter.text + "%"]);
+    const limit = `ORDER BY id DESC LIMIT ${(page - 1) * perPage}, ${perPage}`;
+
+    const [[rows], [[count]]] = await Promise.all([
+      this.db.query(`SELECT ${fields} FROM journey ${joins} ${where} ${limit}`, args),
+      this.db.query(`SELECT COUNT(*) FROM journey ${joins} ${where}`, args)
+    ]);
+
+    return { rows, pagination: { count: count["COUNT(*)"] } };
   }
 
   /**
