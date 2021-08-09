@@ -69,9 +69,9 @@ export class GenericRepository<T extends DatabaseRecord> {
   /**
    * Select paginated data from the table
    */
-  public async selectPaginated(page: number, perPage: number, filter?: Filter): Promise<PaginatedRows<T>> {
-    const where = filter ? `WHERE ?? LIKE ?` : "";
-    const args = filter ? [filter.field, filter.text + "%"] : [];
+  public async selectPaginated(page: number, perPage: number, filters: Filter[]): Promise<PaginatedRows<T>> {
+    const where = filters.length > 0 ? `WHERE ` + filters.map(() => "?? LIKE ?").join(" OR ") : "";
+    const args = filters.flatMap(filter => [filter.field, filter.text + "%"]);
     const limit = `ORDER BY id DESC LIMIT ${(page - 1) * perPage}, ${perPage}`;
 
     const [[rows], [[count]]] = await Promise.all([

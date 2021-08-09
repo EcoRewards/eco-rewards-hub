@@ -50,7 +50,7 @@ export class ReadController<M extends DatabaseRecord, V> {
 
   private async getResults(page?: string, quantity?: string, filter?: Filter): Promise<PaginatedResults<M>> {
     if (page && quantity) {
-      return this.repository.selectPaginated(+page, +quantity, filter);
+      return this.repository.selectPaginated(+page, +quantity, filter ? [filter] : []);
     } else {
       const rows = await this.repository.selectAll();
 
@@ -61,7 +61,7 @@ export class ReadController<M extends DatabaseRecord, V> {
 }
 
 type OneModel<T extends DatabaseRecord> = undefined | NonNullId<T>;
-type PaginatedResults<T extends DatabaseRecord> = { rows: NonNullId<T>[], pagination?: { count: number }};
+export type PaginatedResults<T extends DatabaseRecord> = { rows: NonNullId<T>[], pagination?: { count: number }};
 
 export interface GetRequest {
   id: string
