@@ -32,7 +32,8 @@ export class LoginController {
       if (isValid) {
         const data = {
           token: toBase64(request.username + ":" + request.password),
-          name: userIndex[request.username].name
+          name: userIndex[request.username].name,
+          role: userIndex[request.username].role
         };
 
         return { data, links, code: 201 };
