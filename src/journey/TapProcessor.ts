@@ -14,6 +14,7 @@ import { AdminUserId } from "../user/AdminUser";
 export class TapProcessor {
   private static readonly memberGroup = {
     "63380000": "18",
+    "63359702": "18",
     "63359701": "10"
   };
 
