@@ -14,9 +14,8 @@ import {
   PaginatedRequest,
   PaginatedResults
 } from "../../service/controller/ReadController";
-import { Journey, JourneyJsonView } from "../Journey";
+import { JourneyJsonView } from "../Journey";
 import { LocalDate, LocalTime } from "@js-joda/core";
-import { formatIdForCsv, Member } from "../../member/Member";
 import ReadableStream = NodeJS.ReadableStream;
 import { Filter } from "../../database/GenericRepository";
 
@@ -34,7 +33,7 @@ export class JourneysController {
   ) { }
 
   /**
-   * Handler for the POST /journey endpoint. Processes the input stream as a CSV of member
+   * Handler for the POST /journeys endpoint. Processes the input stream as a CSV of member
    * journeys and returns any errors generated during processing.
    */
   public async post(input: any, ctx: Context): Promise<HttpResponse<JourneysPostResponse>> {
