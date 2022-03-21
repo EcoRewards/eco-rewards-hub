@@ -14,9 +14,8 @@ import {
   PaginatedRequest,
   PaginatedResults
 } from "../../service/controller/ReadController";
-import { Journey, JourneyJsonView } from "../Journey";
+import { JourneyJsonView } from "../Journey";
 import { LocalDate, LocalTime } from "@js-joda/core";
-import { formatIdForCsv, Member } from "../../member/Member";
 import ReadableStream = NodeJS.ReadableStream;
 import { Filter } from "../../database/GenericRepository";
 

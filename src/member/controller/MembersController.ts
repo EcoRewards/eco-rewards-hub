@@ -7,7 +7,6 @@ import autobind from "autobind-decorator";
 import { ExternalMemberRepository } from "../repository/ExternalMemberRepository";
 import { GetAllResponse } from "../..";
 import { Context } from "koa";
-import * as luhn from "luhn-generator";
 import { PaginatedRequest, PaginatedResults } from "../../service/controller/ReadController";
 
 /**
