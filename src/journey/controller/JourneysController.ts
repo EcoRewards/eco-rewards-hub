@@ -33,7 +33,7 @@ export class JourneysController {
   ) { }
 
   /**
-   * Handler for the POST /journey endpoint. Processes the input stream as a CSV of member
+   * Handler for the POST /journeys endpoint. Processes the input stream as a CSV of member
    * journeys and returns any errors generated during processing.
    */
   public async post(input: any, ctx: Context): Promise<HttpResponse<JourneysPostResponse>> {
