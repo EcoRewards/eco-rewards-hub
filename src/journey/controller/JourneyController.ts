@@ -8,6 +8,8 @@ import { MultiPartFormReader } from "./MultiPartFormReader";
 import autobind from "autobind-decorator";
 import sharp = require("sharp");
 import ReadableStream = NodeJS.ReadableStream;
+import { MemberModelFactory } from "../../member/MemberModelFactory";
+import { ExternalMemberRepository } from "../../member/repository/ExternalMemberRepository";
 
 @autobind
 export class JourneyController {
@@ -18,23 +20,25 @@ export class JourneyController {
     private readonly memberRepository: GenericRepository<Member>,
     private readonly journeyRepository: GenericRepository<Journey>,
     private readonly formReader: MultiPartFormReader,
-    private readonly storage: RemoteFileStorage
+    private readonly storage: RemoteFileStorage,
+    private readonly memberFactory: MemberModelFactory,
+    private readonly externalMemberRepository: ExternalMemberRepository
   ) { }
 
   /**
    * Multi-part form handler for POST /journey requests. Allows users to create a journey and upload an image to S3
    */
   public async post(input: any, ctx: Context): Promise<PostJourneyResponse> {
-    const factory = await this.getJourneyFactory();
     const form = await this.formReader.getForm(ctx.req) as PostJourneyRequest;
     const errors = this.validateForm(form);
+    const factory = await this.getJourneyFactory(form.memberId!);
 
     if (errors.length > 0) {
       return { code: 400, data: { errors } };
     }
 
     const isQrScan = typeof form.deviceId === "string" && form.deviceId.length > 5;
-    const journey = factory.create(
+    const journey = await factory.create(
       [form.memberId!, form.date!, form.mode, form.distance, form.latitude, form.longitude],
       isQrScan ? JourneyController.QR_USER : JourneyController.SELF_REPORT_USER,
       isQrScan ? form.deviceId?.substr(0, 25) : ""
@@ -56,11 +60,18 @@ export class JourneyController {
     return { code: 201, data: "success" };
   }
 
-  private async getJourneyFactory(): Promise<JourneyFactory> {
-    const members = await this.memberRepository.getIndexedById();
+  private async getJourneyFactory(id: string): Promise<JourneyFactory> {
+    const members = await this.memberRepository.selectIn(["id", [id]], ["smartcard", [id]]);
+    const membersById = members.reduce(indexBy(m => m.id), {});
     const membersBySmartcard = Object.values(members).reduce(indexBy(m => m.smartcard || ""), {});
 
-    return new JourneyFactory(members, membersBySmartcard);
+    return new JourneyFactory(
+      membersById,
+      membersBySmartcard,
+      this.memberRepository,
+      this.memberFactory,
+      this.externalMemberRepository
+    );
   }
 
   private validateForm(form: PostJourneyRequest) {

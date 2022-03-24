@@ -1,33 +1,49 @@
 import { Member, MemberId, toMemberId } from "../member/Member";
 import { Journey } from "./Journey";
 import { AdminUserId } from "../user/AdminUser";
-import { NonNullId } from "../database/GenericRepository";
+import { GenericRepository, NonNullId } from "../database/GenericRepository";
+import { MemberModelFactory } from "../member/MemberModelFactory";
+import { ExternalMemberRepository } from "../member/repository/ExternalMemberRepository";
 
 /**
  * Creates journeys by taking in CSV data and overlaying that with member defaults.
  */
 export class JourneyFactory {
+  private static readonly memberGroup = {
+    "63380000": "18",
+    "63359702": "18",
+    "63359701": "10",
+    "01570112": "121"
+  };
 
   constructor(
     private readonly membersById: Record<MemberId, NonNullId<Member>>,
-    private readonly membersBySmartcard: Record<string, NonNullId<Member>>
+    private readonly membersBySmartcard: Record<string, NonNullId<Member>>,
+    private readonly memberRepository: GenericRepository<Member>,
+    private readonly memberFactory: MemberModelFactory,
+    private readonly externalMemberRepository: ExternalMemberRepository
   ) { }
 
   /**
    * Ensure the member exists, and there is either a default mode and distance or one has been
    * set in the CSV data.
    */
-  public create(
+  public async create(
     [memberId, date, mode, distance, latitude, longitude, csvDeviceId]: CsvInput,
     adminUserId: AdminUserId,
     deviceId?: string
-  ): Journey {
+  ): Promise<Journey> {
 
     const id = memberId.length >= 16 ? memberId : toMemberId(memberId);
-    const member = this.membersById[id] || this.membersBySmartcard[id];
+    let member = this.membersById[id] || this.membersBySmartcard[id];
 
     if (!member) {
-      throw Error("Cannot find member: " + id);
+      // if it was a smartcard check to see if the account needs to be created
+      if (memberId.length >= 16 && JourneyFactory.memberGroup[id.substr(0, 8)]) {
+        member = await this.createMember(memberId, JourneyFactory.memberGroup[id.substr(0, 8)]);
+      } else {
+        throw Error("Cannot find member: " + id);
+      }
     }
 
     const actualMode = mode || member.default_transport_mode;
@@ -57,6 +73,21 @@ export class JourneyFactory {
       latitude: latitude ?? null,
       longitude: longitude ?? null
     };
+  }
+
+  private async createMember(id: string, group: string): Promise<NonNullId<Member>> {
+    const member = this.memberFactory.createFromPartial({
+      smartcard: id,
+      group: group,
+      defaultDistance: 1,
+      defaultTransportMode: "walk",
+      previousTransportMode: "walk"
+    });
+
+    const savedMember = await this.memberRepository.save(member);
+    await this.externalMemberRepository.exportAll([savedMember], savedMember.member_group_id);
+
+    return savedMember;
   }
 
 }

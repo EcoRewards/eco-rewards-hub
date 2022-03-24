@@ -7,6 +7,7 @@ import { JourneyViewFactory } from "../JourneyViewFactory";
 import { LocalDate } from "@js-joda/core";
 import { GetAllResponse } from "../../service/controller/ReadController";
 import { JourneyJsonView } from "../Journey";
+import { MemberModelFactory } from "../../member/MemberModelFactory";
 
 class MockFactory {
   constructor(
@@ -178,7 +179,7 @@ describe("JourneysController", () => {
       total_miles: 10,
       previous_transport_mode: null
     }
-  }, {});
+  }, {}, {} as any, new MemberModelFactory(), { exportAll: () => {} } as any);
 
   const journeyRepository = new MockJourneyRepository();
   const badJourneyRepository = new MockExceptionJourneyRepository();
