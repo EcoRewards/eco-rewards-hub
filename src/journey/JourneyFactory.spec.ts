@@ -4,7 +4,7 @@ import { Member } from "../member/Member";
 import { MemberModelFactory } from "../member/MemberModelFactory";
 
 class MockRepository {
-  private ids = 1;
+  public ids = 1;
   public async save(member: Member) {
     member.id = this.ids++;
 
@@ -50,7 +50,10 @@ describe("JourneyFactory", () => {
         total_miles: 50,
         previous_transport_mode: null
       }
-    }
+    },
+    mockRepository,
+    new MemberModelFactory(),
+    { exportAll: () => {} } as any
   );
 
   it("throws an error when given an invalid ID", async () => {
@@ -131,6 +134,16 @@ describe("JourneyFactory", () => {
     const actual = await factory.create(["654321002222230099", "2019-12-09T15:10:05"], 1, "123456");
 
     chai.expect(actual.device_id).to.equal("123456");
+  });
+
+  it("creates a user", async () => {
+    const actual = await factory.create(
+      ["633800002222211111", "2019-12-09T15:10:05", "bus", undefined, undefined, undefined, "X1"],
+      1
+    );
+
+    chai.expect(actual.device_id).to.equal("X1");
+    chai.expect(mockRepository.ids).to.equal(2);
   });
 
 });

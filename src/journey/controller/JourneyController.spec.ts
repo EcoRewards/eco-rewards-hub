@@ -1,16 +1,17 @@
 import * as chai from "chai";
 import { JourneyController } from "./JourneyController";
 import { Readable } from "stream";
+import { MemberModelFactory } from "../../member/MemberModelFactory";
 
 class MockRepository {
   private i = 0;
 
   constructor(
-    public records: any = {},
+    public records: any = [],
     public inserts: any = []
   ) { }
 
-  async getIndexedById() {
+  async selectIn() {
     return this.records;
   }
 
@@ -36,8 +37,8 @@ class MockMultiPartFileExtractor {
 
 describe("JourneyController", () => {
   const journeyRepository = new MockRepository() as any;
-  const memberRepository = new MockRepository({
-    "222223001": {
+  const memberRepository = new MockRepository(
+    [{
       id: 222223001,
       rewards: 0,
       carbon_saving: 0,
@@ -46,8 +47,8 @@ describe("JourneyController", () => {
       member_group_id: 1,
       smartcard: null,
       total_miles: 4.2
-    },
-  }) as any;
+    }],
+  ) as any;
 
   const mockStorage = async () => {};
 
@@ -61,7 +62,9 @@ describe("JourneyController", () => {
         mode: "bus",
         distance: 1.0
       }) as any,
-      mockStorage
+      mockStorage,
+      new MemberModelFactory(),
+      { exportAll: () => {} } as any
     );
 
     const ctx = { req: {} };
@@ -77,7 +80,9 @@ describe("JourneyController", () => {
       memberRepository,
       journeyRepository,
       new MockMultiPartFileExtractor({}) as any,
-      mockStorage
+      mockStorage,
+      new MemberModelFactory(),
+      { exportAll: () => {} } as any
     );
 
     const ctx = { req: {} };
@@ -99,7 +104,9 @@ describe("JourneyController", () => {
         mode: "bus",
         distance: 1.0
       }) as any,
-      mockStorage
+      mockStorage,
+      new MemberModelFactory(),
+      { exportAll: () => {} } as any
     );
 
     const ctx = { req: {} };
@@ -118,7 +125,9 @@ describe("JourneyController", () => {
         mode: "bus",
         distance: 1.0
       }) as any,
-      mockStorage
+      mockStorage,
+      new MemberModelFactory(),
+      { exportAll: () => {} } as any
     );
 
     const ctx = { req: {} };
@@ -137,7 +146,9 @@ describe("JourneyController", () => {
         mode: "bus",
         distance: 55
       }) as any,
-      mockStorage
+      mockStorage,
+      new MemberModelFactory(),
+      { exportAll: () => {} } as any
     );
 
     const ctx = { req: {} };
@@ -156,7 +167,9 @@ describe("JourneyController", () => {
         mode: "train",
         distance: 555
       }) as any,
-      mockStorage
+      mockStorage,
+      new MemberModelFactory(),
+      { exportAll: () => {} } as any
     );
 
     const ctx = { req: {} };
@@ -175,7 +188,9 @@ describe("JourneyController", () => {
         mode: "bus",
         distance: -5
       }) as any,
-      mockStorage
+      mockStorage,
+      new MemberModelFactory(),
+      { exportAll: () => {} } as any
     );
 
     const ctx = { req: {} };
@@ -197,7 +212,9 @@ describe("JourneyController", () => {
           read: () => {}
         })
       }) as any,
-      mockStorage
+      mockStorage,
+      new MemberModelFactory(),
+      { exportAll: () => {} } as any
     );
 
     const ctx = { req: {} };
@@ -219,7 +236,9 @@ describe("JourneyController", () => {
         distance: 55,
         deviceId: "12345"
       }) as any,
-      mockStorage
+      mockStorage,
+      new MemberModelFactory(),
+      { exportAll: () => {} } as any
     );
 
     const ctx = { req: {} };

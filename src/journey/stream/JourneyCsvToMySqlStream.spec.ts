@@ -1,6 +1,7 @@
 import * as chai from "chai";
 import { JourneyFactory } from "../JourneyFactory";
 import { JourneyCsvToMySqlStream } from "./JourneyCsvToMySqlStream";
+import { MemberModelFactory } from "../../member/MemberModelFactory";
 
 describe("JourneyCsvToMySqlStream", () => {
   const factory = new JourneyFactory({
@@ -26,7 +27,7 @@ describe("JourneyCsvToMySqlStream", () => {
       total_miles: 50,
       previous_transport_mode: null
     }
-  }, {});
+  }, {}, {} as any, new MemberModelFactory(), { exportAll: () => {} } as any);
 
   it("returns errors", (done) => {
     const stream = new JourneyCsvToMySqlStream(factory, 1);

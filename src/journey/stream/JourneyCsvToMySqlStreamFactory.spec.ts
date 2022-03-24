@@ -1,5 +1,7 @@
 import * as chai from "chai";
 import { JourneyCsvToMySqlStreamFactory } from "./JourneyCsvToMySqlStreamFactory";
+import { MemberModelFactory } from "../../member/MemberModelFactory";
+import { Member } from "../../member/Member";
 
 class MockDb {
   constructor(
@@ -8,6 +10,15 @@ class MockDb {
 
   public getIndexedById() {
     return this.records;
+  }
+}
+
+class MockRepository {
+  public ids = 1;
+  public async save(member: Member) {
+    member.id = this.ids++;
+
+    return member;
   }
 }
 
@@ -24,7 +35,12 @@ describe("JourneyCsvToMySqlStreamFactory", () => {
   });
 
   it("gets members", async () => {
-    const streamFactory = new JourneyCsvToMySqlStreamFactory(db as any);
+    const streamFactory = new JourneyCsvToMySqlStreamFactory(
+      db as any,
+      new MockRepository() as any,
+      new MemberModelFactory(),
+      { exportAll: () => {} } as any
+    );
     const result = await streamFactory.create(1);
 
     chai.expect(result.getErrors()).to.deep.equal([]);

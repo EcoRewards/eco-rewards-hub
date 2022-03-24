@@ -320,25 +320,29 @@ export class ServiceContainer {
   }
 
   private async getJourneysController(): Promise<JourneysController> {
-    const [memberRepository, streamDatabase, database, userRepository] = await Promise.all([
+    const [memberRepository, streamDatabase, database, userRepository, externalRepository] = await Promise.all([
       this.getGenericMemberRepository(),
       this.getDatabaseStream(),
       this.getDatabase(),
-      this.getGenericAdminUserRepository()
+      this.getGenericAdminUserRepository(),
+      this.getExternalMemberRepository()
     ]);
+
+    const memberModelFactory = new MemberModelFactory();
 
     return new JourneysController(
       new JourneyRepository(streamDatabase, database),
-      new JourneyCsvToMySqlStreamFactory(memberRepository),
+      new JourneyCsvToMySqlStreamFactory(memberRepository, memberRepository, memberModelFactory, externalRepository),
       new MultiPartFormReader(),
       new JourneyViewFactory(userRepository)
     );
   }
 
   private async getJourneyController(): Promise<JourneyController> {
-    const [journeyRepository, memberRepository] = await Promise.all([
+    const [journeyRepository, memberRepository, externalRepository] = await Promise.all([
       this.getJourneyRepository(),
-      this.getGenericMemberRepository()
+      this.getGenericMemberRepository(),
+      this.getExternalMemberRepository()
     ]);
 
     const aws = this.getAws();
@@ -347,7 +351,9 @@ export class ServiceContainer {
       memberRepository,
       journeyRepository,
       new MultiPartFormReader(),
-      promisify(aws.upload.bind(aws))
+      promisify(aws.upload.bind(aws)),
+      new MemberModelFactory(),
+      externalRepository
     );
   }
   private async getTapController(): Promise<TapController> {
