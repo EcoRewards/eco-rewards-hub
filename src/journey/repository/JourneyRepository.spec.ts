@@ -50,7 +50,10 @@ describe("JourneyRepository", () => {
         @distance,
         @mode,
         @rewards_earned,
-        @carbon_saving
+        @carbon_saving,
+        @device_id,
+        @latitude,
+        @longitude
       )
       SET
         id = null,
@@ -62,7 +65,10 @@ describe("JourneyRepository", () => {
         distance = nullif(@distance, ''),
         mode = nullif(@mode, ''),
         rewards_earned = nullif(@rewards_earned, ''),
-        carbon_saving = nullif(@carbon_saving, '')
+        carbon_saving = nullif(@carbon_saving, ''),
+        device_id = @device_id,
+        latitude = @latitude,
+        longitude = @longitude
     `);
   });
 
