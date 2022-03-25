@@ -1,6 +1,6 @@
 import { JourneyFactory } from "../JourneyFactory";
 import { indexBy } from "ts-array-utils";
-import { Member } from "../../member/Member";
+import { Member, toMemberId } from "../../member/Member";
 import { GenericRepository } from "../../database/GenericRepository";
 import { Context } from "koa";
 import { Journey } from "../Journey";
@@ -31,12 +31,12 @@ export class JourneyController {
   public async post(input: any, ctx: Context): Promise<PostJourneyResponse> {
     const form = await this.formReader.getForm(ctx.req) as PostJourneyRequest;
     const errors = this.validateForm(form);
-    const factory = await this.getJourneyFactory(form.memberId!);
 
     if (errors.length > 0) {
       return { code: 400, data: { errors } };
     }
 
+    const factory = await this.getJourneyFactory(form.memberId!);
     const isQrScan = typeof form.deviceId === "string" && form.deviceId.length > 5;
     const journey = await factory.create(
       [form.memberId!, form.date!, form.mode, form.distance, form.latitude, form.longitude],
@@ -60,7 +60,8 @@ export class JourneyController {
     return { code: 201, data: "success" };
   }
 
-  private async getJourneyFactory(id: string): Promise<JourneyFactory> {
+  private async getJourneyFactory(fullId: string): Promise<JourneyFactory> {
+    const id = toMemberId(fullId);
     const members = await this.memberRepository.selectIn(["id", [id]], ["smartcard", [id]]);
     const membersById = members.reduce(indexBy(m => m.id), {});
     const membersBySmartcard = Object.values(members).reduce(indexBy(m => m.smartcard || ""), {});
