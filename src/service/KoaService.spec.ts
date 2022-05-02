@@ -1,6 +1,6 @@
 import * as chai from "chai";
 import { KoaService } from "./KoaService";
-import * as pino from "pino";
+import pino from "pino";
 import * as swagger from "swagger2";
 import { Document } from "swagger2/dist/schema";
 import { ErrorLoggingMiddleware } from "./logging/ErrorLoggingMiddleware";

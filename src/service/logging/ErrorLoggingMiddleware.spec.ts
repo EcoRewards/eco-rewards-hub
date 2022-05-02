@@ -1,5 +1,5 @@
 import * as chai from "chai";
-import * as pino from "pino";
+import pino from "pino";
 import { ErrorLoggingMiddleware } from "./ErrorLoggingMiddleware";
 
 describe("ErrorLoggingMiddleware", () => {

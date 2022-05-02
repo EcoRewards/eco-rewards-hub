@@ -1,5 +1,5 @@
 import { HttpResponse } from "../../service/controller/HttpResponse";
-import * as parse from "csv-parse";
+import { parse } from "csv-parse";
 import { AdminUserId } from "../../user/AdminUser";
 import { JourneyCsvToMySqlStreamFactory } from "../stream/JourneyCsvToMySqlStreamFactory";
 import { JourneyRepository, JourneyWithGroupOrgAndScheme } from "../repository/JourneyRepository";

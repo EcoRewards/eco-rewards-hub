@@ -18,7 +18,7 @@ export class ReadController<M extends DatabaseRecord, V> {
    */
   public async get({ id }: GetRequest): Promise<GetResponse<V>> {
     const links = {};
-    const [model, view] = await Promise.all<OneModel<M>, View<M, V>>([
+    const [model, view] = await Promise.all([
       this.repository.selectOne(+id),
       this.viewFactory.create()
     ]);

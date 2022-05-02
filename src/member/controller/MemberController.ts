@@ -34,7 +34,7 @@ export class MemberController {
    */
   public async get({ id }: GetRequest): Promise<GetResponse<MemberJsonView>> {
     const links = {};
-    const [model, view] = await Promise.all<AMember, MemberView>([
+    const [model, view] = await Promise.all([
       this.getModel(id),
       this.viewFactory.create()
     ]);

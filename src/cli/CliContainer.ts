@@ -11,7 +11,7 @@ import { CreateGroupCommand } from "../group/command/CreateGroupCommand";
 import { ExportAllCommand } from "../member/command/ExportAllCommand";
 import { ExternalMemberRepository } from "../member/repository/ExternalMemberRepository";
 import Axios from "axios";
-import * as pino from "pino";
+import pino from "pino";
 import { Logger } from "pino";
 import { Member } from "../member/Member";
 
@@ -93,9 +93,9 @@ export class CliContainer {
     const http = Axios.create({
       baseURL: process.env.EXTERNAL_MEMBER_API_URL,
       headers: {
-        "Username": process.env.EXTERNAL_MEMBER_API_USERNAME,
-        "Password": process.env.EXTERNAL_MEMBER_API_PASSWORD,
-        "Api-key": process.env.EXTERNAL_MEMBER_API_KEY
+        "Username": process.env.EXTERNAL_MEMBER_API_USERNAME!,
+        "Password": process.env.EXTERNAL_MEMBER_API_PASSWORD!,
+        "Api-key": process.env.EXTERNAL_MEMBER_API_KEY!
       }
     });
     const api = new ExternalMemberRepository(http, db, this.getLogger());
@@ -105,6 +105,14 @@ export class CliContainer {
 
   @memoize
   private getLogger(): Logger {
-    return pino({ prettyPrint: { translateTime: true } });
+    return pino({
+      transport: {
+        target: "pino-pretty",
+        options: {
+          colorize: true,
+          translateTime: true
+        }
+      }
+    });
   }
 }
