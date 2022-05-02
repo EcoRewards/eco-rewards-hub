@@ -61,6 +61,10 @@ import { promisify } from "util";
 import { TapProcessor } from "../journey/TapProcessor";
 import { DeviceOverviewController } from "../device/controller/DeviceOverviewController";
 import { DeviceStatusRepository } from "../device/repository/DeviceStatusRepository";
+import { LocationViewFactory } from "../location/LocationViewFactory";
+import { Location, LocationJsonView } from "../location/Location";
+import { LocationModelFactory } from "../location/LocationModelFactory";
+import { LocationController } from "../location/controller/LocationController";
 
 require("dotenv").config();
 
@@ -123,7 +127,9 @@ export class ServiceContainer {
       groupReadController,
       groupWriteController,
       deviceReadController,
-      deviceOverviewController
+      deviceOverviewController,
+      locationReadController,
+      locationWriteController
     ] = await Promise.all([
       this.getHealthController(),
       this.getLoginController(),
@@ -132,7 +138,9 @@ export class ServiceContainer {
       this.getGroupReadController(),
       this.getGroupWriteController(),
       this.getDeviceStatusReadController(),
-      this.getDeviceOverviewController()
+      this.getDeviceOverviewController(),
+      this.getLocationReadController(),
+      this.getLocationWriteController()
     ]);
 
     const [
@@ -142,7 +150,8 @@ export class ServiceContainer {
       schemeReadController,
       journeysController,
       journeyController,
-      tapController
+      tapController,
+      locationController
     ] = await Promise.all([
       this.getOrganisationReadController(),
       this.getOrganisationWriteController(),
@@ -150,7 +159,8 @@ export class ServiceContainer {
       this.getSchemeReadController(),
       this.getJourneysController(),
       this.getJourneyController(),
-      this.getTapController()
+      this.getTapController(),
+      this.getLocationController()
     ]);
 
     return router
@@ -184,6 +194,11 @@ export class ServiceContainer {
       .post("/journey", this.wrap(journeyController.post))
       .get("/devices", this.wrap(deviceReadController.getAll))
       .get("/device-overview", this.wrap(deviceOverviewController.get))
+      .get("/locations", this.wrap(locationReadController.getAll))
+      .get("/location/:id", this.wrap(locationController.get))
+      .put("/location/:id", this.wrap(locationWriteController.put))
+      .delete("/location/:id", this.wrap(locationController.delete))
+      .post("/location", this.wrap(locationWriteController.post))
       .get("/:type/:id/report", this.wrap(journeysController.getReport));
   }
 
@@ -264,6 +279,30 @@ export class ServiceContainer {
     return new ReadController(
       await this.getSchemeRepository(),
       new SchemeViewFactory()
+    );
+  }
+
+  @memoize
+  private async getLocationWriteController(): Promise<WriteController<LocationJsonView, Location>> {
+    return new WriteController(
+      await this.getLocationRepository(),
+      new LocationModelFactory(),
+      new LocationViewFactory()
+    );
+  }
+
+  @memoize
+  private async getLocationReadController(): Promise<ReadController<Location, LocationJsonView>> {
+    return new ReadController(
+      await this.getLocationRepository(),
+      new LocationViewFactory()
+    );
+  }
+
+  private async getLocationController(): Promise<LocationController> {
+    return new LocationController(
+      await this.getLocationReadController(),
+      await this.getLocationWriteController()
     );
   }
 
@@ -488,6 +527,11 @@ export class ServiceContainer {
   @memoize
   public async getJourneyRepository(): Promise<GenericRepository<Journey>> {
     return new GenericRepository(await this.getDatabase(), "journey");
+  }
+
+  @memoize
+  public async getLocationRepository(): Promise<GenericRepository<Location>> {
+    return new GenericRepository(await this.getDatabase(), "location");
   }
 
   @memoize

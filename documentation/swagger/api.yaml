@@ -607,58 +607,6 @@ paths:
           $ref: '#/responses/404'
         500:
           $ref: '#/responses/500'
-    post:
-      summary: "Create a member"
-      description: ""
-      consumes:
-        - "application/json"
-      produces:
-        - "application/json"
-      parameters:
-        - in: "body"
-          name: "body"
-          description: "Member details"
-          required: true
-          schema:
-            type: "object"
-            required:
-              - group
-              - smartcard
-              - defaultTransportMode
-              - previousTransportMode
-              - defaultDistance
-            properties:
-              group:
-                type: "string"
-                example: "/group/1"
-              defaultTransportMode:
-                type: "string"
-                example: "bus"
-              previousTransportMode:
-                type: "string"
-                example: "bus"
-              defaultDistance:
-                type: "number"
-                description: "Distance in miles"
-                example: 1.2
-              smartcard:
-                type: "string"
-                example: "654321002222230099"
-                description: "Number to create"
-      responses:
-        201:
-          description: "successful operation"
-          schema:
-            type: "object"
-            properties:
-              data:
-                $ref: "#/definitions/Member"
-              links:
-                type: "object"
-        400:
-          $ref: '#/responses/400'
-        500:
-          $ref: '#/responses/500'
     put:
       summary: "Edit a member"
       description: "Change a members default distance and transport mode"
@@ -759,7 +707,31 @@ paths:
           description: "Member details"
           required: true
           schema:
-            $ref: "#/definitions/Member"
+            type: "object"
+            required:
+              - group
+              - smartcard
+              - defaultTransportMode
+              - previousTransportMode
+              - defaultDistance
+            properties:
+              group:
+                type: "string"
+                example: "/group/1"
+              defaultTransportMode:
+                type: "string"
+                example: "bus"
+              previousTransportMode:
+                type: "string"
+                example: "bus"
+              defaultDistance:
+                type: "number"
+                description: "Distance in miles"
+                example: 1.2
+              smartcard:
+                type: "string"
+                example: "654321002222230099"
+                description: "Number to create"
       responses:
         201:
           description: "successful operation"
@@ -767,7 +739,7 @@ paths:
             type: "object"
             properties:
               data:
-                $ref: "#/definitions/Group"
+                $ref: "#/definitions/Member"
               links:
                 type: "object"
         400:
