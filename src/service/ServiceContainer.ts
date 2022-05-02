@@ -2,7 +2,7 @@ import { KoaService } from "./KoaService";
 import { config } from "../../config/service";
 import * as Koa from "koa";
 import { Context, Middleware, Next } from "koa";
-import * as pino from "pino";
+import pino from "pino";
 import { Logger } from "pino";
 import * as Router from "koa-router";
 import { HealthController } from "../health/HealthController";
@@ -430,7 +430,15 @@ export class ServiceContainer {
 
   @memoize
   private getLogger(): Logger {
-    return pino({ prettyPrint: { translateTime: true } });
+    return pino({
+      transport: {
+        target: "pino-pretty",
+        options: {
+          colorize: true,
+          translateTime: true
+        }
+      }
+    });
   }
 
   private async getAuthenticationMiddleware(): Promise<BasicAuthenticationMiddleware> {
@@ -545,9 +553,9 @@ export class ServiceContainer {
       Axios.create({
         baseURL: process.env.EXTERNAL_MEMBER_API_URL,
         headers: {
-          "Username": process.env.EXTERNAL_MEMBER_API_USERNAME,
-          "Password": process.env.EXTERNAL_MEMBER_API_PASSWORD,
-          "Api-key": process.env.EXTERNAL_MEMBER_API_KEY
+          "Username": process.env.EXTERNAL_MEMBER_API_USERNAME!,
+          "Password": process.env.EXTERNAL_MEMBER_API_PASSWORD!,
+          "Api-key": process.env.EXTERNAL_MEMBER_API_KEY!
         }
       }),
       await this.getDatabase(),
