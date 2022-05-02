@@ -16,6 +16,7 @@ export class BasicAuthenticationMiddleware {
     ctx => ctx.request.path === "/login",
     ctx => ctx.request.path === "/groups",
     ctx => ctx.request.path === "/member",
+    ctx => ctx.request.path === "/locations",
     ctx => ctx.request.path === "/journey",
     ctx => /^\/scheme\/[\d+]\/report/.test(ctx.request.path),
     ctx => ctx.request.method === "PATCH" && /^\/member\/[\d+]/.test(ctx.request.path)
