@@ -1,5 +1,4 @@
 import * as luhn from "luhn-generator";
-import { MemberId } from "../member/Member";
 
 export interface Location {
   id: LocationId | null,

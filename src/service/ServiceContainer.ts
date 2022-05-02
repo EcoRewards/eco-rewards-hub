@@ -64,6 +64,7 @@ import { DeviceStatusRepository } from "../device/repository/DeviceStatusReposit
 import { LocationViewFactory } from "../location/LocationViewFactory";
 import { Location, LocationJsonView } from "../location/Location";
 import { LocationModelFactory } from "../location/LocationModelFactory";
+import { LocationController } from "../location/controller/LocationController";
 
 require("dotenv").config();
 
@@ -149,7 +150,8 @@ export class ServiceContainer {
       schemeReadController,
       journeysController,
       journeyController,
-      tapController
+      tapController,
+      locationController
     ] = await Promise.all([
       this.getOrganisationReadController(),
       this.getOrganisationWriteController(),
@@ -157,7 +159,8 @@ export class ServiceContainer {
       this.getSchemeReadController(),
       this.getJourneysController(),
       this.getJourneyController(),
-      this.getTapController()
+      this.getTapController(),
+      this.getLocationController()
     ]);
 
     return router
@@ -192,11 +195,10 @@ export class ServiceContainer {
       .get("/devices", this.wrap(deviceReadController.getAll))
       .get("/device-overview", this.wrap(deviceOverviewController.get))
       .get("/locations", this.wrap(locationReadController.getAll))
-      .get("/location/:id", this.wrap(locationReadController.get))
+      .get("/location/:id", this.wrap(locationController.get))
       .put("/location/:id", this.wrap(locationWriteController.put))
-      .delete("/location/:id", this.wrap(locationWriteController.delete))
+      .delete("/location/:id", this.wrap(locationController.delete))
       .post("/location", this.wrap(locationWriteController.post))
-
       .get("/:type/:id/report", this.wrap(journeysController.getReport));
   }
 
@@ -280,6 +282,7 @@ export class ServiceContainer {
     );
   }
 
+  @memoize
   private async getLocationWriteController(): Promise<WriteController<LocationJsonView, Location>> {
     return new WriteController(
       await this.getLocationRepository(),
@@ -288,10 +291,18 @@ export class ServiceContainer {
     );
   }
 
+  @memoize
   private async getLocationReadController(): Promise<ReadController<Location, LocationJsonView>> {
     return new ReadController(
       await this.getLocationRepository(),
       new LocationViewFactory()
+    );
+  }
+
+  private async getLocationController(): Promise<LocationController> {
+    return new LocationController(
+      await this.getLocationReadController(),
+      await this.getLocationWriteController()
     );
   }
 
