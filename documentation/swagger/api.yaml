@@ -746,7 +746,6 @@ paths:
           $ref: '#/responses/400'
         500:
           $ref: '#/responses/500'
-  
 
 
   /tap:
