@@ -49,6 +49,7 @@ describe("JourneyController", () => {
       total_miles: 4.2
     }],
   ) as any;
+  const ctx = { req: {}, headers: { "content-type": "multipart/form-data"} };
 
   const mockStorage = async () => {};
 
@@ -67,7 +68,6 @@ describe("JourneyController", () => {
       { exportAll: () => {} } as any
     );
 
-    const ctx = { req: {} };
     const result = await controller.post({ }, ctx as any) as any;
 
     chai.expect(result.data).to.deep.equal("success");
@@ -85,7 +85,6 @@ describe("JourneyController", () => {
       { exportAll: () => {} } as any
     );
 
-    const ctx = { req: {} };
     const result = await controller.post({ }, ctx as any) as any;
 
     chai.expect(result.data.errors[0]).to.deep.equal("Member ID must be set");
@@ -109,7 +108,6 @@ describe("JourneyController", () => {
       { exportAll: () => {} } as any
     );
 
-    const ctx = { req: {} };
     const result = await controller.post({ }, ctx as any) as any;
 
     chai.expect(result.data.errors[0]).to.deep.equal("Travel date must be within the last 7 days");
@@ -130,7 +128,6 @@ describe("JourneyController", () => {
       { exportAll: () => {} } as any
     );
 
-    const ctx = { req: {} };
     const result = await controller.post({ }, ctx as any) as any;
 
     chai.expect(result.data.errors[0]).to.deep.equal("Travel date cannot be in the future");
@@ -151,7 +148,6 @@ describe("JourneyController", () => {
       { exportAll: () => {} } as any
     );
 
-    const ctx = { req: {} };
     const result = await controller.post({ }, ctx as any) as any;
 
     chai.expect(result.data.errors[0]).to.deep.equal("Travel distance must not exceed 50 miles or 500 miles for train journeys");
@@ -172,7 +168,6 @@ describe("JourneyController", () => {
       { exportAll: () => {} } as any
     );
 
-    const ctx = { req: {} };
     const result = await controller.post({ }, ctx as any) as any;
 
     chai.expect(result.data.errors[0]).to.deep.equal("Travel distance must not exceed 50 miles or 500 miles for train journeys");
@@ -193,7 +188,6 @@ describe("JourneyController", () => {
       { exportAll: () => {} } as any
     );
 
-    const ctx = { req: {} };
     const result = await controller.post({ }, ctx as any) as any;
 
     chai.expect(result.data.errors[0]).to.deep.equal("Travel distance must not be negative");
@@ -217,7 +211,6 @@ describe("JourneyController", () => {
       { exportAll: () => {} } as any
     );
 
-    const ctx = { req: {} };
     const result = await controller.post({ }, ctx as any) as any;
 
     chai.expect(result.data).to.deep.equal("success");
@@ -241,8 +234,29 @@ describe("JourneyController", () => {
       { exportAll: () => {} } as any
     );
 
-    const ctx = { req: {} };
     const result = await controller.post({ }, ctx as any) as any;
+
+    chai.expect(result.data.errors).to.equal(undefined);
+  });
+
+  it("accepts JSON requests", async () => {
+    const controller = new JourneyController(
+      memberRepository,
+      journeyRepository,
+      new MockMultiPartFileExtractor({}) as any,
+      mockStorage,
+      new MemberModelFactory(),
+      { exportAll: () => {} } as any
+    );
+
+    const context = { req: {}, headers: { "content-type": "application/json" } };
+    const result = await controller.post({
+      memberId: "2222230019",
+      date: new Date().toJSON().substr(0, 10),
+      mode: "bus",
+      distance: 55,
+      deviceId: "12345"
+    }, context as any) as any;
 
     chai.expect(result.data.errors).to.equal(undefined);
   });

@@ -29,7 +29,10 @@ export class JourneyController {
    * Multi-part form handler for POST /journey requests. Allows users to create a journey and upload an image to S3
    */
   public async post(input: any, ctx: Context): Promise<PostJourneyResponse> {
-    const form = await this.formReader.getForm(ctx.req) as PostJourneyRequest;
+    const form: PostJourneyRequest =  ctx.headers["content-type"] === "application/json"
+      ? input as PostJourneyRequest
+      : await this.formReader.getForm(ctx.req) as PostJourneyRequest;
+
     const errors = this.validateForm(form);
 
     if (errors.length > 0) {
@@ -39,7 +42,7 @@ export class JourneyController {
     const factory = await this.getJourneyFactory(form.memberId!);
     const isQrScan = typeof form.deviceId === "string" && form.deviceId.length > 5;
     const journey = await factory.create(
-      [form.memberId!, form.date!, form.mode, form.distance, form.latitude, form.longitude],
+      [form.memberId + "", form.date!, form.mode, form.distance, form.latitude, form.longitude],
       isQrScan ? JourneyController.QR_USER : JourneyController.SELF_REPORT_USER,
       isQrScan ? form.deviceId?.substr(0, 25) : ""
     );
@@ -61,7 +64,7 @@ export class JourneyController {
   }
 
   private async getJourneyFactory(fullId: string): Promise<JourneyFactory> {
-    const id = fullId.length >= 16 ? fullId : toMemberId(fullId) + "";
+    const id = fullId.length >= 16 ? fullId : toMemberId(fullId + "");
     const members = await this.memberRepository.selectIn(["id", [id]], ["smartcard", [id]]);
     const membersById = members.reduce(indexBy(m => m.id), {});
     const membersBySmartcard = Object.values(members).reduce(indexBy(m => m.smartcard || ""), {});

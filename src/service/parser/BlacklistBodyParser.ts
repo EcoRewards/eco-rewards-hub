@@ -18,7 +18,7 @@ export class BlacklistBodyParser {
    * the body parser.
    */
   public async disableBodyParser(ctx: Context, next: Next) {
-    ctx.disableBodyParser = this.endpoints[ctx.path];
+    ctx.disableBodyParser = this.endpoints[ctx.path] && ctx.headers["content-type"] !== "application/json";
 
     await next();
   }
