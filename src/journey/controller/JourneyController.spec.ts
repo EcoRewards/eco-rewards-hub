@@ -247,4 +247,27 @@ describe("JourneyController", () => {
     chai.expect(result.data.errors).to.equal(undefined);
   });
 
+  it("accepts JSON requests", async () => {
+    const controller = new JourneyController(
+      memberRepository,
+      journeyRepository,
+      new MockMultiPartFileExtractor({}) as any,
+      mockStorage,
+      new MemberModelFactory(),
+      { exportAll: () => {} } as any
+    );
+
+    const ctx = { req: {}, headers: { "content-type": "application/json" } };
+    const result = await controller.post({
+      memberId: "2222230019",
+      date: new Date().toJSON().substr(0, 10),
+      mode: "bus",
+      distance: 55,
+      deviceId: "12345"
+    }, ctx as any) as any;
+
+    chai.expect(result.data.errors).to.equal(undefined);
+  });
+
+
 });
