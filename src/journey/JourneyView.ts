@@ -51,7 +51,9 @@ export class JourneyView implements View<Journey, JourneyJsonView> {
       record.device_id,
       record.group_id,
       record.organisation_id,
-      record.scheme_id
+      record.scheme_id,
+      record.latitude,
+      record.longitude
     ];
   }
 

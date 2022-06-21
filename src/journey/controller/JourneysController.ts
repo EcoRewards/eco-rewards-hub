@@ -81,7 +81,7 @@ export class JourneysController {
     const accepts = ctx.request.accept.types();
 
     if (accepts && accepts.includes("text/csv")) {
-      const head = "source,uploaded,processed,travelDate,memberId,distance,mode,rewardsEarned,carbonSaving,deviceId,groupId,organisationId,schemeId\n";
+      const head = "source,uploaded,processed,travelDate,memberId,distance,mode,rewardsEarned,carbonSaving,deviceId,groupId,organisationId,schemeId,latitude,longitude\n";
       const csvData = rows
         .map(m => view.createCsv(links, m).join(","))
         .join("\n");
