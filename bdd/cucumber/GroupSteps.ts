@@ -1,4 +1,4 @@
-import { Then, When } from "cucumber";
+import { Then, When } from "@cucumber/cucumber";
 import { World } from "./World";
 import * as chai from "chai";
 
