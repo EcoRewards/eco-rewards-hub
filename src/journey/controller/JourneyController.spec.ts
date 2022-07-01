@@ -261,4 +261,28 @@ describe("JourneyController", () => {
     chai.expect(result.data.errors).to.equal(undefined);
   });
 
+  it("Sets the source if an authenticated user sends the data", async () => {
+    const journeyRepository2 = new MockRepository() as any;
+    const controller = new JourneyController(
+      memberRepository,
+      journeyRepository2,
+      new MockMultiPartFileExtractor({}) as any,
+      mockStorage,
+      new MemberModelFactory(),
+      { exportAll: () => {} } as any
+    );
+
+    const context = { req: {}, headers: { "content-type": "application/json" }, adminUserId: 3 };
+    const result = await controller.post({
+      memberId: "2222230019",
+      date: new Date().toJSON().substr(0, 10),
+      mode: "bus",
+      distance: 55,
+      deviceId: "12345"
+    }, context as any);
+    chai.expect(result.data).to.deep.equal("success");
+    chai.expect(journeyRepository2.inserts[0].member_id).to.equal(222223001);
+    chai.expect(journeyRepository2.inserts[0].admin_user_id).to.equal(3);
+  });
+
 });

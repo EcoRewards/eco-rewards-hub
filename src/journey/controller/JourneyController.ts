@@ -14,7 +14,6 @@ import { ExternalMemberRepository } from "../../member/repository/ExternalMember
 @autobind
 export class JourneyController {
   private static SELF_REPORT_USER = 1;
-  private static QR_USER = 2;
 
   constructor(
     private readonly memberRepository: GenericRepository<Member>,
@@ -43,7 +42,7 @@ export class JourneyController {
     const isQrScan = typeof form.deviceId === "string" && form.deviceId.length > 5;
     const journey = await factory.create(
       [form.memberId + "", form.date!, form.mode, form.distance, form.latitude, form.longitude],
-      isQrScan ? JourneyController.QR_USER : JourneyController.SELF_REPORT_USER,
+      ctx.adminUserId || JourneyController.SELF_REPORT_USER,
       isQrScan ? form.deviceId?.substr(0, 25) : ""
     );
     const savedJourney = await this.journeyRepository.save(journey);
