@@ -3,7 +3,7 @@ let common = [
     '--require-module ts-node/register',
     '--require bdd/cucumber/**/*.ts',
     '--format progress-bar',
-    '--format node_modules/cucumber-pretty',
+    '--format @cucumber/pretty-formatter',
     '--tags "not @skipped and not @pending"',
     '--parallel 2'
 ].join(' ');

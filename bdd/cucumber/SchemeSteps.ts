@@ -1,4 +1,4 @@
-import { Given, Then, When } from "cucumber";
+import { Given, Then, When } from "@cucumber/cucumber";
 import { World } from "./World";
 import * as chai from "chai";
 

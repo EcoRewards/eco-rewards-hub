@@ -1,4 +1,4 @@
-import { setWorldConstructor } from "cucumber";
+import { setWorldConstructor } from "@cucumber/cucumber";
 import { AxiosInstance } from "axios";
 import { SchemeJsonView } from "../../src/scheme/Scheme";
 import { GroupJsonView } from "../../src/group/Group";

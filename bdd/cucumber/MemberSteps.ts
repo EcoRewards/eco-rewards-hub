@@ -1,5 +1,5 @@
 import * as chai from "chai";
-import { Given, Then, When } from "cucumber";
+import { Given, Then, When } from "@cucumber/cucumber";
 import { World } from "./World";
 import { indexBy } from "ts-array-utils";
 import { MemberJsonView } from "../../src/member/Member";
