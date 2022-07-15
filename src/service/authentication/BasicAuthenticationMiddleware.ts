@@ -32,10 +32,6 @@ export class BasicAuthenticationMiddleware {
    * Authenticate a request
    */
   public async auth(ctx: Context, next: Next) {
-    if (ctx.request.method === "OPTIONS" || this.whitelist.some(fn => fn(ctx))) {
-      return next();
-    }
-
     const user = auth(ctx.req);
 
     if (user && this.userCredentials[user.name]) {
@@ -46,6 +42,10 @@ export class BasicAuthenticationMiddleware {
 
         return next();
       }
+    }
+
+    if (ctx.request.method === "OPTIONS" || this.whitelist.some(fn => fn(ctx))) {
+      return next();
     }
 
     this.logger.info(`401 ${ctx.method} ${ctx.url}`);

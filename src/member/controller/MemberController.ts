@@ -55,7 +55,7 @@ export class MemberController {
   }
 
   /**
-   * Create multiple new members in a single request
+   * Create a new member
    */
   public async post(request: MemberPostRequest): Promise<MemberResponse> {
     const member = this.modelFactory.createFromPartial(request);
