@@ -123,7 +123,7 @@ describe("BasicAuthenticationMiddleware", async () => {
     const middleware = new BasicAuthenticationMiddleware(index, cryptography, logger);
     let hasBeenCalled = false;
     const next = () => hasBeenCalled = true;
-    const ctx = createContext("", "/organisation/2/report?from=xyz");
+    const ctx = createContext("", "/organisation/12/report?from=xyz");
     ctx.req.headers = {}; // no authentication header
 
     await middleware.auth(ctx , next as any);
