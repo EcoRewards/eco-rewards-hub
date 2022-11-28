@@ -29,7 +29,7 @@ export class DatabaseBackupJob implements Job {
         database: this.databaseConfiguration.database
       },
       dumpToFile: path,
-      compressFile: true,
+      compressFile: false,
     });
 
     let s3directory = this.getExpiryPath(localDate);
