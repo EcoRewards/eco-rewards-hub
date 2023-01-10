@@ -113,7 +113,7 @@
       "src/*.ts",
       "src/**/*.spec.ts",
       "src/service/ServiceContainer.ts",
-      "src/journey/controller/MultiPartFormReade.ts",
+      "src/journey/controller/MultiPartFormReader.ts",
       "src/cli/CliContainer.ts",
       "bdd/**/*.ts"
     ]
