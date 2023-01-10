@@ -34,7 +34,7 @@ class MockJourneyRepository {
     return new Promise(r => input.on("end", r));
   }
 
-  async selectAll() {
+  async selectLast18Months() {
     return [
       {
         id: 1,

@@ -104,7 +104,7 @@ export class JourneysController {
 
       return this.repository.selectPaginated(+page, +quantity, filters);
     } else {
-      const rows = await this.repository.selectAll();
+      const rows = await this.repository.selectLast18Months();
 
       return { rows };
     }

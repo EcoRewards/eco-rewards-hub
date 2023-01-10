@@ -82,11 +82,12 @@ export class JourneyRepository {
   /**
    * Select all rows from the journey table and replace the member ID with the smartcard number if it's set
    */
-  public async selectAll(): Promise<JourneyWithGroupOrgAndScheme[]> {
+  public async selectLast18Months(): Promise<JourneyWithGroupOrgAndScheme[]> {
     const [rows] = await this.db.query(`
       SELECT ${fields}
       FROM journey 
       ${joins}
+      WHERE journey.travel_date > DATE_SUB(NOW(), INTERVAL 18 MONTH)
       ORDER BY journey.id DESC 
     `);
 

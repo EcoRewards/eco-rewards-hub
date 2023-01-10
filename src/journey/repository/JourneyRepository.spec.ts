@@ -8,7 +8,7 @@ describe("JourneyRepository", () => {
     const records = [];
     const db = new MockSelectDb(records);
     const repository = new JourneyRepository(db, db);
-    await repository.selectAll();
+    await repository.selectLast18Months();
 
     chai.expect(db.queries[0]).to.equal(`
       SELECT 
@@ -25,6 +25,7 @@ describe("JourneyRepository", () => {
   JOIN organisation ON member_group.organisation_id = organisation.id 
   JOIN scheme ON organisation.scheme_id = scheme.id 
 
+      WHERE journey.travel_date > DATE_SUB(NOW(), INTERVAL 18 MONTH)
       ORDER BY journey.id DESC 
     `);
   });
