@@ -13,11 +13,11 @@ Feature:
     When I create "6" members in the group "Anglian 2020"
     And I upload a file
       | member              | date                 | mode  | distance |
-      | 1                   | 2019-12-09T05:51:30Z | walk  | 10.50    |
-      | 1                   | 2019-12-09T06:20:30Z | bus   | 50.50    |
-      | 3                   | 2019-12-09T05:51:30Z | train | 20.50    |
-      | 4                   | 2019-12-09T07:52:30Z | bus   | 40.50    |
-      | 5                   | 2019-12-09T08:53:30Z | tram  | 20.50    |
-      | 5                   | 2019-12-09T09:54:30Z | walk  | 40.50    |
+      | 1                   | 2022-12-09T05:51:30Z | walk  | 10.50    |
+      | 1                   | 2022-12-09T06:20:30Z | bus   | 50.50    |
+      | 3                   | 2022-12-09T05:51:30Z | train | 20.50    |
+      | 4                   | 2022-12-09T07:52:30Z | bus   | 40.50    |
+      | 5                   | 2022-12-09T08:53:30Z | tram  | 20.50    |
+      | 5                   | 2022-12-09T09:54:30Z | walk  | 40.50    |
     And I export the journeys as CSV
     Then the CSV should have at least "6" journeys
