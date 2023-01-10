@@ -17,7 +17,7 @@ scripts:
 after_success:
 - eval "$(ssh-agent -s)"
 - chmod 600 ./deploy
-- echo -e "Host 13.40.32.248\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+- echo -e "Host 18.133.224.102\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
 - ssh-add ./deploy
 - test $TRAVIS_BRANCH = "master" && npm install pm2 -g
 - test $TRAVIS_BRANCH = "master" && pm2 deploy ecosystem.config.js production update
