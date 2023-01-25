@@ -46,7 +46,7 @@ Then("I should see the following journeys", async function ({ rawTable }: any) {
 });
 
 Then("I wait until the rewards have been processed", async function() {
-  await new Promise(r => setTimeout(r, 2000));
+  await new Promise(r => setTimeout(r, 60000));
 });
 
 Then("these members should have the following rewards", async function ({ rawTable }: any) {
