@@ -100,7 +100,7 @@ export class ServiceContainer {
       new RewardPointPolicy()
     );
 
-    return new JobScheduler(rewardAllocationJob, 1000, this.getLogger());
+    return new JobScheduler(rewardAllocationJob, 5 * 60 * 1000, this.getLogger());
   }
 
   public async getDatabaseBackupJob(): Promise<JobScheduler> {
