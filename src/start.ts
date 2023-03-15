@@ -9,4 +9,6 @@ container
   .then(scheduler => scheduler.start())
   .then(() => container.getDatabaseBackupJob())
   .then(scheduler => scheduler.start())
+  .then(() => container.getTrophyAllocationJob())
+  .then(trophyJob => trophyJob.start())
   .catch(e => console.error(e));

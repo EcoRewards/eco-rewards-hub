@@ -12,7 +12,7 @@ describe("TrophyModelFactory", () => {
       dateAwarded: "2018-01-01T00:00:00.000Z",
       memberGroup: "/group/10011001",
       rewards: 100,
-      carbonSavings: 100,
+      carbonSaving: 100,
       miles: 100
     });
 
@@ -22,7 +22,7 @@ describe("TrophyModelFactory", () => {
     chai.expect(actual.date_awarded.toISOString()).to.equal("2018-01-01T00:00:00.000Z");
     chai.expect(actual.member_group_id).to.equal(10011001);
     chai.expect(actual.rewards).to.equal(100);
-    chai.expect(actual.carbon_savings).to.equal(100);
+    chai.expect(actual.carbon_saving).to.equal(100);
     chai.expect(actual.miles).to.equal(100);
   });
 

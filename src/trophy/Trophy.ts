@@ -6,7 +6,7 @@ export interface Trophy {
   date_awarded: Date,
   member_group_id: number,
   rewards: number,
-  carbon_savings: number,
+  carbon_saving: number,
   miles: number,
 }
 
@@ -17,7 +17,7 @@ export interface TrophyJsonView {
   dateAwarded: string,
   memberGroup: string,
   rewards: number,
-  carbonSavings: number,
+  carbonSaving: number,
   miles: number,
 }
 

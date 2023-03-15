@@ -19,7 +19,7 @@ export class TrophyModelFactory implements ModelFactory<TrophyJsonView, Trophy> 
       date_awarded: new Date(view.dateAwarded),
       member_group_id: toGroupId(view.memberGroup),
       rewards: view.rewards,
-      carbon_savings: view.carbonSavings,
+      carbon_saving: view.carbonSaving,
       miles: view.miles
     };
   }

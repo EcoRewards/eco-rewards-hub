@@ -20,7 +20,7 @@ export class TrophyView implements View<Trophy, TrophyJsonView> {
       dateAwarded: record.date_awarded.toISOString(),
       memberGroup: fromGroupId(record.member_group_id),
       rewards: record.rewards,
-      carbonSavings: record.carbon_savings,
+      carbonSaving: record.carbon_saving,
       miles: record.miles
     };
   }

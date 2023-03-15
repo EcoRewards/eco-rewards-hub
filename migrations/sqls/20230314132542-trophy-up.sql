@@ -6,7 +6,7 @@ CREATE TABLE trophy (
   date_awarded DATETIME NOT NULL,
   member_group_id INT(11) UNSIGNED NOT NULL,
   rewards INT(11) UNSIGNED NOT NULL,
-  carbon_savings FLOAT(8,2) NOT NULL,
+  carbon_saving FLOAT(8,2) NOT NULL,
   miles FLOAT(8,2) NOT NULL,
   PRIMARY KEY (id)
 );

@@ -68,6 +68,7 @@ import { LocationController } from "../location/controller/LocationController";
 import { Trophy, TrophyJsonView } from "../trophy/Trophy";
 import { TrophyViewFactory } from "../trophy/TrophyViewFactory";
 import { TrophyModelFactory } from "../trophy/TrophyModelFactory";
+import { TrophyAllocationJob } from "../trophy/TrophyAllocationJob";
 
 require("dotenv").config();
 
@@ -607,5 +608,11 @@ export class ServiceContainer {
 
   private async getDeviceOverviewController() {
     return new DeviceOverviewController(new DeviceStatusRepository(await this.getDatabase()));
+  }
+
+  public async getTrophyAllocationJob() {
+    const job = new TrophyAllocationJob(await this.getDatabase(), this.getLogger());
+
+    return new JobScheduler(job, 5 * 60 * 1000, this.getLogger());
   }
 }
