@@ -24,7 +24,8 @@ export interface MemberJsonView {
   defaultTransportMode: string
   defaultDistance: number,
   totalMiles: number,
-  previousTransportMode: string
+  previousTransportMode: string,
+  trophies: string[]
 }
 
 export function _fromMemberId(id: MemberId | string): string {

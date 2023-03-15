@@ -34,15 +34,13 @@ export class MemberController {
    */
   public async get({ id }: GetRequest): Promise<GetResponse<MemberJsonView>> {
     const links = {};
-    const [model, view] = await Promise.all([
-      this.getModel(id),
-      this.viewFactory.create()
-    ]);
+    const model = await this.getModel(id);
 
     if (!model) {
       return { data: { error: "Not found"}, links, code: 404 };
     }
 
+    const view = await this.viewFactory.create([model.id]);
     const data = view.create(links, model);
 
     return { data, links };
@@ -62,7 +60,7 @@ export class MemberController {
     const memberWithId = await this.genericRepository.save(member);
 
     const [view] = await Promise.all([
-      this.viewFactory.create(),
+      this.viewFactory.create([]),
       this.externalRepository.exportAll([memberWithId], memberWithId.member_group_id)
     ]);
 
@@ -95,7 +93,7 @@ export class MemberController {
     }
 
     const savedModel = await this.genericRepository.save(member);
-    const view = await this.viewFactory.create();
+    const view = await this.viewFactory.create([member.id]);
     const data = view.create(links, savedModel);
 
     return { data, links, code: 200 };

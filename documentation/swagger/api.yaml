@@ -503,6 +503,154 @@ paths:
       security:
         - basicAuth: []
 
+  /trophies:
+    get:
+      summary: "Return all the member trophies"
+      description: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              data:
+                type: "array"
+                items:
+                  $ref: "#/definitions/Trophy"
+              links:
+                type: "object"
+        500:
+          $ref: '#/responses/500'
+  /trophy/{trophyId}:
+    get:
+      summary: "Return a trophy"
+      description: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "trophyId"
+          in: "path"
+          description: "ID of trophy to return"
+          required: true
+          type: "integer"
+          format: "int64"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              data:
+                $ref: "#/definitions/Trophy"
+              links:
+                type: "object"
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        404:
+          $ref: '#/responses/401'
+        500:
+          $ref: '#/responses/500'
+      security:
+        - basicAuth: []
+    put:
+      summary: "Edit a trophy"
+      description: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Name of trophy"
+          required: true
+          schema:
+            $ref: "#/definitions/Trophy"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              data:
+                $ref: "#/definitions/Trophy"
+              links:
+                type: "object"
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        500:
+          $ref: '#/responses/500'
+      security:
+        - basicAuth: []
+    delete:
+      summary: "Delete a trophy"
+      description: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              data:
+                type: "string"
+              links:
+                type: "object"
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        500:
+          $ref: '#/responses/500'
+      security:
+        - basicAuth: []
+  /trophy:
+    post:
+      summary: "Create a trophy"
+      description: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Name of trophy"
+          required: true
+          schema:
+            $ref: "#/definitions/Trophy"
+      responses:
+        201:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              data:
+                $ref: "#/definitions/Trophy"
+              links:
+                type: "object"
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        500:
+          $ref: '#/responses/500'
+      security:
+        - basicAuth: []
+
   /members:
     get:
       summary: "Return all members"
@@ -1063,6 +1211,9 @@ definitions:
       totalMiles:
         type: "number"
         example: 403.53
+      trophies:
+        type: "array"
+        example: "[\"/trophies/1\", \"/trophies/2\"]"
 
   Journey:
     type: "object"
@@ -1096,6 +1247,43 @@ definitions:
         type: "string"
         example: "Train"
       rewardsEarned:
+        type: "number"
+        example: "null"
+      carbonSaving:
+        type: "number"
+        example: "null"
+
+  Trophy:
+    type: "object"
+    required:
+      - id
+      - name
+      - dateAwarded
+      - memberId
+      - memberGroupId
+      - miles
+      - rewards
+      - carbonSaving
+    properties:
+      id:
+        type: "string"
+        example: "E.g. /trophy/1"
+      name:
+        type: "string"
+        example: "Silver"
+      dateAwarded:
+        type: "string"
+        example: "2019-12-12T07:01:40Z"
+      memberId:
+        type: "string"
+        example: "/member/30230000000000018"
+      memberGroupId:
+        type: "string"
+        example: "/member/30230000000000018"
+      miles:
+        type: "number"
+        example: 4.65
+      rewards:
         type: "number"
         example: "null"
       carbonSaving:

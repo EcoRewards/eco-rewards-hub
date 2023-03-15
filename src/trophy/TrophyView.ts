@@ -13,10 +13,8 @@ export class TrophyView implements View<Trophy, TrophyJsonView> {
    * Return the JSON view
    */
   public create(links: object, record: NonNullId<Trophy>): TrophyJsonView {
-    const id = fromTrophyId(record.id);
-
     return {
-      id,
+      id: fromTrophyId(record.id),
       name: record.name,
       member: fromMemberId(record.member_id),
       dateAwarded: record.date_awarded.toISOString(),
