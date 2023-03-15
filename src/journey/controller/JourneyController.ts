@@ -63,7 +63,7 @@ export class JourneyController {
   }
 
   private async getJourneyFactory(fullId: string): Promise<JourneyFactory> {
-    const id = fullId.length >= 16 ? fullId : toMemberId(fullId + "");
+    const id = fullId.length >= 16 ? fullId : toMemberId(fullId + "") + "";
     const members = await this.memberRepository.selectIn(["id", [id]], ["smartcard", [id]]);
     const membersById = members.reduce(indexBy(m => m.id), {});
     const membersBySmartcard = Object.values(members).reduce(indexBy(m => m.smartcard || ""), {});
