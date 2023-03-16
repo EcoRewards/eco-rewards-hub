@@ -26,7 +26,7 @@
     "add-test-user": "npm run cli -- create-user Test test@test.com password admin",
     "add-test-user2": "npm run cli -- create-user Test test2@test.com password admin",
     "cli": "NODE_OPTIONS=$NODE_DEBUG_OPTION ts-node src/cli.ts",
-    "migrate": "mysql -u root -e 'CREATE DATABASE IF NOT EXISTS ecorewards'; db-migrate --config config/database.json up",
+    "migrate": "mysql -h 127.0.0.1 -u root -e 'CREATE DATABASE IF NOT EXISTS ecorewards'; db-migrate --config config/database.json up",
     "migrate-down": "db-migrate --config config/database.json down",
     "create-migration": "db-migrate --sql-file --config config/database.json create"
   },
