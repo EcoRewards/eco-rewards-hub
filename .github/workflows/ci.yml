@@ -6,7 +6,7 @@ on:
       - master
 
 jobs:
-  deploy:
+  test:
     services:
       mysql:
         image: mysql:5.7
@@ -23,8 +23,8 @@ jobs:
         with:
           node-version: '16.x'
       - run: npm ci
-      - run: npm coverage
-      - run: npm report-coverage
+      - run: npm run coverage
+      - run: npm run report-coverage
       - run: npm start
-      - run: npm setup-bdd
-      - run: npm bdd
+      - run: npm run setup-bdd
+      - run: npm run bdd
