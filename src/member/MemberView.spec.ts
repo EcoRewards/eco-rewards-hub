@@ -22,7 +22,7 @@ describe("MemberView", () => {
     name: "Trophy",
     member_id: 1,
     member_group_id: 1,
-    date_awarded: new Date("2018-01-01T00:00:00.000Z"),
+    date_awarded: "2018-01-01T00:00:00.000Z",
     rewards: 100,
     carbon_saving: 100,
     miles: 100

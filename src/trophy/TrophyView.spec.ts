@@ -9,7 +9,7 @@ describe("TrophyView", () => {
       id: 10011001,
       name: "Trophy",
       member_id: 10011001,
-      date_awarded: new Date("2018-01-01T00:00:00.000Z"),
+      date_awarded: "2018-01-01T00:00:00.000Z",
       member_group_id: 10011001,
       rewards: 100,
       carbon_saving: 100,

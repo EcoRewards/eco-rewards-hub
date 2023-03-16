@@ -3,7 +3,7 @@ export interface Trophy {
   id: TrophyID | null,
   name: string,
   member_id: number,
-  date_awarded: Date,
+  date_awarded: string,
   member_group_id: number,
   rewards: number,
   carbon_saving: number,

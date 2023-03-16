@@ -16,7 +16,7 @@ export class TrophyModelFactory implements ModelFactory<TrophyJsonView, Trophy> 
       id: view.id ? toTrophyId(view.id) : null,
       name: view.name,
       member_id: toMemberId(view.member),
-      date_awarded: new Date(view.dateAwarded),
+      date_awarded: view.dateAwarded,
       member_group_id: toGroupId(view.memberGroup),
       rewards: view.rewards,
       carbon_saving: view.carbonSaving,

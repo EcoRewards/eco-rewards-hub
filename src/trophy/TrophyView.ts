@@ -17,7 +17,7 @@ export class TrophyView implements View<Trophy, TrophyJsonView> {
       id: fromTrophyId(record.id),
       name: record.name,
       member: fromMemberId(record.member_id),
-      dateAwarded: record.date_awarded.toISOString(),
+      dateAwarded: record.date_awarded,
       memberGroup: fromGroupId(record.member_group_id),
       rewards: record.rewards,
       carbonSaving: record.carbon_saving,
