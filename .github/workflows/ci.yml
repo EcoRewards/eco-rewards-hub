@@ -7,7 +7,6 @@ on:
 
 jobs:
   test:
-
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -16,6 +15,15 @@ jobs:
           node-version: '16.x'
       - run: npm ci
       - run: npm run report-coverage
+
+  functional:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16.x'
+      - run: npm ci
       - uses: shogo82148/actions-setup-mysql@v1
         with:
           mysql-version: 'mariadb-10.6'
