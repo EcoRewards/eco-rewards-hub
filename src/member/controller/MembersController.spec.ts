@@ -8,6 +8,7 @@ import { MemberModelFactory } from "../MemberModelFactory";
 import { Member, MemberJsonView } from "../Member";
 import { SchemeView } from "../../scheme/SchemeView";
 import { GetAllResponse } from "../..";
+import { TrophyView } from "../../trophy/TrophyView";
 
 class MockOrganisationRepository {
   data: Scheme[] = [];
@@ -56,6 +57,18 @@ class MockOrganisationRepository {
   }
 }
 
+const trophyView = new TrophyView();
+const trophy = {
+  id: 1,
+  name: "Trophy",
+  member_id: 1,
+  member_group_id: 1,
+  date_awarded: new Date("2018-01-01T00:00:00.000Z"),
+  rewards: 100,
+  carbon_saving: 100,
+  miles: 100
+};
+
 const groupView = new GroupView({
     1: { id: 1, name: "org1", scheme_id: 1 },
     2: { id: 2, name: "org2", scheme_id: 2 }
@@ -71,7 +84,11 @@ class MockFactory {
     return new MemberView({
       1: { id: 1, name: "group1", organisation_id: 1 },
       2: { id: 2, name: "group2", organisation_id: 2 }
-    }, groupView);
+    }, {
+      1: [trophy],
+    },
+    groupView,
+    trophyView);
   }
 }
 

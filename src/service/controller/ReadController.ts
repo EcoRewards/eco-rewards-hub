@@ -75,7 +75,7 @@ export interface PaginatedRequest {
 }
 
 export interface ViewFactory<T extends DatabaseRecord, U> {
-  create(): Promise<View<T, U>>;
+  create(ids?: number[]): Promise<View<T, U>>;
 }
 
 export interface View<T extends DatabaseRecord, U> {

@@ -31,7 +31,7 @@ export class MembersController {
     const membersWithId = await this.repository.insertAll(members);
 
     const [view] = await Promise.all([
-      this.viewFactory.create(),
+      this.viewFactory.create([]),
       this.externalRepository.exportAll(membersWithId, membersWithId[0].member_group_id)
     ]);
 
@@ -53,7 +53,7 @@ export class MembersController {
 
     const [{ rows, pagination }, view] = await Promise.all([
       this.getResults(page, quantity, filter),
-      this.viewFactory.create()
+      this.viewFactory.create([]) // members will be missing trophies when we get all the members
     ]);
 
     const data = rows.map(m => view.create(links, m));

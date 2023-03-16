@@ -15,4 +15,5 @@ Given("I am logged in as an administrator", async function() {
     baseURL: host,
     headers: { authorization: "Basic " + result.data.data.token },
   });
+
 });

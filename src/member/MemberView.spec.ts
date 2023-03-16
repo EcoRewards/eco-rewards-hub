@@ -3,6 +3,7 @@ import { MemberView } from "./MemberView";
 import { OrganisationView } from "../organisation/OrganisationView";
 import { GroupView } from "../group/GroupView";
 import { SchemeView } from "../scheme/SchemeView";
+import { TrophyView } from "../trophy/TrophyView";
 
 describe("MemberView", () => {
   const groupView = new GroupView({
@@ -15,10 +16,24 @@ describe("MemberView", () => {
     }, new SchemeView())
   );
 
+  const trophyView = new TrophyView();
+  const trophy = {
+    id: 1,
+    name: "Trophy",
+    member_id: 1,
+    member_group_id: 1,
+    date_awarded: new Date("2018-01-01T00:00:00.000Z"),
+    rewards: 100,
+    carbon_saving: 100,
+    miles: 100
+  };
+
   const view = new MemberView({
     1: { id: 1, name: "group1", organisation_id: 1 },
     2: { id: 2, name: "group2", organisation_id: 2 }
-  }, groupView);
+  }, {
+    1: [trophy],
+  }, groupView, trophyView);
 
   it("creates a JSON view from a model", async () => {
     const actual = await view.create({}, {
@@ -40,6 +55,7 @@ describe("MemberView", () => {
     chai.expect(actual.defaultDistance).to.equal(5.4);
     chai.expect(actual.totalMiles).to.equal(1.0);
     chai.expect(actual.defaultTransportMode).to.equal("train");
+    chai.expect(actual.trophies).to.deep.equal(["/trophy/1"]);
   });
 
   it("uses the smartcard ID as the ID if there is one", async () => {
@@ -76,6 +92,7 @@ describe("MemberView", () => {
     chai.expect(links["/group/2"].name).to.equal("group2");
     chai.expect(links["/organisation/2"].name).to.equal("org2");
     chai.expect(links["/scheme/2"].name).to.equal("scheme2");
+    chai.expect(links["/trophy/1"].name).to.equal("Trophy");
   });
 
 });

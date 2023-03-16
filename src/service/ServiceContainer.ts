@@ -65,6 +65,10 @@ import { LocationViewFactory } from "../location/LocationViewFactory";
 import { Location, LocationJsonView } from "../location/Location";
 import { LocationModelFactory } from "../location/LocationModelFactory";
 import { LocationController } from "../location/controller/LocationController";
+import { Trophy, TrophyJsonView } from "../trophy/Trophy";
+import { TrophyViewFactory } from "../trophy/TrophyViewFactory";
+import { TrophyModelFactory } from "../trophy/TrophyModelFactory";
+import { TrophyAllocationJob } from "../trophy/TrophyAllocationJob";
 
 require("dotenv").config();
 
@@ -151,7 +155,9 @@ export class ServiceContainer {
       journeysController,
       journeyController,
       tapController,
-      locationController
+      locationController,
+      trophyReadController,
+      trophyWriteController
     ] = await Promise.all([
       this.getOrganisationReadController(),
       this.getOrganisationWriteController(),
@@ -160,7 +166,9 @@ export class ServiceContainer {
       this.getJourneysController(),
       this.getJourneyController(),
       this.getTapController(),
-      this.getLocationController()
+      this.getLocationController(),
+      this.getTrophyReadController(),
+      this.getTrophyWriteController()
     ]);
 
     return router
@@ -178,6 +186,11 @@ export class ServiceContainer {
       .put("/group/:id", this.wrap(groupWriteController.put))
       .delete("/group/:id", this.wrap(groupWriteController.delete))
       .post("/group", this.wrap(groupWriteController.post))
+      .get("/trophies", this.wrap(trophyReadController.getAll))
+      .get("/trophy/:id", this.wrap(trophyReadController.get))
+      .put("/trophy/:id", this.wrap(trophyWriteController.put))
+      .delete("/trophy/:id", this.wrap(trophyWriteController.delete))
+      .post("/trophy", this.wrap(trophyWriteController.post))
       .get("/organisations", this.wrap(organisationReadController.getAll))
       .get("/organisation/:id", this.wrap(organisationReadController.get))
       .put("/organisation/:id", this.wrap(organisationWriteController.put))
@@ -267,6 +280,28 @@ export class ServiceContainer {
     );
   }
 
+  private async getTrophyReadController(): Promise<ReadController<Trophy, TrophyJsonView>> {
+    const [trophyRepository, viewFactory] = await Promise.all([
+      this.getTrophyRepository(),
+      new TrophyViewFactory()
+    ]);
+
+    return new ReadController(trophyRepository, viewFactory);
+  }
+
+  private async getTrophyWriteController(): Promise<WriteController<TrophyJsonView, Trophy>> {
+    const [trophyRepository, viewFactory] = await Promise.all([
+      this.getTrophyRepository(),
+      new TrophyViewFactory()
+    ]);
+
+    return new WriteController(
+      trophyRepository,
+      new TrophyModelFactory(),
+      viewFactory
+    );
+  }
+
   private async getSchemeWriteController(): Promise<WriteController<SchemeJsonView, Scheme>> {
     return new WriteController(
       await this.getSchemeRepository(),
@@ -330,14 +365,17 @@ export class ServiceContainer {
 
   @memoize
   private async getMemberViewFactory(): Promise<MemberViewFactory> {
-    const [groupRepository, viewFactory] = await Promise.all([
+    const [groupRepository, trophyRepository, viewFactory] = await Promise.all([
         this.getMemberGroupRepository(),
+        this.getTrophyRepository(),
         this.getGroupViewFactory()
       ]);
 
     return new MemberViewFactory(
       groupRepository,
-      viewFactory
+      trophyRepository,
+      viewFactory,
+      new TrophyViewFactory()
     );
   }
 
@@ -548,6 +586,11 @@ export class ServiceContainer {
   }
 
   @memoize
+  public async getTrophyRepository(): Promise<GenericRepository<Trophy>> {
+    return new GenericRepository(await this.getDatabase(), "trophy");
+  }
+
+  @memoize
   private async getExternalMemberRepository(): Promise<ExternalMemberRepository> {
     return new ExternalMemberRepository(
       Axios.create({
@@ -565,5 +608,11 @@ export class ServiceContainer {
 
   private async getDeviceOverviewController() {
     return new DeviceOverviewController(new DeviceStatusRepository(await this.getDatabase()));
+  }
+
+  public async getTrophyAllocationJob() {
+    const job = new TrophyAllocationJob(await this.getDatabase(), this.getLogger());
+
+    return new JobScheduler(job, 5 * 60 * 1000, this.getLogger());
   }
 }

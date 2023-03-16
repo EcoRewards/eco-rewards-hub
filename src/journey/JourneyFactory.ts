@@ -34,7 +34,7 @@ export class JourneyFactory {
     deviceId?: string
   ): Promise<Journey> {
 
-    const id = memberId.length >= 16 ? memberId : toMemberId(memberId);
+    const id = memberId.length >= 16 ? memberId : toMemberId(memberId) + "";
     let member = this.membersById[id] || this.membersBySmartcard[id];
 
     if (!member) {

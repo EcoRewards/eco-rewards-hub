@@ -24,7 +24,8 @@ export interface MemberJsonView {
   defaultTransportMode: string
   defaultDistance: number,
   totalMiles: number,
-  previousTransportMode: string
+  previousTransportMode: string,
+  trophies: string[]
 }
 
 export function _fromMemberId(id: MemberId | string): string {
@@ -33,7 +34,7 @@ export function _fromMemberId(id: MemberId | string): string {
   return "/member/" + viewId;
 }
 
-export const fromMemberId = memoize(_fromMemberId);
+export const fromMemberId: typeof _fromMemberId = memoize(_fromMemberId);
 
 export function _toMemberId(id: string): MemberId {
   const accountNumber = id.substr(id.lastIndexOf("/") + 1);
@@ -45,7 +46,7 @@ export function _toMemberId(id: string): MemberId {
   return +accountNumber.substring(0, 9);
 }
 
-export const toMemberId = memoize(_toMemberId);
+export const toMemberId: typeof _toMemberId = memoize(_toMemberId);
 
 /**
  * Format a member ID for CSV. Excel and LibreOffice only support 15 digit numbers so we must add dashes to force text

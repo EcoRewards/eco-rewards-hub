@@ -8,6 +8,8 @@ import { MemberController } from "./MemberController";
 import { MemberModelFactory } from "../MemberModelFactory";
 import { SchemeView } from "../../scheme/SchemeView";
 import { Context } from "koa";
+import { TrophyView } from "../../trophy/TrophyView";
+import { fromTrophyId } from "../../trophy/Trophy";
 
 class MockMemberRepository {
   data: Scheme[] = [];
@@ -61,12 +63,40 @@ const groupView = new GroupView({
   }, new SchemeView())
 );
 
+const trophyView = new TrophyView();
+const trophy = {
+  id: 1,
+  name: "Trophy",
+  member_id: 1,
+  member_group_id: 1,
+  date_awarded: new Date("2018-01-01T00:00:00.000Z"),
+  rewards: 100,
+  carbon_saving: 100,
+  miles: 100
+};
+
+const trophy2 = {
+  id: 2,
+  name: "Trophy 2",
+  member_id: 2,
+  member_group_id: 1,
+  date_awarded: new Date("2018-01-01T00:00:00.000Z"),
+  rewards: 100,
+  carbon_saving: 100,
+  miles: 100
+};
+
 class MockFactory {
   public async create() {
     return new MemberView({
       1: { id: 1, name: "group1", organisation_id: 1 },
       2: { id: 2, name: "group2", organisation_id: 2 }
-    }, groupView);
+    }, {
+      1: [trophy],
+      2: [trophy2]
+    },
+    groupView,
+    trophyView);
   }
 }
 
@@ -118,7 +148,8 @@ describe("MemberController", () => {
       group: "/group/2",
       id: "/member/0000000018",
       rewards: 0,
-      totalMiles: 5
+      totalMiles: 5,
+      trophies: [fromTrophyId(trophy.id)]
     };
 
     chai.expect(result.code).equal(200);
@@ -145,7 +176,8 @@ describe("MemberController", () => {
       previousTransportMode: "",
       id: "/member/0000000018",
       rewards: 10,
-      totalMiles: 150
+      totalMiles: 150,
+      trophies: [fromTrophyId(trophy.id)]
     };
 
     chai.expect(result.code).equal(200);
@@ -169,7 +201,8 @@ describe("MemberController", () => {
       previousTransportMode: "",
       id: "/member/0000000018",
       rewards: 0,
-      totalMiles: 5
+      totalMiles: 5,
+      trophies: [fromTrophyId(trophy.id)]
     };
 
     chai.expect(result.code).equal(200);
@@ -198,7 +231,8 @@ describe("MemberController", () => {
       group: "/group/1",
       id: "/member/0000000018",
       rewards: 0,
-      totalMiles: 5
+      totalMiles: 5,
+      trophies: [fromTrophyId(trophy.id)]
     };
 
     chai.expect(result.data).to.deep.equal(expected);
@@ -214,7 +248,8 @@ describe("MemberController", () => {
       group: "/group/1",
       id: "/member/654321002222230099",
       rewards: 0,
-      totalMiles: 4.2
+      totalMiles: 4.2,
+      trophies: ["/trophy/2"]
     };
 
     chai.expect(result.data).to.deep.equal(expected);
