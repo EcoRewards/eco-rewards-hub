@@ -26,5 +26,5 @@ jobs:
       - run: npm run coverage
       - run: npm run report-coverage
       - run: npm start
-      - run: npm run setup-bdd
+      - run: npm run bdd-setup
       - run: npm run bdd
