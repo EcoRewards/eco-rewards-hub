@@ -116,6 +116,7 @@ export class ServiceContainer {
   @memoize
   private getAws(): S3 {
     return new S3({
+      region: "eu-west-2",
       credentials: {
         accessKeyId: process.env.AWS_ACCESS_KEY!,
         secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!
