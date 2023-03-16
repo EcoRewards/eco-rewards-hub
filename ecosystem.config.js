@@ -15,11 +15,11 @@ module.exports = {
             "ssh_options": "StrictHostKeyChecking=no",
             "key": "deploy.key",
             "user": "ubuntu",
-            "host": ["18.133.78.62"],
+            "host": ["35.178.105.63"],
             "ref": "origin/master",
             "repo": "git@github.com:EcoRewards/eco-rewards-hub.git",
             "path": "/home/ubuntu/eco-rewards-hub",
-            "post-deploy": "npm install --include=dev && npm run migrate && npm run prepublishOnly && pm2 startOrRestart ecosystem.config.js",
+            "post-deploy": "pm2 stop ecosystem.config.js && npm install --include=dev && npm run migrate && npm run prepublishOnly && pm2 start ecosystem.config.js",
             "env"  : {
                 "NODE_ENV": "production"
             }
