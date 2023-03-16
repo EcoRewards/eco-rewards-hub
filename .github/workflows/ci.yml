@@ -7,24 +7,20 @@ on:
 
 jobs:
   test:
-    services:
-      mysql:
-        image: mysql:5.7
-        env:
-          MYSQL_ALLOW_EMPTY_PASSWORD: yes
-          MYSQL_DATABASE: ecorewards
-        ports:
-          - 3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v2
         with:
           node-version: '16.x'
       - run: npm ci
       - run: npm run coverage
       - run: npm run report-coverage
+      - uses: shogo82148/actions-setup-mysql@v1
+        with:
+          mysql-version: 'mariadb-10.6'
+      - run: mysql -uroot -h127.0.0.1 -e 'CREATE DATABASE ecorewards'
       - run: npm start
       - run: npm run bdd-setup
       - run: npm run bdd
