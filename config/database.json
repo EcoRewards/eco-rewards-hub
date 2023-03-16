@@ -4,7 +4,7 @@
     "driver": "mysql",
     "user": "root",
     "password": null,
-    "host": "localhost",
+    "host": "127.0.0.1",
     "database": "ecorewards",
     "multipleStatements": true
   },

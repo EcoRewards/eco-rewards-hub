@@ -6,12 +6,27 @@ on:
       - master
 
 jobs:
-  deploy:
+  unit:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v2
         with:
           node-version: '16.x'
       - run: npm ci
-      - run: npm test
+      - run: npm run report-coverage
+
+  functional:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16.x'
+      - run: npm ci
+      - uses: shogo82148/actions-setup-mysql@v1
+        with:
+          mysql-version: 'mariadb-10.6'
+      - run: npm run bdd-setup
+      - run: npm start &
+      - run: npm run bdd
