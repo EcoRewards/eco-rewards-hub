@@ -5,6 +5,16 @@ on:
     branches:
       - master
 
+services:
+  mysql:
+    image: mysql:5.7
+    env:
+      MYSQL_ALLOW_EMPTY_PASSWORD: yes
+      MYSQL_DATABASE: ecorewards
+    ports:
+      - 3306
+    options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -14,4 +24,8 @@ jobs:
         with:
           node-version: '16.x'
       - run: npm ci
-      - run: npm test
+      - run: npm coverage
+      - run: npm report-coverage
+      - run: npm start
+      - run: npm setup-bdd
+      - run: npm bdd
