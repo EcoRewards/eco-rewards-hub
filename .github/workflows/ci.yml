@@ -20,5 +20,5 @@ jobs:
         with:
           mysql-version: 'mariadb-10.6'
       - run: npm run bdd-setup
-      - run: npm start
+      - run: npm start &
       - run: npm run bdd
