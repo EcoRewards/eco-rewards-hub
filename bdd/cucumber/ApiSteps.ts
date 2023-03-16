@@ -15,4 +15,10 @@ Given("I am logged in as an administrator", async function() {
     baseURL: host,
     headers: { authorization: "Basic " + result.data.data.token },
   });
+
+  World.api.interceptors.response.use((response) => response, (error) => {
+    console.error(error);
+
+    throw error;
+  });
 });
