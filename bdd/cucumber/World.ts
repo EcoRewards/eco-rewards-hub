@@ -18,4 +18,10 @@ export class World {
   member?: MemberJsonView;
 }
 
+World.api.interceptors.response.use((response) => response, (error) => {
+  console.log(error);
+
+  throw error;
+});
+
 setWorldConstructor(World);
