@@ -1,8 +1,7 @@
 import { Job } from "../../service/job/JobScheduler";
 import mysqldump, { ConnectionOptions } from "mysqldump";
 import { DateTimeFormatter, LocalDateTime } from "@js-joda/core";
-import * as S3 from "aws-sdk/clients/s3";
-import { promisify } from "util";
+import { S3 } from "@aws-sdk/client-s3";
 import * as fs from "fs";
 
 /**
@@ -34,9 +33,7 @@ export class DatabaseBackupJob implements Job {
 
     let s3directory = this.getExpiryPath(localDate);
 
-    const upload = promisify(this.aws.upload.bind(this.aws));
-
-    await upload({
+    await this.aws.putObject({
       Bucket: "eco-rewards-backups",
       Key: s3directory + filename,
       Body: fs.createReadStream(path),

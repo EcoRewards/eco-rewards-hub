@@ -55,7 +55,7 @@ import { DeviceStatus } from "../journey/DeviceStatus";
 import { DeviceStatusJsonView } from "../device/DeviceStatus";
 import { DeviceStatusViewFactory } from "../device/DeviceStatusViewFactory";
 import { DatabaseBackupJob } from "../database/job/DatabaseBackupJob";
-import * as S3 from "aws-sdk/clients/s3";
+import { S3 } from "@aws-sdk/client-s3";
 import { JourneyController } from "../journey/controller/JourneyController";
 import { promisify } from "util";
 import { TapProcessor } from "../journey/TapProcessor";
@@ -116,8 +116,10 @@ export class ServiceContainer {
   @memoize
   private getAws(): S3 {
     return new S3({
-      accessKeyId: process.env.AWS_ACCESS_KEY,
-      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+      credentials: {
+        accessKeyId: process.env.AWS_ACCESS_KEY!,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!
+      }
     });
   }
 
@@ -428,7 +430,7 @@ export class ServiceContainer {
       memberRepository,
       journeyRepository,
       new MultiPartFormReader(),
-      promisify(aws.upload.bind(aws)),
+      aws.putObject,
       new MemberModelFactory(),
       externalRepository
     );
