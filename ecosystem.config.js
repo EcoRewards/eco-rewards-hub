@@ -13,7 +13,7 @@ module.exports = {
     deploy : {
         production : {
             "ssh_options": "StrictHostKeyChecking=no",
-            "key": "deploy",
+            "key": "deploy.key",
             "user": "ubuntu",
             "host": ["18.133.78.62"],
             "ref": "origin/master",
