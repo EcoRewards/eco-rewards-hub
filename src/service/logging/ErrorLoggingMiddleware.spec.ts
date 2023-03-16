@@ -6,7 +6,7 @@ describe("ErrorLoggingMiddleware", () => {
   const logger = pino({ level: "fatal" });
   const errorLogger = new ErrorLoggingMiddleware(logger);
   const exceptionThrower = async () => { throw "Error"; };
-  const exceptionThrower2 = async () => { throw { httpCode: 401, message: "Fail" }; };
+  const exceptionThrower2 = async () => { throw { status: 401, message: "Fail" }; };
   const swagger = ctx => async () => { ctx.status = 500; };
 
   it("catches exceptions", async () => {

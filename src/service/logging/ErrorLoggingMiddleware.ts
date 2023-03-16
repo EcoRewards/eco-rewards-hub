@@ -29,10 +29,12 @@ export class ErrorLoggingMiddleware {
       }
     }
     catch (err) {
-      this.logger.error(err);
+      if (err.status !== 404 && err.status !== 401) {
+        this.logger.error(err);
+      }
 
-      if (err.httpCode) {
-        ctx.throw(err.httpCode, err.message);
+      if (err.status) {
+        ctx.throw(err.status, err.message);
       } else {
         ctx.throw(500, err);
       }
