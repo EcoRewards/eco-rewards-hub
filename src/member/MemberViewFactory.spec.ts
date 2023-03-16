@@ -34,7 +34,7 @@ describe("MemberViewFactory", () => {
 
     chai.expect(repository.called).to.equal(true);
     chai.expect(viewFactory.called).to.equal(true);
-    chai.expect(repository2.called).to.equal(true);
+    chai.expect(repository2.called).to.equal(false);
     chai.expect(viewFactory2.called).to.equal(true);
   });
 

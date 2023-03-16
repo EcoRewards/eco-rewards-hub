@@ -1,6 +1,6 @@
 import { ViewFactory } from "../service/controller/ReadController";
 import { Member, MemberId, MemberJsonView } from "./Member";
-import { GenericRepository } from "../database/GenericRepository";
+import { GenericRepository, NonNullId } from "../database/GenericRepository";
 import { MemberView } from "./MemberView";
 import { GroupViewFactory } from "../group/GroupViewFactory";
 import { Group } from "../group/Group";
@@ -27,7 +27,7 @@ export class MemberViewFactory implements ViewFactory<Member, MemberJsonView> {
       this.groupRepository.getIndexedById(),
       this.groupViewFactory.create(),
       this.trophyViewFactory.create(),
-      this.trophyRepository.selectIn(["member_id", members])
+      this.getTrophies(members)
     ]);
 
     const trophiesByMember = trophies.reduce((acc, trophy) => {
@@ -40,4 +40,7 @@ export class MemberViewFactory implements ViewFactory<Member, MemberJsonView> {
     return new MemberView(groups, trophiesByMember, groupView, trophyView);
   }
 
+  private async getTrophies(members: MemberId[]): Promise<NonNullId<Trophy>[]> {
+    return members.length === 0 ? [] : this.trophyRepository.selectIn(["member_id", members]);
+  }
 }
