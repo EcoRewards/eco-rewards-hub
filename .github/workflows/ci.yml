@@ -15,12 +15,11 @@ jobs:
         with:
           node-version: '16.x'
       - run: npm ci
-      - run: npm run coverage
       - run: npm run report-coverage
       - uses: shogo82148/actions-setup-mysql@v1
         with:
           mysql-version: 'mariadb-10.6'
       - run: mysql -uroot -h127.0.0.1 -e 'CREATE DATABASE ecorewards'
-      - run: npm start
       - run: npm run bdd-setup
+      - run: npm start
       - run: npm run bdd
