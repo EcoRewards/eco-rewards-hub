@@ -1,7 +1,7 @@
 
 CREATE TABLE trophy (
   id INT NOT NULL AUTO_INCREMENT,
-  name VARCHAR(255) NOT NULL,
+  name VARCHAR(50) NOT NULL,
   member_id INT(11) UNSIGNED NOT NULL,
   date_awarded DATETIME NOT NULL,
   member_group_id INT(11) UNSIGNED NOT NULL,
