@@ -57,7 +57,6 @@ import { DeviceStatusViewFactory } from "../device/DeviceStatusViewFactory";
 import { DatabaseBackupJob } from "../database/job/DatabaseBackupJob";
 import { S3 } from "@aws-sdk/client-s3";
 import { JourneyController } from "../journey/controller/JourneyController";
-import { promisify } from "util";
 import { TapProcessor } from "../journey/TapProcessor";
 import { DeviceOverviewController } from "../device/controller/DeviceOverviewController";
 import { DeviceStatusRepository } from "../device/repository/DeviceStatusRepository";
@@ -69,6 +68,7 @@ import { Trophy, TrophyJsonView } from "../trophy/Trophy";
 import { TrophyViewFactory } from "../trophy/TrophyViewFactory";
 import { TrophyModelFactory } from "../trophy/TrophyModelFactory";
 import { TrophyAllocationJob } from "../trophy/TrophyAllocationJob";
+import { TrophiesController } from "../trophy/controller/TrophiesController";
 
 require("dotenv").config();
 
@@ -160,7 +160,8 @@ export class ServiceContainer {
       tapController,
       locationController,
       trophyReadController,
-      trophyWriteController
+      trophyWriteController,
+      trophiesController
     ] = await Promise.all([
       this.getOrganisationReadController(),
       this.getOrganisationWriteController(),
@@ -171,7 +172,8 @@ export class ServiceContainer {
       this.getTapController(),
       this.getLocationController(),
       this.getTrophyReadController(),
-      this.getTrophyWriteController()
+      this.getTrophyWriteController(),
+      this.getTrophiesController()
     ]);
 
     return router
@@ -189,7 +191,7 @@ export class ServiceContainer {
       .put("/group/:id", this.wrap(groupWriteController.put))
       .delete("/group/:id", this.wrap(groupWriteController.delete))
       .post("/group", this.wrap(groupWriteController.post))
-      .get("/trophies", this.wrap(trophyReadController.getAll))
+      .get("/trophies", this.wrap(trophiesController.getAll))
       .get("/trophy/:id", this.wrap(trophyReadController.get))
       .put("/trophy/:id", this.wrap(trophyWriteController.put))
       .delete("/trophy/:id", this.wrap(trophyWriteController.delete))
@@ -463,10 +465,18 @@ export class ServiceContainer {
     return new AdminUserRepository(await this.getDatabase());
   }
 
+  @memoize
   private async getLoginController(): Promise<LoginController> {
     const repository = await this.getAdminUserRepository();
 
     return new LoginController(repository, this.getCryptography());
+  }
+
+  @memoize
+  private async getTrophiesController(): Promise<TrophiesController> {
+    const repository = await this.getTrophyRepository();
+
+    return new TrophiesController(repository, new TrophyViewFactory());
   }
 
   @memoize
