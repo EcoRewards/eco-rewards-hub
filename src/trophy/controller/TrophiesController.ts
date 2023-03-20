@@ -4,6 +4,7 @@ import { GetAllResponse, PaginatedRequest, PaginatedResults } from "../../servic
 import { Trophy, TrophyJsonView } from "../Trophy";
 import { Filter, GenericRepository } from "../../database/GenericRepository";
 import { TrophyViewFactory } from "../TrophyViewFactory";
+import { TrophyRepository } from "../repository/TrophyRepository";
 
 /**
  * /journeys endpoints
@@ -12,7 +13,7 @@ import { TrophyViewFactory } from "../TrophyViewFactory";
 export class TrophiesController {
 
   constructor(
-    private readonly repository: GenericRepository<Trophy>,
+    private readonly repository: TrophyRepository,
     private readonly viewFactory: TrophyViewFactory
   ) { }
 

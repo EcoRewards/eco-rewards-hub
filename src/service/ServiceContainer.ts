@@ -69,6 +69,7 @@ import { TrophyViewFactory } from "../trophy/TrophyViewFactory";
 import { TrophyModelFactory } from "../trophy/TrophyModelFactory";
 import { TrophyAllocationJob } from "../trophy/TrophyAllocationJob";
 import { TrophiesController } from "../trophy/controller/TrophiesController";
+import { TrophyRepository } from "../trophy/repository/TrophyRepository";
 
 require("dotenv").config();
 
@@ -287,7 +288,7 @@ export class ServiceContainer {
 
   private async getTrophyReadController(): Promise<ReadController<Trophy, TrophyJsonView>> {
     const [trophyRepository, viewFactory] = await Promise.all([
-      this.getTrophyRepository(),
+      this.getGenericTrophyRepository(),
       new TrophyViewFactory()
     ]);
 
@@ -296,7 +297,7 @@ export class ServiceContainer {
 
   private async getTrophyWriteController(): Promise<WriteController<TrophyJsonView, Trophy>> {
     const [trophyRepository, viewFactory] = await Promise.all([
-      this.getTrophyRepository(),
+      this.getGenericTrophyRepository(),
       new TrophyViewFactory()
     ]);
 
@@ -372,7 +373,7 @@ export class ServiceContainer {
   private async getMemberViewFactory(): Promise<MemberViewFactory> {
     const [groupRepository, trophyRepository, viewFactory] = await Promise.all([
         this.getMemberGroupRepository(),
-        this.getTrophyRepository(),
+        this.getGenericTrophyRepository(),
         this.getGroupViewFactory()
       ]);
 
@@ -599,7 +600,7 @@ export class ServiceContainer {
   }
 
   @memoize
-  public async getTrophyRepository(): Promise<GenericRepository<Trophy>> {
+  public async getGenericTrophyRepository(): Promise<GenericRepository<Trophy>> {
     return new GenericRepository(await this.getDatabase(), "trophy");
   }
 
@@ -627,5 +628,10 @@ export class ServiceContainer {
     const job = new TrophyAllocationJob(await this.getDatabase(), this.getLogger());
 
     return new JobScheduler(job, 5 * 60 * 1000, this.getLogger());
+  }
+
+  @memoize
+  private async getTrophyRepository() {
+    return new TrophyRepository(await this.getDatabase());
   }
 }
