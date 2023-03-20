@@ -2,7 +2,7 @@ import { View } from "../service/controller/ReadController";
 import { NonNullId } from "../database/GenericRepository";
 import { fromTrophyId, Trophy, TrophyJsonView } from "./Trophy";
 import { fromGroupId } from "../group/Group";
-import { fromMemberId } from "../member/Member";
+import { formatIdForCsv, fromMemberId, toMemberId } from "../member/Member";
 
 /**
  * Transforms Location models into LocationJsonViews
@@ -23,6 +23,21 @@ export class TrophyView implements View<Trophy, TrophyJsonView> {
       carbonSaving: record.carbon_saving,
       miles: record.miles
     };
+  }
+
+  /**
+   * Return the CSV view
+   */
+  public createCsv(links: object, record: NonNullId<Trophy>): string[] {
+    return [
+      record.name,
+      formatIdForCsv(fromMemberId(record.member_id)),
+      record.date_awarded,
+      record.member_group_id + "",
+      record.rewards + "",
+      record.carbon_saving + "",
+      record.miles + ""
+    ];
   }
 
 }
