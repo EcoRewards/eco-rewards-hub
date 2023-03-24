@@ -36,7 +36,7 @@ export class TrophyAllocationJob {
     return this.db.query(
       `INSERT INTO trophy (id, name, member_id , date_awarded, member_group_id, rewards, carbon_saving, miles) 
        SELECT null, ?, id, now(), member_group_id, rewards, carbon_saving, total_miles FROM member
-       WHERE rewards > ? 
+       WHERE rewards >= ? 
        ON DUPLICATE KEY UPDATE miles=miles;`,
       [trophy, points]
     );
