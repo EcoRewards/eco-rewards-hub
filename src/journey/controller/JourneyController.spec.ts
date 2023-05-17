@@ -141,7 +141,7 @@ describe("JourneyController", () => {
         memberId: "2222230019",
         date: new Date().toJSON().substr(0, 10),
         mode: "bus",
-        distance: 55
+        distance: 105
       }) as any,
       mockStorage,
       new MemberModelFactory(),
@@ -150,7 +150,7 @@ describe("JourneyController", () => {
 
     const result = await controller.post({ }, ctx as any) as any;
 
-    chai.expect(result.data.errors[0]).to.deep.equal("Travel distance must not exceed 50 miles or 500 miles for train journeys");
+    chai.expect(result.data.errors[0]).to.deep.equal("Travel distance must not exceed 99 miles or 500 miles for train journeys");
   });
 
   it("checks the travel distance for train", async () => {
@@ -170,7 +170,7 @@ describe("JourneyController", () => {
 
     const result = await controller.post({ }, ctx as any) as any;
 
-    chai.expect(result.data.errors[0]).to.deep.equal("Travel distance must not exceed 50 miles or 500 miles for train journeys");
+    chai.expect(result.data.errors[0]).to.deep.equal("Travel distance must not exceed 99 miles or 500 miles for train journeys");
   });
 
   it("checks the travel distance is not negative", async () => {
