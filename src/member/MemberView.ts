@@ -32,6 +32,12 @@ export class MemberView implements View<Member, MemberJsonView> {
       links[fromTrophyId(trophy.id)] = this.trophyView.create(links, trophy);
     }
 
+    const sortOrder = ["Bronze", "Silver", "Gold", "Platinum", "Sapphire", "Ruby", "Emerald", "Diamond"];
+
+    memberTrophies.sort((a, b) => {
+      return sortOrder.indexOf(a.name) - sortOrder.indexOf(b.name);
+    });
+
     return {
       id: fromMemberId(member.smartcard || member.id),
       group: groupId,
