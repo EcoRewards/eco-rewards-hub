@@ -28,7 +28,8 @@ export class CarbonSavingPolicy {
    */
   public getCarbonSaving(mode: string, distance: number): number {
     const referenceCost = this.carbonCostPerMile[this.referenceMode] * distance;
-    const cost = this.carbonCostPerMile[mode.toLowerCase()] * distance;
+    const modeCostPerMile = this.carbonCostPerMile[mode.toLowerCase()] ?? 0;
+    const cost = modeCostPerMile * distance;
 
     return referenceCost - cost;
   }

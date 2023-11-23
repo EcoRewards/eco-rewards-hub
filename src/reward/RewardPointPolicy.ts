@@ -28,7 +28,7 @@ export class RewardPointPolicy {
    */
   public getRewardPoints(mode: string, distance: number, currentPoints: number) {
     const maxPossibleToEarn = this.dailyCap - currentPoints;
-    const points = this.pointsPerMode[mode.toLowerCase()];
+    const points = this.pointsPerMode[mode.toLowerCase()] ?? 0;
 
     return Math.min(maxPossibleToEarn, points);
   }
