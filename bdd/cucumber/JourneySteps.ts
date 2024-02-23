@@ -53,7 +53,7 @@ Then("these members should have the following rewards", async function ({ rawTab
   for (const row of rawTable.slice(1)) {
     const memberIndex = row[0];
     const member = memberIndex.length >= 16 ? this.createdMember : this.createdMembers[memberIndex];
-    const {data} = await World.api.get(member.id);
+    const { data } = await World.api.get(member.id);
 
     chai.expect(data.data.rewards).to.equal(+row[1]);
     chai.expect(data.data.carbonSaving).to.equal(+row[2]);

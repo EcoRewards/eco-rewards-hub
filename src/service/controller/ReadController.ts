@@ -24,7 +24,7 @@ export class ReadController<M extends DatabaseRecord, V> {
     ]);
 
     if (!model) {
-      return { data: { error: "Not found"}, links, code: 404 };
+      return { data: { error: "Not found" }, links, code: 404 };
     }
 
     const data = view.create(links, model);
@@ -37,7 +37,7 @@ export class ReadController<M extends DatabaseRecord, V> {
    */
   public async getAll({ page, quantity, filterText, filterField }: PaginatedRequest): Promise<GetAllResponse<V>> {
     const links = {};
-    const filter = filterField && filterText ? ({ text: filterText, field: filterField}) : undefined;
+    const filter = filterField && filterText ? ({ text: filterText, field: filterField }) : undefined;
     const [{ rows, pagination }, view] = await Promise.all([
       this.getResults(page, quantity, filter),
       this.viewFactory.create()
@@ -60,7 +60,6 @@ export class ReadController<M extends DatabaseRecord, V> {
 
 }
 
-type OneModel<T extends DatabaseRecord> = undefined | NonNullId<T>;
 export type PaginatedResults<T extends DatabaseRecord> = { rows: NonNullId<T>[], pagination?: { count: number }};
 
 export interface GetRequest {

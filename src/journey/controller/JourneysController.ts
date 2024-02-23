@@ -16,8 +16,8 @@ import {
 } from "../../service/controller/ReadController";
 import { JourneyJsonView } from "../Journey";
 import { LocalDate, LocalTime } from "@js-joda/core";
-import ReadableStream = NodeJS.ReadableStream;
 import { Filter } from "../../database/GenericRepository";
+import ReadableStream = NodeJS.ReadableStream;
 
 /**
  * /journeys endpoints
@@ -71,7 +71,7 @@ export class JourneysController {
   ): Promise<GetAllResponse<JourneyJsonView> | void> {
 
     const links = {};
-    const filter = filterField && filterText ? ({ text: filterText, field: filterField}) : undefined;
+    const filter = filterField && filterText ? ({ text: filterText, field: filterField }) : undefined;
 
     const [{ rows, pagination }, view] = await Promise.all([
       this.getResults(page, quantity, filter),
@@ -81,7 +81,7 @@ export class JourneysController {
     const accepts = ctx.request.accept.types();
 
     if (accepts && accepts.includes("text/csv")) {
-      const head = "source,uploaded,processed,travelDate,memberId,distance,mode,rewardsEarned,carbonSaving,deviceId,groupId,organisationId,schemeId,latitude,longitude\n";
+      const head = "source,uploaded,processed,travelDate,memberId,distance,mode,rewardsEarned,carbonSaving,deviceId,groupId,organisationId,schemeId,latitude,longitude,type\n";
       const csvData = rows
         .map(m => view.createCsv(links, m).join(","))
         .join("\n");

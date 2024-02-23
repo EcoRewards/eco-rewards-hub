@@ -1,4 +1,3 @@
-import * as chai from "chai";
 import { ExportAllCommand } from "./ExportAllCommand";
 import { Member } from "../Member";
 

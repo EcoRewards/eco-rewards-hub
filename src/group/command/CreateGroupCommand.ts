@@ -22,7 +22,7 @@ export class CreateGroupCommand {
       organisation_id: organisationId
     };
 
-    return await this.repository.save(group);
+    return this.repository.save(group);
   }
 
 }

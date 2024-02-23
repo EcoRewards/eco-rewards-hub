@@ -1,9 +1,9 @@
 import * as chai from "chai";
 import { JourneyViewFactory } from "../JourneyViewFactory";
 import { TapController } from "./TapController";
-import btoa = require("btoa");
 import { TapProcessor } from "../TapProcessor";
 import { MemberModelFactory } from "../../member/MemberModelFactory";
+import btoa = require("btoa");
 
 class MockRepository {
 

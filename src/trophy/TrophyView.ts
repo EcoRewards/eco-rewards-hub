@@ -2,7 +2,7 @@ import { View } from "../service/controller/ReadController";
 import { NonNullId } from "../database/GenericRepository";
 import { fromTrophyId, Trophy, TrophyJsonView } from "./Trophy";
 import { fromGroupId } from "../group/Group";
-import { formatIdForCsv, fromMemberId, toMemberId } from "../member/Member";
+import { formatIdForCsv, fromMemberId } from "../member/Member";
 
 /**
  * Transforms Location models into LocationJsonViews

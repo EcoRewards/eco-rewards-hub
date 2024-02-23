@@ -1,8 +1,7 @@
 import { MemberId } from "../member/Member";
-import { Journey } from "../journey/Journey";
-import { NonNullId } from "../database/GenericRepository";
 import { pushNested } from "ts-array-utils";
 import { Logger } from "pino";
+import { SavedJourney } from "../journey/TapProcessor";
 
 /**
  * Database queries specific to reward allocation. These span the journey and member tables.
@@ -89,7 +88,6 @@ export class RewardRepository {
   }
 }
 
-export type SavedJourney = NonNullId<Journey>;
 export type TravelDate = string;
 export type UnprocessedJourneyIndex = Record<MemberId, Record<TravelDate, SavedJourney[]>>;
 export type JourneyProcessedRow = [number, number, number, number];

@@ -3,15 +3,7 @@ import { GetRequest, GetResponse } from "../../service/controller/ReadController
 import { Member, MemberJsonView, toMemberId } from "../Member";
 import { MemberViewFactory } from "../MemberViewFactory";
 import { MemberRepository } from "../repository/MemberRepository";
-import {
-  GenericRepository,
-  HttpError,
-  HttpResponse,
-  MemberModelFactory,
-  MemberView,
-  NonNullId,
-  toGroupId
-} from "../..";
+import { GenericRepository, HttpError, HttpResponse, MemberModelFactory, NonNullId, toGroupId } from "../..";
 import { ExternalMemberRepository } from "../repository/ExternalMemberRepository";
 import { Context } from "koa";
 
@@ -37,7 +29,7 @@ export class MemberController {
     const model = await this.getModel(id);
 
     if (!model) {
-      return { data: { error: "Not found"}, links, code: 404 };
+      return { data: { error: "Not found" }, links, code: 404 };
     }
 
     const view = await this.viewFactory.create([model.id]);

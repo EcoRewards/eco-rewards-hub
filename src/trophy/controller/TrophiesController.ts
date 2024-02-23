@@ -2,7 +2,7 @@ import { Context } from "koa";
 import autobind from "autobind-decorator";
 import { GetAllResponse, PaginatedRequest, PaginatedResults } from "../../service/controller/ReadController";
 import { Trophy, TrophyJsonView } from "../Trophy";
-import { Filter, GenericRepository } from "../../database/GenericRepository";
+import { Filter } from "../../database/GenericRepository";
 import { TrophyViewFactory } from "../TrophyViewFactory";
 import { TrophyRepository } from "../repository/TrophyRepository";
 
@@ -25,7 +25,7 @@ export class TrophiesController {
   ): Promise<GetAllResponse<TrophyJsonView> | void> {
 
     const links = {};
-    const filter = filterField && filterText ? ({ text: filterText, field: filterField}) : undefined;
+    const filter = filterField && filterText ? ({ text: filterText, field: filterField }) : undefined;
 
     const [{ rows, pagination }, view] = await Promise.all([
       this.getResults(page, quantity, filter),

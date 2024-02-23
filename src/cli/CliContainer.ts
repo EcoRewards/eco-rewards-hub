@@ -1,4 +1,3 @@
-import { CliCommand } from "./CliCommand";
 import { CreateSchemeCommand } from "../scheme/command/CreateSchemeCommand";
 import * as memoize from "memoized-class-decorator";
 import * as databaseConfiguration from "../../config/database.json";
@@ -10,9 +9,8 @@ import { AdminUserFactory } from "../user/AdminUserFactory";
 import { CreateGroupCommand } from "../group/command/CreateGroupCommand";
 import { ExportAllCommand } from "../member/command/ExportAllCommand";
 import { ExternalMemberRepository } from "../member/repository/ExternalMemberRepository";
-import Axios from "axios";
-import pino from "pino";
-import { Logger } from "pino";
+import * as axios from "axios";
+import pino, { Logger } from "pino";
 import { Member } from "../member/Member";
 
 require("dotenv").config();
@@ -90,7 +88,7 @@ export class CliContainer {
   private async getExportAll(): Promise<ExportAllCommand> {
     const db = await this.getDatabase();
     const repository = new GenericRepository<Member>(db, "member");
-    const http = Axios.create({
+    const http = axios.default.create({
       baseURL: process.env.EXTERNAL_MEMBER_API_URL,
       headers: {
         "Username": process.env.EXTERNAL_MEMBER_API_USERNAME!,
@@ -115,4 +113,8 @@ export class CliContainer {
       }
     });
   }
+}
+
+export interface CliCommand {
+  run(...args: any[]): Promise<any>;
 }

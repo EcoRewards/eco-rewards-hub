@@ -13,7 +13,8 @@ export class LocationModelFactory implements ModelFactory<LocationJsonView, Loca
     return {
       id: view.id ? toLocationId(view.id) : null,
       name: view.name,
-      notes: view.notes
+      notes: view.notes,
+      defaultJourneyType: view.defaultJourneyType
     };
   }
 

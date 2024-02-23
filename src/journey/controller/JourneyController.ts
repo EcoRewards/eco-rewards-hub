@@ -6,10 +6,10 @@ import { Context } from "koa";
 import { Journey } from "../Journey";
 import { MultiPartFormReader } from "./MultiPartFormReader";
 import autobind from "autobind-decorator";
-import sharp = require("sharp");
-import ReadableStream = NodeJS.ReadableStream;
 import { MemberModelFactory } from "../../member/MemberModelFactory";
 import { ExternalMemberRepository } from "../../member/repository/ExternalMemberRepository";
+import sharp = require("sharp");
+import ReadableStream = NodeJS.ReadableStream;
 
 @autobind
 export class JourneyController {
@@ -41,7 +41,7 @@ export class JourneyController {
     const factory = await this.getJourneyFactory(form.memberId!);
     const isQrScan = typeof form.deviceId === "string" && form.deviceId.length > 5;
     const journey = await factory.create(
-      [form.memberId + "", form.date!, form.mode, form.distance, form.latitude, form.longitude],
+      [form.memberId + "", form.date!, form.mode, form.distance, form.latitude, form.longitude, form.journeyType],
       ctx.adminUserId || JourneyController.SELF_REPORT_USER,
       isQrScan ? form.deviceId?.substr(0, 25) : ""
     );
@@ -143,7 +143,8 @@ interface PostJourneyRequest {
   image?: ReadableStream,
   deviceId?: string,
   latitude?: number,
-  longitude?: number
+  longitude?: number,
+  journeyType?: "journey" | "leisure"
 }
 
 export type RemoteFileStorage = (opts: {

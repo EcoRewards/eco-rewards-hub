@@ -1,5 +1,5 @@
 import { HttpResponse } from "../../service/controller/HttpResponse";
-import { Journey, JourneyJsonView } from "../Journey";
+import { JourneyJsonView } from "../Journey";
 import { TapReader, toHex } from "../TapReader";
 import { Context } from "koa";
 import { JourneyViewFactory } from "../JourneyViewFactory";
@@ -8,9 +8,9 @@ import autobind from "autobind-decorator";
 import { DateTimeFormatter, LocalDateTime, ZoneId } from "@js-joda/core";
 import { AxiosInstance } from "axios";
 import { Logger } from "pino";
-import { DeviceStatus } from "../DeviceStatus";
 import { TapProcessor } from "../TapProcessor";
 import btoa = require("btoa");
+import { DeviceStatus } from "../../device/DeviceStatus";
 
 /**
  * Endpoint for receiving LORaWAN data from The Things API

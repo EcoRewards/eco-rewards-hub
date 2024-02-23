@@ -9,24 +9,28 @@ describe("LocationModelFactory", () => {
       id: "/location/100110014",
       name: "org",
       notes: "Notes",
-      url: ""
+      url: "",
+      defaultJourneyType: "journey"
     });
 
     chai.expect(actual.id).to.equal(10011001);
     chai.expect(actual.name).to.equal("org");
     chai.expect(actual.notes).to.equal("Notes");
+    chai.expect(actual.defaultJourneyType).to.equal("journey");
   });
 
   it("creates a model from a JSON view with a null ID", async () => {
     const actual = await factory.create({
       name: "org",
       notes: "Notes",
-      url: ""
+      url: "",
+      defaultJourneyType: "leisure"
     });
 
     chai.expect(actual.id).to.equal(null);
     chai.expect(actual.name).to.equal("org");
     chai.expect(actual.notes).to.equal("Notes");
+    chai.expect(actual.defaultJourneyType).to.equal("leisure");
   });
 
 });

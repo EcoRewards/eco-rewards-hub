@@ -1,16 +1,19 @@
 import * as luhn from "luhn-generator";
+import { JourneyType } from "../journey/Journey";
 
 export interface Location {
   id: LocationId | null,
   name: string,
-  notes: string
+  notes: string,
+  defaultJourneyType: JourneyType,
 }
 
 export interface LocationJsonView {
   id?: string,
   name: string,
   notes: string,
-  url: string
+  url: string,
+  defaultJourneyType: JourneyType,
 }
 
 export function fromLocationId(id: LocationId): string {

@@ -31,7 +31,7 @@ export class DatabaseBackupJob implements Job {
       compressFile: false,
     });
 
-    let s3directory = this.getExpiryPath(localDate);
+    const s3directory = this.getExpiryPath(localDate);
 
     await this.aws.putObject({
       Bucket: "eco-rewards-backups",

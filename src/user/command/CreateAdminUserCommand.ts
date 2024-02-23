@@ -25,7 +25,7 @@ export class CreateAdminUserCommand {
 
     const user = await this.factory.create(name, email, password, role);
 
-    return await this.repository.save(user);
+    return this.repository.save(user);
   }
 
 }

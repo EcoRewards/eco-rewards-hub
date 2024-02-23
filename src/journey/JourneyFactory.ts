@@ -1,5 +1,5 @@
 import { Member, MemberId, toMemberId } from "../member/Member";
-import { Journey } from "./Journey";
+import { Journey, JourneyType } from "./Journey";
 import { AdminUserId } from "../user/AdminUser";
 import { GenericRepository, NonNullId } from "../database/GenericRepository";
 import { MemberModelFactory } from "../member/MemberModelFactory";
@@ -29,7 +29,7 @@ export class JourneyFactory {
    * set in the CSV data.
    */
   public async create(
-    [memberId, date, mode, distance, latitude, longitude, csvDeviceId]: CsvInput,
+    [memberId, date, mode, distance, latitude, longitude, csvDeviceId, journeyType]: CsvInput,
     adminUserId: AdminUserId,
     deviceId?: string
   ): Promise<Journey> {
@@ -71,7 +71,8 @@ export class JourneyFactory {
       carbon_saving: null,
       device_id: deviceId || csvDeviceId || "",
       latitude: latitude ?? null,
-      longitude: longitude ?? null
+      longitude: longitude ?? null,
+      type: journeyType || "journey"
     };
   }
 
@@ -92,4 +93,4 @@ export class JourneyFactory {
 
 }
 
-export type CsvInput = [string, string, string?, (string | number)?, number?, number?, string?];
+export type CsvInput = [string, string, string?, (string | number)?, number?, number?, string?, JourneyType?];

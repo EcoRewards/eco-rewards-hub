@@ -30,14 +30,15 @@ export class JourneyView implements View<Journey, JourneyJsonView> {
       carbonSaving: record.carbon_saving,
       deviceId: record.device_id,
       latitude: record.latitude ?? null,
-      longitude: record.longitude ?? null
+      longitude: record.longitude ?? null,
+      type: record.type
     };
   }
 
   /**
    * Return a CSV view
    */
-  public createCsv(links: object, record: JourneyWithGroupOrgAndScheme): Array<string | number | null> {
+  public createCsv(links: object, record: JourneyWithGroupOrgAndScheme): (string | number | null)[] {
     return [
       this.adminUserIndex[record.admin_user_id].name,
       record.uploaded,
@@ -53,7 +54,8 @@ export class JourneyView implements View<Journey, JourneyJsonView> {
       record.organisation_id,
       record.scheme_id,
       record.latitude,
-      record.longitude
+      record.longitude,
+      record.type
     ];
   }
 
