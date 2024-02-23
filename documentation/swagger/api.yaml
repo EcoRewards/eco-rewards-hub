@@ -895,6 +895,180 @@ paths:
         500:
           $ref: '#/responses/500'
 
+  /locations:
+    get:
+      summary: "Return all locations"
+      description: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "List of locations in JSON or CSV format"
+        401:
+          $ref: '#/responses/401'
+        500:
+          $ref: '#/responses/500'
+      security:
+        - basicAuth: []
+
+  /location/{locationId}:
+    get:
+      summary: "Return a location"
+      description: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "locationId"
+          in: "path"
+          description: "ID of location to return"
+          required: true
+          type: "integer"
+          format: "int64"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              data:
+                $ref: "#/definitions/Location"
+              links:
+                type: "object"
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        404:
+          $ref: '#/responses/404'
+        500:
+          $ref: '#/responses/500'
+    put:
+      summary: "Edit a location"
+      description: "Change a location"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          schema:
+            type: "object"
+            properties:
+              name:
+                type: "string"
+              notes:
+                type: "string"
+              url:
+                type: "string"
+              defaultJourneyType:
+                type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              data:
+                $ref: "#/definitions/Location"
+              links:
+                type: "object"
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        404:
+          $ref: '#/responses/404'
+        500:
+          $ref: '#/responses/500'
+    patch:
+      summary: "Edit a location"
+      description: "Change all a location properties"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          schema:
+            type: "object"
+            properties:
+              name:
+                type: "string"
+              notes:
+                type: "string"
+              url:
+                type: "string"
+              defaultJourneyType:
+                type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              data:
+                $ref: "#/definitions/Location"
+              links:
+                type: "object"
+        400:
+          $ref: '#/responses/400'
+        401:
+          $ref: '#/responses/401'
+        404:
+          $ref: '#/responses/404'
+        500:
+          $ref: '#/responses/500'
+      security:
+        - basicAuth: []
+  /location:
+    post:
+      summary: "Create a location"
+      description: ""
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Member details"
+          required: true
+          schema:
+            type: "object"
+            required:
+              - name
+            properties:
+              name:
+                type: "string"
+                example: "Location 123"
+              notes:
+                type: "string"
+                example: "Located next to bus stop 1"
+              type:
+                type: "string"
+                example: "journey"
+                description: "journey or commute"
+      responses:
+        201:
+          description: "successful operation"
+          schema:
+            type: "object"
+            properties:
+              data:
+                $ref: "#/definitions/Location"
+              links:
+                type: "object"
+        400:
+          $ref: '#/responses/400'
+        500:
+          $ref: '#/responses/500'
+
 
   /tap:
     post:
@@ -1252,6 +1426,29 @@ definitions:
       carbonSaving:
         type: "number"
         example: "null"
+
+  Location:
+    type: "object"
+    required:
+      - id
+      - name
+      - defaultJourneyType
+    properties:
+      id:
+        type: "string"
+        example: "/location/1"
+      name:
+        type: "string"
+        example: "Norwich Bus Station"
+      notes:
+        type: "string"
+        example: "Located next to bus stop 1"
+      url:
+        type: "string"
+        example: "www.ecorewards.co.uk/scan?deviceId=12345"
+      defaultJourneyType:
+        type: "string"
+        example: "journey"
 
   Trophy:
     type: "object"
