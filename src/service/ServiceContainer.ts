@@ -2,8 +2,7 @@ import { KoaService } from "./KoaService";
 import { config } from "../../config/service";
 import * as Koa from "koa";
 import { Context, Middleware, Next } from "koa";
-import pino from "pino";
-import { Logger } from "pino";
+import pino, { Logger } from "pino";
 import * as Router from "koa-router";
 import { HealthController } from "../health/HealthController";
 import * as memoize from "memoized-class-decorator";
@@ -48,11 +47,10 @@ import { RewardPointPolicy } from "../reward/RewardPointPolicy";
 import { MemberController } from "../member/controller/MemberController";
 import { MemberRepository } from "../member/repository/MemberRepository";
 import { ExternalMemberRepository } from "../member/repository/ExternalMemberRepository";
-import Axios from "axios";
+import * as axios from "axios";
 import { TapController } from "../journey/controller/TapController";
 import { TapReader } from "../journey/TapReader";
-import { DeviceStatus } from "../journey/DeviceStatus";
-import { DeviceStatusJsonView } from "../device/DeviceStatus";
+import { DeviceStatus, DeviceStatusJsonView } from "../device/DeviceStatus";
 import { DeviceStatusViewFactory } from "../device/DeviceStatusViewFactory";
 import { DatabaseBackupJob } from "../database/job/DatabaseBackupJob";
 import { S3 } from "@aws-sdk/client-s3";
@@ -222,7 +220,7 @@ export class ServiceContainer {
   }
 
   // todo this needs a home and a test
-  private wrap(controller: Function): Middleware {
+  private wrap(controller: Controller): Middleware {
     return async (ctx: Context, next: Next) => {
       const input = { ...ctx.request.body as Record<string, unknown>, ...ctx.request.query, ...ctx.params };
       const result = await controller(input, ctx);
@@ -456,7 +454,7 @@ export class ServiceContainer {
       new TapProcessor(journeyRepository, memberRepository, memberFactory, externalApi),
       new JourneyViewFactory(userRepository),
       statusRepository,
-      Axios.create(),
+      axios.default.create(),
       this.getLogger()
     );
   }
@@ -607,7 +605,7 @@ export class ServiceContainer {
   @memoize
   private async getExternalMemberRepository(): Promise<ExternalMemberRepository> {
     return new ExternalMemberRepository(
-      Axios.create({
+      axios.default.create({
         baseURL: process.env.EXTERNAL_MEMBER_API_URL,
         headers: {
           "Username": process.env.EXTERNAL_MEMBER_API_USERNAME!,
@@ -635,3 +633,5 @@ export class ServiceContainer {
     return new TrophyRepository(await this.getDatabase());
   }
 }
+
+type Controller = ((input: any, ctx: Context) => Promise<any>) | (() => any);

@@ -22,7 +22,7 @@ export class CreateOrganisationCommand {
       scheme_id: schemeId
     };
 
-    return await this.repository.save(organisation);
+    return this.repository.save(organisation);
   }
 
 }

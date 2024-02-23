@@ -1,8 +1,9 @@
-import { JourneyProcessedRow, RewardRepository, SavedJourney, TravelDate } from "./RewardRepository";
+import { JourneyProcessedRow, RewardRepository, TravelDate } from "./RewardRepository";
 import { CarbonSavingPolicy } from "./CarbonSavingPolicy";
 import { RewardPointPolicy } from "./RewardPointPolicy";
 import autobind from "autobind-decorator";
 import { setNested } from "ts-array-utils";
+import { SavedJourney } from "../journey/TapProcessor";
 
 /**
  * Period job that selects an journeys that have not been processed and allocates rewards accordingly.

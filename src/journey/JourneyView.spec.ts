@@ -7,7 +7,7 @@ describe("JourneyView", () => {
   });
 
   it("creates a JSON view from a model", async () => {
-    const actual = await view.create({}, {
+    const actual = view.create({}, {
       id: 1,
       admin_user_id: 1,
       uploaded: "2019-12-11T22:04:50",
@@ -20,7 +20,8 @@ describe("JourneyView", () => {
       carbon_saving: null,
       device_id: "123456",
       latitude: null,
-      longitude: null
+      longitude: null,
+      type: "journey"
     });
 
     chai.expect(actual.source).to.equal("Linus Norton");
@@ -33,6 +34,7 @@ describe("JourneyView", () => {
     chai.expect(actual.rewardsEarned).to.equal(null);
     chai.expect(actual.carbonSaving).to.equal(null);
     chai.expect(actual.deviceId).to.equal("123456");
+    chai.expect(actual.type).to.equal("journey");
   });
 
 });

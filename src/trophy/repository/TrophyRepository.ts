@@ -42,7 +42,7 @@ export class TrophyRepository {
     page: number, perPage: number, filters: Filter[]
   ): Promise<PaginatedRows<NonNullId<Trophy>>> {
 
-    const where = filters.length > 0 ? `WHERE ` + filters.map(() => "?? LIKE ?").join(" OR ") : "";
+    const where = filters.length > 0 ? "WHERE " + filters.map(() => "?? LIKE ?").join(" OR ") : "";
     const args = filters.flatMap(filter => [filter.field, filter.text + "%"]);
     const limit = `ORDER BY id DESC LIMIT ${(page - 1) * perPage}, ${perPage}`;
 

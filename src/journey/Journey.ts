@@ -14,7 +14,8 @@ export interface Journey {
   carbon_saving: number | null,
   device_id: string,
   latitude: number | null,
-  longitude: number | null
+  longitude: number | null,
+  type: JourneyType
 }
 
 export interface JourneyJsonView {
@@ -29,7 +30,10 @@ export interface JourneyJsonView {
   carbonSaving: number | null,
   deviceId: string,
   latitude: number | null,
-  longitude: number | null
+  longitude: number | null,
+  type: JourneyType
 }
 
 export type JourneyId = number;
+
+export type JourneyType = "journey" | "leisure";

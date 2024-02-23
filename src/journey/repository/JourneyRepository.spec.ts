@@ -54,7 +54,8 @@ describe("JourneyRepository", () => {
         @carbon_saving,
         @device_id,
         @latitude,
-        @longitude
+        @longitude,
+        @type
       )
       SET
         id = null,
@@ -69,7 +70,8 @@ describe("JourneyRepository", () => {
         carbon_saving = nullif(@carbon_saving, ''),
         device_id = @device_id,
         latitude = @latitude,
-        longitude = @longitude
+        longitude = @longitude,
+        type = @type
     `);
   });
 

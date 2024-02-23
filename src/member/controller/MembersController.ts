@@ -49,7 +49,7 @@ export class MembersController {
   ): Promise<GetAllResponse<MemberJsonView> | void> {
 
     const links = {};
-    const filter = filterField && filterText ? ({ text: filterText, field: filterField}) : undefined;
+    const filter = filterField && filterText ? ({ text: filterText, field: filterField }) : undefined;
 
     const [{ rows, pagination }, view] = await Promise.all([
       this.getResults(page, quantity, filter),

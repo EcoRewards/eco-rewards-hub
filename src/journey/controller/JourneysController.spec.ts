@@ -47,7 +47,8 @@ class MockJourneyRepository {
         mode: "Train",
         rewards_earned: null,
         carbon_saving: null,
-        device_id: null
+        device_id: null,
+        type: "journey"
       },
       {
         id: 2,
@@ -60,7 +61,8 @@ class MockJourneyRepository {
         mode: "Train",
         rewards_earned: null,
         carbon_saving: null,
-        device_id: null
+        device_id: null,
+        type: "journey"
       }
     ];
   }
@@ -210,7 +212,8 @@ describe("JourneysController", () => {
     chai.expect(values[9]).to.equal("");
     chai.expect(values[10]).to.equal("");
     chai.expect(values[11]).to.equal("");
-    chai.expect(values[12]).to.equal("\n");
+    chai.expect(values[12]).to.equal("");
+    chai.expect(values[13]).to.equal("journey\n");
   });
 
   it("catches errors", async () => {
@@ -259,7 +262,8 @@ describe("JourneysController", () => {
         "uploaded": "2019-12-11T22:04:50",
         "deviceId": null,
         "latitude": null,
-        "longitude": null
+        "longitude": null,
+        "type": "journey"
       },
       {
         "carbonSaving": null,
@@ -273,7 +277,8 @@ describe("JourneysController", () => {
         "uploaded": "2019-12-11T22:04:50",
         "deviceId": null,
         "latitude": null,
-        "longitude": null
+        "longitude": null,
+        "type": "journey"
       }
     ];
 
@@ -301,10 +306,10 @@ describe("JourneysController", () => {
 
     const lines = context.body.split("\n");
 
-    chai.expect(lines[0]).equal("source,uploaded,processed,travelDate,memberId,distance,mode,rewardsEarned,carbonSaving,deviceId,groupId,organisationId,schemeId,latitude,longitude");
-    chai.expect(lines[1]).equal("Bob,2019-12-11T22:04:50,,2019-12-11T10:02:20,0000000018,1.56,Train,,,,,,,,");
+    chai.expect(lines[0]).equal("source,uploaded,processed,travelDate,memberId,distance,mode,rewardsEarned,carbonSaving,deviceId,groupId,organisationId,schemeId,latitude,longitude,type");
+    chai.expect(lines[1]).equal("Bob,2019-12-11T22:04:50,,2019-12-11T10:02:20,0000000018,1.56,Train,,,,,,,,,journey");
     chai.expect(lines[2])
-      .equal("Bob,2019-12-11T22:04:50,,2019-12-11T10:02:20,654321-0022-2223-0099,1.56,Train,,,,,,,,");
+      .equal("Bob,2019-12-11T22:04:50,,2019-12-11T10:02:20,654321-0022-2223-0099,1.56,Train,,,,,,,,,journey");
   });
 
   it("returns a report", async () => {

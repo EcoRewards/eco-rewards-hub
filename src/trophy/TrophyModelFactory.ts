@@ -1,5 +1,5 @@
 import { ModelFactory } from "../service/controller/WriteController";
-import { Trophy, TrophyJsonView, toTrophyId } from "./Trophy";
+import { toTrophyId, Trophy, TrophyJsonView } from "./Trophy";
 import { toMemberId } from "../member/Member";
 import { toGroupId } from "../group/Group";
 
