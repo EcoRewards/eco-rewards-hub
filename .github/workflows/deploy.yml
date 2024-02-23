@@ -15,7 +15,7 @@ jobs:
           node-version: 16
           cache: npm
       - run: npm ci
-      - run: npm test
+      - run: npm run coverage
 
       - name: Set up SSH
         run: |
