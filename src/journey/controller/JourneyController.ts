@@ -41,7 +41,7 @@ export class JourneyController {
     const factory = await this.getJourneyFactory(form.memberId!);
     const isQrScan = typeof form.deviceId === "string" && form.deviceId.length > 5;
     const journey = await factory.create(
-      [form.memberId + "", form.date!, form.mode, form.distance, form.latitude, form.longitude, form.type],
+      [form.memberId + "", form.date!, form.mode, form.distance, form.latitude, form.longitude, undefined, form.type],
       ctx.adminUserId || JourneyController.SELF_REPORT_USER,
       isQrScan ? form.deviceId?.substr(0, 25) : ""
     );
