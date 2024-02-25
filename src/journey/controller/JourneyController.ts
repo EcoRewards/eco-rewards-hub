@@ -3,7 +3,7 @@ import { indexBy } from "ts-array-utils";
 import { Member, toMemberId } from "../../member/Member";
 import { GenericRepository } from "../../database/GenericRepository";
 import { Context } from "koa";
-import { Journey } from "../Journey";
+import { Journey, JourneyType } from "../Journey";
 import { MultiPartFormReader } from "./MultiPartFormReader";
 import autobind from "autobind-decorator";
 import { MemberModelFactory } from "../../member/MemberModelFactory";
@@ -41,7 +41,7 @@ export class JourneyController {
     const factory = await this.getJourneyFactory(form.memberId!);
     const isQrScan = typeof form.deviceId === "string" && form.deviceId.length > 5;
     const journey = await factory.create(
-      [form.memberId + "", form.date!, form.mode, form.distance, form.latitude, form.longitude, form.journeyType],
+      [form.memberId + "", form.date!, form.mode, form.distance, form.latitude, form.longitude, form.type],
       ctx.adminUserId || JourneyController.SELF_REPORT_USER,
       isQrScan ? form.deviceId?.substr(0, 25) : ""
     );
@@ -144,7 +144,7 @@ interface PostJourneyRequest {
   deviceId?: string,
   latitude?: number,
   longitude?: number,
-  journeyType?: "journey" | "leisure"
+  type?: JourneyType
 }
 
 export type RemoteFileStorage = (opts: {
