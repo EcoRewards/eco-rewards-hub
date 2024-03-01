@@ -52,7 +52,7 @@
     "@types/mocha": "10.0.1",
     "@types/mysql": "2.15.21",
     "@types/node": "20.8.0",
-    "@typescript-eslint/eslint-plugin": "7.0.2",
+    "@typescript-eslint/eslint-plugin": "7.1.0",
     "axios": "1.6.0",
     "barrelsby": "2.8.1",
     "btoa": "1.2.1",
