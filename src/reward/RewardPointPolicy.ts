@@ -15,6 +15,7 @@ export class RewardPointPolicy {
     "bus": 250,
     "train": 250,
     "cycling": 250,
+    "wheeling": 250,
     "walk": 250,
     "jogging": 250,
     "running": 250,

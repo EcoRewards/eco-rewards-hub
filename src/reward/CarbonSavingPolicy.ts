@@ -16,6 +16,7 @@ export class CarbonSavingPolicy {
     "bus": 0.10172,
     "train": 0.04885,
     "cycling": 0,
+    "wheeling": 0,
     "walk": 0,
     "jogging": 0,
     "running": 0,
