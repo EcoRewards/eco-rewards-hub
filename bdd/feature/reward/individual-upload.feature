@@ -16,5 +16,5 @@ Feature:
     And I wait until the rewards have been processed
     And these members should have the following rewards
       | member              | rewards | carbon saving |
-      | 654321002222240099  | 250     | 0.9000        |
-      | 654321002222240099  | 250     | 0.9000        |
+      | 654321002222240099  | 400     | 1.24          |
+      | 654321002222240099  | 400     | 1.24          |
