@@ -15,7 +15,7 @@ jobs:
           node-version: 16
           cache: npm
       - run: npm ci
-      - run: npm run report-coverage
+      - run: npm run coverage
 
   functional:
     runs-on: ubuntu-latest
