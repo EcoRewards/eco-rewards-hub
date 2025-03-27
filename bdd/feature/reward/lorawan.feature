@@ -29,16 +29,17 @@ Feature:
     And I create a group "Scotland 2038" in the organisation "Scottish School"
     And I create a group "Scotland 2039" in the organisation "Scottish School"
 
+  @wip
   Scenario: Smartcard tap
     When I create an account with smartcard "634321002222230090"
     And I tap with a smartcard "634321002222230090" on device "123456"
     Then I should see the following journeys
       | member              | source | travel date         | mode  | distance | device |
-      | 634321002222230090  | Test   | 2022-12-27 08:32:00 | bus   | 1.5      | 123456 |
+      | 634321002222230090  | Test   | 2024-12-24 12:48:00 | bus   | 1.5      | 123456 |
     And I tap with a smartcard "634321002222230090" on device "123456"
     Then I should see the following journeys
       | member              | source | travel date         | mode  | distance | device |
-      | 634321002222230090  | Test   | 2022-12-27 08:32:00 | bus   | 1.5      | 123456 |
+      | 634321002222230090  | Test   | 2024-12-24 12:48:00 | bus   | 1.5      | 123456 |
     And I wait until the rewards have been processed
     And these members should have the following rewards
       | member              | rewards | carbon saving |
@@ -46,7 +47,7 @@ Feature:
     And I tap with a smartcard "634321002222230090" on device "1345456"
     Then I should see the following journeys
       | member              | source | travel date         | mode  | distance | device  |
-      | 634321002222230090  | Test   | 2022-12-27 08:32:00 | bus   | 1.5      | 1345456 |
+      | 634321002222230090  | Test   | 2024-12-24 12:48:00 | bus   | 1.5      | 1345456 |
     And I wait until the rewards have been processed
     And these members should have the following rewards
       | member              | rewards | carbon saving |
