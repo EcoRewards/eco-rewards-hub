@@ -2,7 +2,6 @@ import { JourneyProcessedRow, RewardRepository, TravelDate } from "./RewardRepos
 import { CarbonSavingPolicy } from "./CarbonSavingPolicy";
 import { RewardPointPolicy } from "./RewardPointPolicy";
 import autobind from "autobind-decorator";
-import { setNested } from "ts-array-utils";
 import { SavedJourney } from "../journey/TapProcessor";
 
 /**
@@ -36,7 +35,7 @@ export class RewardAllocationJob {
   private async processMemberTravelOnDate(date: string, journeys: SavedJourney[]): Promise<void> {
     const memberId = journeys[0].member_id;
     const { devices, existingRewards } = await this.repository.selectMemberRewardsGeneratedOn(memberId, date);
-    const usedDevices = devices.reduce((index, id) => ({ [id]: true, ...index}), {});
+    const usedDevices = devices.reduce((index, id) => ({ [id]: true, ...index }), {});
     const journeysProcessed: JourneyProcessedRow[] = [];
 
     let rewardsGenerated = 0;
