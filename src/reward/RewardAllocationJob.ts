@@ -2,7 +2,6 @@ import { JourneyProcessedRow, RewardRepository, TravelDate } from "./RewardRepos
 import { CarbonSavingPolicy } from "./CarbonSavingPolicy";
 import { RewardPointPolicy } from "./RewardPointPolicy";
 import autobind from "autobind-decorator";
-import { setNested } from "ts-array-utils";
 import { SavedJourney } from "../journey/TapProcessor";
 
 /**
@@ -10,9 +9,6 @@ import { SavedJourney } from "../journey/TapProcessor";
  */
 @autobind
 export class RewardAllocationJob {
-  private readonly deviceIdGroups = {
-    "01345456": "SWR"
-  };
 
   constructor(
     private readonly repository: RewardRepository,
@@ -39,7 +35,7 @@ export class RewardAllocationJob {
   private async processMemberTravelOnDate(date: string, journeys: SavedJourney[]): Promise<void> {
     const memberId = journeys[0].member_id;
     const { devices, existingRewards } = await this.repository.selectMemberRewardsGeneratedOn(memberId, date);
-    const usedDeviceGroups = devices.reduce((index, id) => setNested(true, index, this.getDeviceGroup(id)), {});
+    const usedDevices = devices.reduce((index, id) => ({ [id]: true, ...index }), {});
     const journeysProcessed: JourneyProcessedRow[] = [];
 
     let rewardsGenerated = 0;
@@ -47,8 +43,7 @@ export class RewardAllocationJob {
     let totalDistance = 0;
 
     for (const journey of journeys) {
-      const deviceGroup = this.getDeviceGroup(journey.device_id);
-      const hasUsedThisDeviceGroup = usedDeviceGroups[deviceGroup];
+      const hasUsedThisDeviceGroup = usedDevices[journey.device_id];
 
       if (hasUsedThisDeviceGroup && journey.device_id !== "") {
         journeysProcessed.push([0, 0, 0, journey.id]);
@@ -62,7 +57,7 @@ export class RewardAllocationJob {
         rewardsGenerated += rewardPoints;
         carbonSavingGenerated += carbonSaving;
         totalDistance += journey.distance;
-        usedDeviceGroups[deviceGroup] = true;
+        usedDevices[journey.device_id] = true;
       }
     }
 
@@ -73,9 +68,5 @@ export class RewardAllocationJob {
       carbonSavingGenerated,
       totalDistance
     );
-  }
-
-  private getDeviceGroup(deviceId: string) {
-    return deviceId === "none" ? "none" : this.deviceIdGroups[deviceId] || "unknown";
   }
 }

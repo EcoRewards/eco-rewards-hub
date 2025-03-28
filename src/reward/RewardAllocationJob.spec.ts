@@ -229,8 +229,71 @@ describe("RewardAllocationJob", () => {
     chai.expect(journeys[1][2]).to.equal(0.6565439999999999);
     chai.expect(journeys[1][3]).to.equal(2);
     chai.expect(rewardPoints).to.equal(350);
+    chai.expect(carbonSaving).to.equal(1.8427439999999997);
+    chai.expect(totalDistance).to.equal(7.199999999999999);
+  });
+
+  it("allows journeys from different device IDs", async () => {
+    mockRepository.updates = [];
+    mockRepository.journeyIndex = {
+      1: {
+        "2024-12-15": [
+          { id: 1, member_id: 1, mode: "Bus", distance: 2.4, device_id: "123456" },
+          { id: 2, member_id: 1, mode: "Train", distance: 2.4, device_id: "234567" },
+        ]
+      }
+    };
+    mockRepository.rewards = {
+      existingRewards: 50,
+      devices: []
+    };
+
+    await job.run();
+
+    let [memberId, journeys, rewardPoints, carbonSaving, totalDistance] = mockRepository.updates[0];
+    chai.expect(memberId).to.equal(1);
+    chai.expect(journeys[0][0]).to.equal(2.4);
+    chai.expect(journeys[0][1]).to.equal(250);
+    chai.expect(journeys[0][2]).to.equal(0.5296559999999999);
+    chai.expect(journeys[0][3]).to.equal(1);
+    chai.expect(journeys[1][0]).to.equal(2.4);
+    chai.expect(journeys[1][1]).to.equal(100);
+    chai.expect(journeys[1][2]).to.equal(0.6565439999999999);
+    chai.expect(journeys[1][3]).to.equal(2);
+    chai.expect(rewardPoints).to.equal(350);
     chai.expect(carbonSaving).to.equal(1.1862);
     chai.expect(totalDistance).to.equal(4.8);
   });
 
+  it("ignores journeys from the same device ID", async () => {
+    mockRepository.updates = [];
+    mockRepository.journeyIndex = {
+      1: {
+        "2024-12-15": [
+          { id: 1, member_id: 1, mode: "Bus", distance: 2.4, device_id: "123456" },
+          { id: 2, member_id: 1, mode: "Train", distance: 2.4, device_id: "123456" },
+        ]
+      }
+    };
+    mockRepository.rewards = {
+      existingRewards: 50,
+      devices: ["99999"]
+    };
+
+    await job.run();
+
+    let [memberId, journeys, rewardPoints, carbonSaving, totalDistance] = mockRepository.updates[0];
+    chai.expect(memberId).to.equal(1);
+    chai.expect(journeys[0][0]).to.equal(2.4);
+    chai.expect(journeys[0][1]).to.equal(250);
+    chai.expect(journeys[0][2]).to.equal(0.5296559999999999);
+    chai.expect(journeys[0][3]).to.equal(1);
+    chai.expect(journeys[1][0]).to.equal(0);
+    chai.expect(journeys[1][1]).to.equal(0);
+    chai.expect(journeys[1][2]).to.equal(0);
+    chai.expect(journeys[1][3]).to.equal(2);
+    chai.expect(rewardPoints).to.equal(250);
+    chai.expect(carbonSaving).to.equal(0.5296559999999999);
+    chai.expect(totalDistance).to.equal(2.4);
+  });
 });
