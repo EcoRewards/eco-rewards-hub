@@ -58,7 +58,7 @@
     "btoa": "1.2.1",
     "chai": "4.3.7",
     "codecov": "3.8.3",
-    "eslint": "8.56.0",
+    "eslint": "9.23.0",
     "eslint-plugin-import": "2.29.1",
     "js-base64": "3.7.5",
     "mocha": "10.8.2",
