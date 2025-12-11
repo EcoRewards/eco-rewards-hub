@@ -59,7 +59,7 @@
     "chai": "4.3.7",
     "codecov": "3.8.3",
     "eslint": "8.56.0",
-    "eslint-plugin-import": "2.29.1",
+    "eslint-plugin-import": "2.32.0",
     "js-base64": "3.7.5",
     "mocha": "11.7.3",
     "nyc": "17.1.0",
