@@ -92,7 +92,7 @@
     "pino": "8.16.1",
     "pino-pretty": "13.1.1",
     "sharp": "0.32.6",
-    "swagger2": "2.0.0",
+    "swagger2": "5.0.1",
     "swagger2-koa": "2.0.0",
     "ts-array-utils": "0.5.0"
   },
