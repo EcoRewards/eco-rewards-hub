@@ -31,6 +31,12 @@ jobs:
       # are still installed on the server, which runs an older glibc.
       - run: npm run prepublishOnly
 
+      # Prune to what the server will have and check the build still loads. A
+      # runtime import of a devDependency resolves fine here until this point,
+      # then fails on boot in production.
+      - run: npm install --omit=dev --no-audit --no-fund
+      - run: npm run verify-runtime-deps
+
       - name: Set up SSH
         run: |
           mkdir -p ~/.ssh/

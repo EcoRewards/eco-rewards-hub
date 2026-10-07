@@ -17,6 +17,19 @@ jobs:
       - run: npm ci
       - run: npm run coverage
 
+  runtime-deps:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: npm
+      - run: npm ci
+      - run: npm run prepublishOnly
+      - run: npm install --omit=dev --no-audit --no-fund
+      - run: npm run verify-runtime-deps
+
   functional:
     runs-on: ubuntu-latest
     steps:
