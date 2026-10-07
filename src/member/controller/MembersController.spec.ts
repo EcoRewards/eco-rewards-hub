@@ -114,14 +114,44 @@ describe("MembersController", () => {
       defaultTransportMode: "bus",
       group: "/group/2"
     });
+    const data = result.data as MemberJsonView[];
 
-    chai.expect(result.data.length).equal(3);
-    chai.expect(result.data[0].defaultTransportMode).equal("bus");
-    chai.expect(result.data[1].defaultTransportMode).equal("bus");
-    chai.expect(result.data[2].defaultTransportMode).equal("bus");
-    chai.expect(result.data[0].id).equal("/member/0000000018");
-    chai.expect(result.data[1].id).equal("/member/0000000026");
-    chai.expect(result.data[2].id).equal("/member/0000000034");
+    chai.expect(data.length).equal(3);
+    chai.expect(data[0].defaultTransportMode).equal("bus");
+    chai.expect(data[1].defaultTransportMode).equal("bus");
+    chai.expect(data[2].defaultTransportMode).equal("bus");
+    chai.expect(data[0].id).equal("/member/0000000018");
+    chai.expect(data[1].id).equal("/member/0000000026");
+    chai.expect(data[2].id).equal("/member/0000000034");
+  });
+
+  it("should reject a default distance over the limit for the mode", async () => {
+    const result = await controller.post({
+      quantity: 3,
+      defaultDistance: 100,
+      defaultTransportMode: "bus",
+      group: "/group/2"
+    });
+
+    chai.expect(result.code).equal(400);
+    chai.expect(result.data).to.deep.equal({
+      error: "Travel distance must not exceed 99 miles or 500 miles for train journeys"
+    });
+  });
+
+  it("should reject a patched default distance over the limit for the mode", async () => {
+    const result = await controller.patch({
+      startId: 1,
+      endId: 3,
+      defaultDistance: 100,
+      defaultTransportMode: "bus",
+      group: "/group/2"
+    });
+
+    chai.expect(result.code).equal(400);
+    chai.expect(result.data).to.deep.equal({
+      error: "Travel distance must not exceed 99 miles or 500 miles for train journeys"
+    });
   });
 
   it("return members as json", async () => {

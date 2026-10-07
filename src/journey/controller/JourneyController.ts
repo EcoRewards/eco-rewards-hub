@@ -7,6 +7,7 @@ import { Journey, JourneyType } from "../Journey";
 import { MultiPartFormReader } from "./MultiPartFormReader";
 import autobind from "autobind-decorator";
 import { MemberModelFactory } from "../../member/MemberModelFactory";
+import { getDistanceErrors } from "../DistanceLimit";
 import { ExternalMemberRepository } from "../../member/repository/ExternalMemberRepository";
 import sharp = require("sharp");
 import ReadableStream = NodeJS.ReadableStream;
@@ -114,14 +115,7 @@ export class JourneyController {
       errors.push("Travel distance must be set");
     }
     else {
-      const maxDistance = form.mode === "train" ? 500 : 99;
-
-      if (form.distance > maxDistance) {
-        errors.push("Travel distance must not exceed 99 miles or 500 miles for train journeys");
-      }
-      if (form.distance < 0) {
-        errors.push("Travel distance must not be negative");
-      }
+      errors.push(...getDistanceErrors(+form.distance, form.mode));
     }
 
     return errors;

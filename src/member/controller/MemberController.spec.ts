@@ -3,7 +3,7 @@ import { Scheme } from "../../scheme/Scheme";
 import { GroupView } from "../../group/GroupView";
 import { OrganisationView } from "../../organisation/OrganisationView";
 import { MemberView } from "../MemberView";
-import { Member } from "../Member";
+import { Member, MemberJsonView } from "../Member";
 import { MemberController } from "./MemberController";
 import { MemberModelFactory } from "../MemberModelFactory";
 import { SchemeView } from "../../scheme/SchemeView";
@@ -128,7 +128,45 @@ describe("MemberController", () => {
       group: "/group/2"
     });
 
-    chai.expect(result.data.id).equal("/member/654321002222230099");
+    chai.expect((result.data as MemberJsonView).id).equal("/member/654321002222230099");
+  });
+
+  it("should reject a default distance over the limit for the mode", async () => {
+    const result = await controller.post({
+      smartcard: "654321002222230099",
+      defaultDistance: 100,
+      defaultTransportMode: "bus",
+      group: "/group/2"
+    });
+
+    chai.expect(result.code).equal(400);
+    chai.expect(result.data).to.deep.equal({
+      error: "Travel distance must not exceed 99 miles or 500 miles for train journeys"
+    });
+  });
+
+  it("should reject an update with a default distance over the limit for the mode", async () => {
+    const result = await controller.update({
+      id: "0000000018",
+      defaultDistance: 250,
+      defaultTransportMode: "bus"
+    }, ctx);
+
+    chai.expect(result.code).equal(400);
+    chai.expect(result.data).to.deep.equal({
+      error: "Travel distance must not exceed 99 miles or 500 miles for train journeys"
+    });
+  });
+
+  it("should allow an update with a train default distance over 99 miles", async () => {
+    const result = await controller.update({
+      id: "0000000018",
+      defaultDistance: 250,
+      defaultTransportMode: "train"
+    }, ctx);
+
+    chai.expect(result.code).equal(200);
+    chai.expect((result.data as MemberJsonView).defaultDistance).equal(250);
   });
 
   it("should update a member", async () => {

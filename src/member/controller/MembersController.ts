@@ -1,7 +1,8 @@
 import { Filter, GenericRepository } from "../../database/GenericRepository";
 import { formatIdForCsv, Member, MemberJsonView, toMemberId } from "../Member";
 import { MemberViewFactory } from "../MemberViewFactory";
-import { HttpResponse } from "../../service/controller/HttpResponse";
+import { HttpError, HttpResponse } from "../../service/controller/HttpResponse";
+import { getDistanceErrors } from "../../journey/DistanceLimit";
 import { MemberModelFactory } from "../MemberModelFactory";
 import autobind from "autobind-decorator";
 import { ExternalMemberRepository } from "../repository/ExternalMemberRepository";
@@ -26,6 +27,12 @@ export class MembersController {
    * Create multiple new members in a single request
    */
   public async post(request: MembersPostRequest): Promise<MembersPostResponse> {
+    const [distanceError] = getDistanceErrors(+request.defaultDistance, request.defaultTransportMode);
+
+    if (distanceError) {
+      return { data: { error: distanceError }, links: {}, code: 400 };
+    }
+
     const member = this.modelFactory.createFromPartial(request);
     const members = new Array(request.quantity).fill(member);
     const membersWithId = await this.repository.insertAll(members);
@@ -98,7 +105,15 @@ export class MembersController {
   /**
    * Update a number of users
    */
-  public async patch({ startId, endId, ...view }: MembersPatchRequest): Promise<HttpResponse<string>> {
+  public async patch({ startId, endId, ...view }: MembersPatchRequest): Promise<HttpResponse<string | HttpError>> {
+    if (view.defaultDistance !== undefined) {
+      const [distanceError] = getDistanceErrors(+view.defaultDistance, view.defaultTransportMode);
+
+      if (distanceError) {
+        return { data: { error: distanceError }, links: {}, code: 400 };
+      }
+    }
+
     const startMemberId = toMemberId(startId + "");
     const endMemberId = toMemberId(endId + "");
     const model = this.modelFactory.createPartialModel(view);
@@ -127,4 +142,4 @@ export interface MembersPatchRequest {
   defaultDistance: number
 }
 
-export type MembersPostResponse = HttpResponse<MemberJsonView[]>;
+export type MembersPostResponse = HttpResponse<MemberJsonView[] | HttpError>;

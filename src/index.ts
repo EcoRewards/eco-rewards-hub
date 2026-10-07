@@ -17,6 +17,7 @@ export * from "./group/GroupView";
 export * from "./group/GroupViewFactory";
 export * from "./group/command/CreateGroupCommand";
 export * from "./health/HealthController";
+export * from "./journey/DistanceLimit";
 export * from "./journey/Journey";
 export * from "./journey/JourneyFactory";
 export * from "./journey/JourneyView";
