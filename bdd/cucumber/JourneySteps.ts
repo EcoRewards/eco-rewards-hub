@@ -4,6 +4,7 @@ import * as chai from "chai";
 import { JourneyJsonView } from "../../src";
 import FormData = require("form-data");
 import btoa = require("btoa");
+import { fixtureTapTime, minutesSinceTapEpoch, resolveDateToken } from "./FixtureDate";
 
 When("I upload a file", async function ({ rawTable }: any) {
   const members = this.createdMembers;
@@ -12,7 +13,7 @@ When("I upload a file", async function ({ rawTable }: any) {
     .map(row => {
       row[0] = row[0].length >= 16 ? row[0] : members[row[0]].id.substring(7);
 
-      return row.join();
+      return row.map(resolveDateToken).join();
     })
     .join("\n");
 
@@ -33,15 +34,16 @@ Then("I should see the following journeys", async function ({ rawTable }: any) {
   const journeys = data.data as JourneyJsonView[];
 
   for (let i = 1; i < rawTable.length; i ++) {
-    const memberIndex = rawTable[i][0];
+    const row = rawTable[i].map(resolveDateToken);
+    const memberIndex = row[0];
     const member = memberIndex.length >= 16 ? this.createdMember : this.createdMembers[memberIndex];
-    const journey = journeys.find(j => j.memberId === member.id && j.travelDate === rawTable[i][2]);
+    const journey = journeys.find(j => j.memberId === member.id && j.travelDate === row[2]);
 
     chai.expect(journey).to.not.equal(undefined);
-    chai.expect(journey!.source).to.equal(rawTable[i][1]);
-    chai.expect(journey!.travelDate).to.equal(rawTable[i][2]);
-    chai.expect(journey!.mode).to.equal(rawTable[i][3]);
-    chai.expect(journey!.distance).to.equal(+rawTable[i][4]);
+    chai.expect(journey!.source).to.equal(row[1]);
+    chai.expect(journey!.travelDate).to.equal(row[2]);
+    chai.expect(journey!.mode).to.equal(row[3]);
+    chai.expect(journey!.distance).to.equal(+row[4]);
   }
 });
 
@@ -63,7 +65,7 @@ Then("these members should have the following rewards", async function ({ rawTab
 When("I tap with a smartcard {string} on device {string}", async function (member: string, deviceId: string) {
   const device = deviceId.padStart(8, "0");
   const tsn = "AAAAAAAA";
-  const tx1minsSinceEpoch = "300000";
+  const tx1minsSinceEpoch = minutesSinceTapEpoch(fixtureTapTime);
   const memberCardNo = member.length === 16 ? "4C" + member : member;
   const hex = device + tsn + memberCardNo + tx1minsSinceEpoch;
   const buffer = Buffer.from(hex, "hex");
