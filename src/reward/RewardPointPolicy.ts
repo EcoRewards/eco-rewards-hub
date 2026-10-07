@@ -3,7 +3,11 @@
  */
 export class RewardPointPolicy {
   private dailyCap = 400;
-  private pointsPerMode = {
+  /**
+   * A Map rather than an object literal so that a mode of "constructor" or "__proto__" cannot
+   * resolve to an inherited property instead of a point value.
+   */
+  private pointsPerMode = new Map(Object.entries({
     "large car": 0,
     "medium car": 0,
     "small car": 0,
@@ -21,7 +25,7 @@ export class RewardPointPolicy {
     "running": 250,
     "rowing": 250,
     "work from home": 125
-  };
+  }));
 
   /**
    * Calculate the maximum number of points a member can generate within the cap and then return the number they have
@@ -29,7 +33,7 @@ export class RewardPointPolicy {
    */
   public getRewardPoints(mode: string, distance: number, currentPoints: number) {
     const maxPossibleToEarn = this.dailyCap - currentPoints;
-    const points = this.pointsPerMode[mode.toLowerCase()] ?? 0;
+    const points = this.pointsPerMode.get(mode.toLowerCase()) ?? 0;
 
     return Math.min(maxPossibleToEarn, points);
   }

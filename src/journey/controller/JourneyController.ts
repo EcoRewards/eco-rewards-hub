@@ -7,7 +7,7 @@ import { Journey, JourneyType } from "../Journey";
 import { MultiPartFormReader } from "./MultiPartFormReader";
 import autobind from "autobind-decorator";
 import { MemberModelFactory } from "../../member/MemberModelFactory";
-import { getDistanceErrors } from "../DistanceLimit";
+import { validateDistance } from "../DistanceLimit";
 import { ExternalMemberRepository } from "../../member/repository/ExternalMemberRepository";
 import sharp = require("sharp");
 import ReadableStream = NodeJS.ReadableStream;
@@ -102,8 +102,13 @@ export class JourneyController {
       }
     }
 
-    // if a device ID has been provided allow use of default mode and distance
+    // if a device ID has been provided allow use of default mode and distance, but still check
+    // anything that has been given
     if (form.deviceId) {
+      if (form.distance) {
+        errors.push(...validateDistance(+form.distance, form.mode));
+      }
+
       return errors;
     }
 
@@ -115,7 +120,7 @@ export class JourneyController {
       errors.push("Travel distance must be set");
     }
     else {
-      errors.push(...getDistanceErrors(+form.distance, form.mode));
+      errors.push(...validateDistance(+form.distance, form.mode));
     }
 
     return errors;

@@ -6,7 +6,7 @@ import { MemberRepository } from "../repository/MemberRepository";
 import { GenericRepository, HttpError, HttpResponse, MemberModelFactory, NonNullId, toGroupId } from "../..";
 import { ExternalMemberRepository } from "../repository/ExternalMemberRepository";
 import { Context } from "koa";
-import { getDistanceErrors } from "../../journey/DistanceLimit";
+import { validateDistance } from "../../journey/DistanceLimit";
 
 /**
  * Controller for /member
@@ -49,10 +49,12 @@ export class MemberController {
    * Create a new member
    */
   public async post(request: MemberPostRequest): Promise<MemberResponse> {
-    const [distanceError] = getDistanceErrors(+request.defaultDistance, request.defaultTransportMode);
+    if (request.defaultDistance !== undefined && request.defaultDistance !== null) {
+      const [distanceError] = validateDistance(+request.defaultDistance, request.defaultTransportMode);
 
-    if (distanceError) {
-      return { data: { error: distanceError }, links: {}, code: 400 };
+      if (distanceError) {
+        return { data: { error: distanceError }, links: {}, code: 400 };
+      }
     }
 
     const member = this.modelFactory.createFromPartial(request);
@@ -85,10 +87,12 @@ export class MemberController {
     member.previous_transport_mode = request.previousTransportMode ?? member.previous_transport_mode;
     member.default_distance = request.defaultDistance ?? member.default_distance;
 
-    const [distanceError] = getDistanceErrors(+member.default_distance, member.default_transport_mode);
+    if (request.defaultDistance !== undefined || request.defaultTransportMode !== undefined) {
+      const [distanceError] = validateDistance(+member.default_distance, member.default_transport_mode);
 
-    if (distanceError) {
-      return { data: { error: distanceError }, links, code: 400 };
+      if (distanceError) {
+        return { data: { error: distanceError }, links, code: 400 };
+      }
     }
 
     if (ctx.method === "PUT") {

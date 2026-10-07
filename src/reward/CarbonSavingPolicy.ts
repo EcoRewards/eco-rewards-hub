@@ -4,7 +4,11 @@
  */
 export class CarbonSavingPolicy {
   private referenceMode = "medium car";
-  private carbonCostPerMile = {
+  /**
+   * A Map rather than an object literal so that a mode of "constructor" or "__proto__" cannot
+   * resolve to an inherited property and produce a NaN saving.
+   */
+  private carbonCostPerMile = new Map(Object.entries({
     "large car": 0.47414,
     "medium car": 0.32241,
     "small car": 0.25794,
@@ -22,14 +26,14 @@ export class CarbonSavingPolicy {
     "running": 0,
     "rowing": 0,
     "work from home": 0
-  };
+  }));
 
   /**
    * Carbon saving of the given mode
    */
   public getCarbonSaving(mode: string, distance: number): number {
-    const referenceCost = this.carbonCostPerMile[this.referenceMode] * distance;
-    const modeCostPerMile = this.carbonCostPerMile[mode.toLowerCase()] ?? 0;
+    const referenceCost = this.carbonCostPerMile.get(this.referenceMode)! * distance;
+    const modeCostPerMile = this.carbonCostPerMile.get(mode.toLowerCase()) ?? 0;
     const cost = modeCostPerMile * distance;
 
     return referenceCost - cost;

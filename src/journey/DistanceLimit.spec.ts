@@ -1,9 +1,10 @@
 import * as chai from "chai";
 import {
   distanceNegativeError,
+  distanceNotANumberError,
   distanceTooLargeError,
-  getDistanceErrors,
-  getMaxDistance
+  getMaxDistance,
+  validateDistance
 } from "./DistanceLimit";
 
 describe("DistanceLimit", () => {
@@ -23,28 +24,35 @@ describe("DistanceLimit", () => {
     chai.expect(getMaxDistance("TRAIN")).to.equal(500);
   });
 
+  it("caps modes named after inherited properties", () => {
+    for (const mode of ["constructor", "__proto__", "toString", "valueOf", "hasOwnProperty"]) {
+      chai.expect(getMaxDistance(mode)).to.equal(99);
+      chai.expect(validateDistance(9999, mode)).to.deep.equal([distanceTooLargeError]);
+    }
+  });
+
   it("accepts a distance within the limit", () => {
-    chai.expect(getDistanceErrors(99, "bus")).to.deep.equal([]);
-    chai.expect(getDistanceErrors(500, "train")).to.deep.equal([]);
-    chai.expect(getDistanceErrors(0, "bus")).to.deep.equal([]);
+    chai.expect(validateDistance(99, "bus")).to.deep.equal([]);
+    chai.expect(validateDistance(500, "train")).to.deep.equal([]);
+    chai.expect(validateDistance(0, "bus")).to.deep.equal([]);
   });
 
   it("rejects a distance over the limit", () => {
-    chai.expect(getDistanceErrors(100, "bus")).to.deep.equal([distanceTooLargeError]);
-    chai.expect(getDistanceErrors(501, "train")).to.deep.equal([distanceTooLargeError]);
+    chai.expect(validateDistance(100, "bus")).to.deep.equal([distanceTooLargeError]);
+    chai.expect(validateDistance(501, "train")).to.deep.equal([distanceTooLargeError]);
   });
 
   it("rejects a train distance over 99 miles in any other mode", () => {
-    chai.expect(getDistanceErrors(250, "Train")).to.deep.equal([]);
-    chai.expect(getDistanceErrors(250, "bus")).to.deep.equal([distanceTooLargeError]);
+    chai.expect(validateDistance(250, "Train")).to.deep.equal([]);
+    chai.expect(validateDistance(250, "bus")).to.deep.equal([distanceTooLargeError]);
   });
 
   it("rejects a negative distance", () => {
-    chai.expect(getDistanceErrors(-1, "bus")).to.deep.equal([distanceNegativeError]);
+    chai.expect(validateDistance(-1, "bus")).to.deep.equal([distanceNegativeError]);
   });
 
   it("rejects a distance that is not a number", () => {
-    chai.expect(getDistanceErrors(NaN, "bus")).to.deep.equal(["Travel distance must be a number"]);
+    chai.expect(validateDistance(NaN, "bus")).to.deep.equal([distanceNotANumberError]);
   });
 
 });

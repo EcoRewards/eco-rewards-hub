@@ -142,6 +142,18 @@ export class GenericRepository<T extends DatabaseRecord> {
   }
 
   /**
+   * Select the records in the given ID range
+   */
+  public async selectRange(startId: number, endId: number): Promise<NonNullId<T>[]> {
+    const [rows] = await this.db.query(
+      `SELECT * FROM ${this.table} WHERE id >= ? AND id <= ?`,
+      [startId, endId]
+    );
+
+    return rows;
+  }
+
+  /**
    * Update a number of records in the given ID range
    */
   public async updateRange(startId: number, endId: number, data: Partial<Omit<T, "id">>): Promise<void> {

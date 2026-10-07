@@ -1,8 +1,8 @@
 import { Filter, GenericRepository } from "../../database/GenericRepository";
-import { formatIdForCsv, Member, MemberJsonView, toMemberId } from "../Member";
+import { formatIdForCsv, fromMemberId, Member, MemberJsonView, toMemberId } from "../Member";
 import { MemberViewFactory } from "../MemberViewFactory";
 import { HttpError, HttpResponse } from "../../service/controller/HttpResponse";
-import { getDistanceErrors } from "../../journey/DistanceLimit";
+import { validateDistance } from "../../journey/DistanceLimit";
 import { MemberModelFactory } from "../MemberModelFactory";
 import autobind from "autobind-decorator";
 import { ExternalMemberRepository } from "../repository/ExternalMemberRepository";
@@ -27,10 +27,12 @@ export class MembersController {
    * Create multiple new members in a single request
    */
   public async post(request: MembersPostRequest): Promise<MembersPostResponse> {
-    const [distanceError] = getDistanceErrors(+request.defaultDistance, request.defaultTransportMode);
+    if (request.defaultDistance !== undefined && request.defaultDistance !== null) {
+      const [distanceError] = validateDistance(+request.defaultDistance, request.defaultTransportMode);
 
-    if (distanceError) {
-      return { data: { error: distanceError }, links: {}, code: 400 };
+      if (distanceError) {
+        return { data: { error: distanceError }, links: {}, code: 400 };
+      }
     }
 
     const member = this.modelFactory.createFromPartial(request);
@@ -106,16 +108,30 @@ export class MembersController {
    * Update a number of users
    */
   public async patch({ startId, endId, ...view }: MembersPatchRequest): Promise<HttpResponse<string | HttpError>> {
-    if (view.defaultDistance !== undefined) {
-      const [distanceError] = getDistanceErrors(+view.defaultDistance, view.defaultTransportMode);
+    const startMemberId = toMemberId(startId + "");
+    const endMemberId = toMemberId(endId + "");
 
-      if (distanceError) {
-        return { data: { error: distanceError }, links: {}, code: 400 };
+    // the distance and the mode may each come from the request or be left as the member's own, so
+    // the limit has to be applied to the values every member in the range ends up with
+    if (view.defaultDistance !== undefined || view.defaultTransportMode !== undefined) {
+      const invalid = (await this.repository.selectRange(startMemberId, endMemberId))
+        .map(member => ({
+          id: member.id,
+          error: validateDistance(
+            +(view.defaultDistance ?? member.default_distance),
+            view.defaultTransportMode ?? member.default_transport_mode
+          )[0]
+        }))
+        .filter(member => member.error);
+
+      if (invalid.length > 0) {
+        const ids = invalid.slice(0, 5).map(member => fromMemberId(member.id)).join(", ");
+        const error = `${invalid[0].error} for ${invalid.length} member(s) in this range, including ${ids}`;
+
+        return { data: { error }, links: {}, code: 400 };
       }
     }
 
-    const startMemberId = toMemberId(startId + "");
-    const endMemberId = toMemberId(endId + "");
     const model = this.modelFactory.createPartialModel(view);
 
     await this.repository.updateRange(startMemberId, endMemberId, model);

@@ -47,6 +47,24 @@ class MockRepository {
         rewards: 0,
         carbon_saving: 0,
         total_miles: 5
+      },
+      4: {
+        id: 4,
+        default_transport_mode: "train",
+        default_distance: 250,
+        member_group_id: 1,
+        rewards: 0,
+        carbon_saving: 0,
+        total_miles: 5
+      },
+      5: {
+        id: 5,
+        default_transport_mode: "bus",
+        default_distance: 250,
+        member_group_id: 1,
+        rewards: 0,
+        carbon_saving: 0,
+        total_miles: 5
       }
     }[id];
   }
@@ -156,6 +174,37 @@ describe("MemberController", () => {
     chai.expect(result.data).to.deep.equal({
       error: "Travel distance must not exceed 99 miles or 500 miles for train journeys"
     });
+  });
+
+  it("should create a member without a default distance", async () => {
+    const result = await controller.post({
+      smartcard: "654321002222230099",
+      defaultTransportMode: "bus",
+      group: "/group/2"
+    } as any);
+
+    chai.expect(result.code).equal(201);
+  });
+
+  it("should reject a mode-only update that moves a member out of range", async () => {
+    const result = await controller.update({
+      id: "0000000042",
+      defaultTransportMode: "bus"
+    }, ctx);
+
+    chai.expect(result.code).equal(400);
+    chai.expect(result.data).to.deep.equal({
+      error: "Travel distance must not exceed 99 miles or 500 miles for train journeys"
+    });
+  });
+
+  it("should allow an update that touches neither the distance nor the mode", async () => {
+    const result = await controller.update({
+      id: "0000000059",
+      group: "/group/2"
+    }, ctx);
+
+    chai.expect(result.code).equal(200);
   });
 
   it("should allow an update with a train default distance over 99 miles", async () => {
