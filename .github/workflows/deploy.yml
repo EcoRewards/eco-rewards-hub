@@ -5,9 +5,18 @@ on:
     branches:
       - 'master'
 
+# Deploys must not overlap. The production box is a single 1GB instance, and a
+# batch of merges (several Dependabot PRs at once) previously started concurrent
+# deploys that exhausted its memory and wedged the machine.
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      DEPLOY_HOST: 35.178.105.63
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -16,6 +25,11 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run coverage
+
+      # Compile here rather than on the server, which cannot spare the ~370MB
+      # that tsc needs. Only the emitted JavaScript is shipped; native modules
+      # are still installed on the server, which runs an older glibc.
+      - run: npm run prepublishOnly
 
       - name: Set up SSH
         run: |
@@ -27,6 +41,12 @@ jobs:
         env:
           SSH_PRIVATE_KEY: ${{secrets.SSH_PRIVATE_KEY}}
           SSH_KNOWN_HOSTS: ${{secrets.SSH_KNOWN_HOSTS}}
+
+      - name: Upload the build
+        run: |
+          rsync -az --delete \
+            -e "ssh -i ./deploy.key -o StrictHostKeyChecking=no" \
+            ./dist/ "ubuntu@$DEPLOY_HOST:/home/ubuntu/eco-rewards-hub/incoming-dist/"
 
       - run: npm install pm2 -g
       - run: pm2 deploy ecosystem.config.js production update

@@ -1,3 +1,18 @@
+const host = process.env.DEPLOY_HOST || "35.178.105.63";
+const path = "/home/ubuntu/eco-rewards-hub";
+
+// The build is compiled by the deploy workflow and uploaded to incoming-dist,
+// so the server only installs runtime dependencies, migrates and restarts. The
+// running app is left untouched until the last two steps, which means a failed
+// install or migration no longer takes the API down with it.
+const postDeploy = [
+    "npm install --omit=dev --no-audit --no-fund --prefer-offline",
+    "npm run migrate",
+    `rsync -a --delete ${path}/incoming-dist/ ${path}/source/dist/`,
+    "pm2 startOrRestart ecosystem.config.js --env production",
+    "pm2 save"
+].join(" && ");
+
 module.exports = {
     apps : [{
         name: "eco-rewards-hub",
@@ -15,11 +30,11 @@ module.exports = {
             "ssh_options": "StrictHostKeyChecking=no",
             "key": "deploy.key",
             "user": "ubuntu",
-            "host": ["35.178.105.63"],
+            "host": [host],
             "ref": "origin/master",
             "repo": "git@github.com:EcoRewards/eco-rewards-hub.git",
-            "path": "/home/ubuntu/eco-rewards-hub",
-            "post-deploy": "pm2 stop ecosystem.config.js && npm install --include=dev && npm run migrate && npm run prepublishOnly && pm2 start ecosystem.config.js",
+            "path": path,
+            "post-deploy": postDeploy,
             "env"  : {
                 "NODE_ENV": "production"
             }
