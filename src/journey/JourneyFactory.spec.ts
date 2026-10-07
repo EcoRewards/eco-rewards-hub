@@ -124,6 +124,36 @@ describe("JourneyFactory", () => {
     chai.expect(error).to.equal("No mode given for 0001112226 and no default set");
   });
 
+  it("throws an error if the distance exceeds the limit for the mode", async () => {
+    let error = "";
+
+    try {
+      await factory.create(["0000000026", "2019-12-09T15:10:05", "bus", "100"], 1);
+    } catch (e) {
+      error = e.message;
+    }
+    chai.expect(error).to.equal(
+      "Travel distance must not exceed 99 miles or 500 miles for train journeys, 100 given for 0000000026"
+    );
+  });
+
+  it("allows train journeys up to 500 miles", async () => {
+    const actual = await factory.create(["0000000026", "2019-12-09T15:10:05", "Train", "250"], 1);
+
+    chai.expect(actual.distance).to.equal(250);
+  });
+
+  it("throws an error if the distance is negative", async () => {
+    let error = "";
+
+    try {
+      await factory.create(["0000000026", "2019-12-09T15:10:05", "bus", "-5"], 1);
+    } catch (e) {
+      error = e.message;
+    }
+    chai.expect(error).to.equal("Travel distance must not be negative, -5 given for 0000000026");
+  });
+
   it("uses the smartcard index", async () => {
     const actual = await factory.create(["654321002222230099", "2019-12-09T15:10:05"], 1);
 

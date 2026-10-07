@@ -13,29 +13,29 @@ Feature:
     When I create "50" members in the group "Cornwall 2019"
     And I create an account with smartcard "654321002222230099"
     And I upload a file
-      | member              | date                 | mode  | distance |
-      | 1                   | 2024-12-09T05:51:30Z | walk  | 10.50    |
-      | 1                   | 2024-12-09T06:20:30Z | bus   | 50.50    |
-      | 3                   | 2024-12-09T05:51:30Z | train | 20.50    |
-      | 4                   | 2024-12-09T07:52:30Z | bus   | 40.50    |
-      | 5                   | 2024-12-09T08:53:30Z | tram  | 20.50    |
-      | 5                   | 2024-12-09T09:54:30Z | walk  | 40.50    |
-      | 654321002222230099  | 2024-12-09T09:54:30Z | walk  | 40.50    |
+      | member             | date             | mode  | distance |
+      | 1                  | {date}T05:51:30Z | walk  | 10.50    |
+      | 1                  | {date}T06:20:30Z | bus   | 50.50    |
+      | 3                  | {date}T05:51:30Z | train | 20.50    |
+      | 4                  | {date}T07:52:30Z | bus   | 40.50    |
+      | 5                  | {date}T08:53:30Z | tram  | 20.50    |
+      | 5                  | {date}T09:54:30Z | walk  | 40.50    |
+      | 654321002222230099 | {date}T09:54:30Z | walk  | 40.50    |
     Then I should see the following journeys
-      | member              | source | travel date         | mode  | distance |
-      | 1                   | Test   | 2024-12-09 05:51:30 | walk  | 10.50    |
-      | 1                   | Test   | 2024-12-09 06:20:30 | bus   | 50.50    |
-      | 3                   | Test   | 2024-12-09 05:51:30 | train | 20.50    |
-      | 4                   | Test   | 2024-12-09 07:52:30 | bus   | 40.50    |
-      | 5                   | Test   | 2024-12-09 08:53:30 | tram  | 20.50    |
-      | 5                   | Test   | 2024-12-09 09:54:30 | walk  | 40.50    |
-      | 654321002222230099  | Test   | 2024-12-09 09:54:30 | walk  | 40.50    |
+      | member             | source | travel date     | mode  | distance |
+      | 1                  | Test   | {date} 05:51:30 | walk  | 10.50    |
+      | 1                  | Test   | {date} 06:20:30 | bus   | 50.50    |
+      | 3                  | Test   | {date} 05:51:30 | train | 20.50    |
+      | 4                  | Test   | {date} 07:52:30 | bus   | 40.50    |
+      | 5                  | Test   | {date} 08:53:30 | tram  | 20.50    |
+      | 5                  | Test   | {date} 09:54:30 | walk  | 40.50    |
+      | 654321002222230099 | Test   | {date} 09:54:30 | walk  | 40.50    |
     And I wait until the rewards have been processed
     And these members should have the following rewards
-      | member              | rewards | carbon saving |
-      | 1                   | 400     | 14.53         |
-      | 3                   | 250     | 5.61          |
-      | 4                   | 250     | 8.94          |
-      | 5                   | 400     | 18.57         |
-      | 654321002222230099  | 250     | 13.06         |
+      | member             | rewards | carbon saving |
+      | 1                  | 400     | 14.53         |
+      | 3                  | 250     | 5.61          |
+      | 4                  | 250     | 8.94          |
+      | 5                  | 400     | 18.57         |
+      | 654321002222230099 | 250     | 13.06         |
 

@@ -4,6 +4,7 @@ import { AdminUserId } from "../user/AdminUser";
 import { GenericRepository, NonNullId } from "../database/GenericRepository";
 import { MemberModelFactory } from "../member/MemberModelFactory";
 import { ExternalMemberRepository } from "../member/repository/ExternalMemberRepository";
+import { validateDistance } from "./DistanceLimit";
 
 /**
  * Creates journeys by taking in CSV data and overlaying that with member defaults.
@@ -56,6 +57,12 @@ export class JourneyFactory {
 
     if (!actualDistance) {
       throw Error(`No distance given for ${memberId} and no default set`);
+    }
+
+    const [distanceError] = validateDistance(+actualDistance, actualMode);
+
+    if (distanceError) {
+      throw Error(`${distanceError}, ${actualDistance} given for ${memberId}`);
     }
 
     return {

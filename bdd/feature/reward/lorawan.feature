@@ -34,24 +34,24 @@ Feature:
     When I create an account with smartcard "634321002222230090"
     And I tap with a smartcard "634321002222230090" on device "123456"
     Then I should see the following journeys
-      | member              | source | travel date         | mode  | distance | device |
-      | 634321002222230090  | Test   | 2024-12-24 12:48:00 | bus   | 1.5      | 123456 |
+      | member             | source | travel date     | mode | distance | device |
+      | 634321002222230090 | Test   | {date} 12:48:00 | bus  | 1.5      | 123456 |
     And I tap with a smartcard "634321002222230090" on device "123456"
     Then I should see the following journeys
-      | member              | source | travel date         | mode  | distance | device |
-      | 634321002222230090  | Test   | 2024-12-24 12:48:00 | bus   | 1.5      | 123456 |
+      | member             | source | travel date     | mode | distance | device |
+      | 634321002222230090 | Test   | {date} 12:48:00 | bus  | 1.5      | 123456 |
     And I wait until the rewards have been processed
     And these members should have the following rewards
-      | member              | rewards | carbon saving |
-      | 634321002222230090  | 250     | 0.33          |
+      | member             | rewards | carbon saving |
+      | 634321002222230090 | 250     | 0.33          |
     And I tap with a smartcard "634321002222230090" on device "1345456"
     Then I should see the following journeys
-      | member              | source | travel date         | mode  | distance | device  |
-      | 634321002222230090  | Test   | 2024-12-24 12:48:00 | bus   | 1.5      | 1345456 |
+      | member             | source | travel date     | mode | distance | device  |
+      | 634321002222230090 | Test   | {date} 12:48:00 | bus  | 1.5      | 1345456 |
     And I wait until the rewards have been processed
     And these members should have the following rewards
-      | member              | rewards | carbon saving |
-      | 634321002222230090  | 400     | 0.66          |
+      | member             | rewards | carbon saving |
+      | 634321002222230090 | 400     | 0.66          |
 
   Scenario: Smartcard of unregistered card
     And I tap with a smartcard "6338000000000000" on device "123456"

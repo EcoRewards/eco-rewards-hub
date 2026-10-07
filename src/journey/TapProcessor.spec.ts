@@ -33,6 +33,14 @@ class MockExternalApi {
   }
 }
 
+class MockLogger {
+  public warnings: string[] = [];
+
+  warn(message: string) {
+    this.warnings.push(message);
+  }
+}
+
 describe("TapProcessor", () => {
   const journeyRepository = new MockRepository() as any;
   const memberRepository = new MockRepository([
@@ -50,7 +58,10 @@ describe("TapProcessor", () => {
 
   const memberFactory = new MemberModelFactory();
   const externalMemberRepository = new MockExternalApi() as any;
-  const processor = new TapProcessor(journeyRepository, memberRepository, memberFactory, externalMemberRepository);
+  const logger = new MockLogger();
+  const processor = new TapProcessor(
+    journeyRepository, memberRepository, memberFactory, externalMemberRepository, logger as any
+  );
 
   it("creates journeys", async () => {
     const taps = {
@@ -80,13 +91,29 @@ describe("TapProcessor", () => {
       "1338000012345678": "2020-06-02",
     };
 
-    try {
-      await processor.getJourneys(taps, "123123", 1);
-      chai.expect(false).to.equal(true);
-    }
-    catch (e) {
-      chai.expect(e.message).to.equal("Cannot find member: 1338000012345678");
-    }
+    logger.warnings = [];
+
+    const journeys = await processor.getJourneys(taps, "123123", 1);
+
+    chai.expect(journeys.length).to.equal(0);
+    chai.expect(logger.warnings[0]).to.equal(
+      "Discarded tap from device 123123: Cannot find member: 1338000012345678"
+    );
+  });
+
+  it("keeps the rest of the batch when one tap cannot be processed", async () => {
+    const taps = {
+      "2222230019": "2020-06-02",
+      "1338000012345678": "2020-06-02"
+    };
+
+    logger.warnings = [];
+
+    const journeys = await processor.getJourneys(taps, "123123", 1);
+
+    chai.expect(journeys.length).to.equal(1);
+    chai.expect(journeys[0].member_id).to.equal(222223001);
+    chai.expect(logger.warnings.length).to.equal(1);
   });
 
 });

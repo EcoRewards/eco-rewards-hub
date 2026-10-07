@@ -12,6 +12,7 @@ import { TrophyView } from "../../trophy/TrophyView";
 
 class MockOrganisationRepository {
   data: Scheme[] = [];
+  rangeMembers: any[] = [];
 
   public async insertAll(records: Member[]) {
     return records.map((record, i) => ({ ...record, id: i + 1 }));
@@ -19,6 +20,10 @@ class MockOrganisationRepository {
 
   public async updateRange() {
 
+  }
+
+  public async selectRange() {
+    return this.rangeMembers;
   }
 
   public async selectAll() {
@@ -100,12 +105,24 @@ class MockExternalApi {
 
 describe("MembersController", () => {
 
+  const repository = new MockOrganisationRepository();
   const controller = new MembersController(
-    new MockOrganisationRepository() as any,
+    repository as any,
     new MockFactory() as any,
     new MemberModelFactory(),
     new MockExternalApi() as any
   );
+
+  const busMember = {
+    id: 200000018, default_distance: 5.4, default_transport_mode: "bus"
+  };
+  const trainMember = {
+    id: 200000026, default_distance: 250, default_transport_mode: "train"
+  };
+
+  beforeEach(() => {
+    repository.rangeMembers = [busMember];
+  });
 
   it("should create members", async () => {
     const result = await controller.post({
@@ -114,14 +131,81 @@ describe("MembersController", () => {
       defaultTransportMode: "bus",
       group: "/group/2"
     });
+    const data = result.data as MemberJsonView[];
 
-    chai.expect(result.data.length).equal(3);
-    chai.expect(result.data[0].defaultTransportMode).equal("bus");
-    chai.expect(result.data[1].defaultTransportMode).equal("bus");
-    chai.expect(result.data[2].defaultTransportMode).equal("bus");
-    chai.expect(result.data[0].id).equal("/member/0000000018");
-    chai.expect(result.data[1].id).equal("/member/0000000026");
-    chai.expect(result.data[2].id).equal("/member/0000000034");
+    chai.expect(data.length).equal(3);
+    chai.expect(data[0].defaultTransportMode).equal("bus");
+    chai.expect(data[1].defaultTransportMode).equal("bus");
+    chai.expect(data[2].defaultTransportMode).equal("bus");
+    chai.expect(data[0].id).equal("/member/0000000018");
+    chai.expect(data[1].id).equal("/member/0000000026");
+    chai.expect(data[2].id).equal("/member/0000000034");
+  });
+
+  it("should reject a default distance over the limit for the mode", async () => {
+    const result = await controller.post({
+      quantity: 3,
+      defaultDistance: 100,
+      defaultTransportMode: "bus",
+      group: "/group/2"
+    });
+
+    chai.expect(result.code).equal(400);
+    chai.expect(result.data).to.deep.equal({
+      error: "Travel distance must not exceed 99 miles or 500 miles for train journeys"
+    });
+  });
+
+  it("should reject a patched default distance over the limit for the mode", async () => {
+    const result = await controller.patch({
+      startId: "0000000018",
+      endId: "0000000026",
+      defaultDistance: 100,
+      defaultTransportMode: "bus",
+      group: "/group/2"
+    });
+
+    chai.expect(result.code).equal(400);
+    chai.expect((result.data as any).error).to.contain(
+      "Travel distance must not exceed 99 miles or 500 miles for train journeys"
+    );
+  });
+
+  it("should reject a mode-only patch that moves a member out of range", async () => {
+    repository.rangeMembers = [trainMember];
+
+    const result = await controller.patch({
+      startId: "0000000018",
+      endId: "0000000026",
+      defaultTransportMode: "bus"
+    } as any);
+
+    chai.expect(result.code).equal(400);
+    chai.expect((result.data as any).error).to.contain("1 member(s) in this range");
+  });
+
+  it("should allow a distance-only patch of train members above 99 miles", async () => {
+    repository.rangeMembers = [trainMember];
+
+    const result = await controller.patch({
+      startId: "0000000018",
+      endId: "0000000026",
+      defaultDistance: 250
+    } as any);
+
+    chai.expect(result.data).equal("OK");
+  });
+
+  it("should not read the range when neither distance nor mode is patched", async () => {
+    repository.rangeMembers = [trainMember];
+
+    const result = await controller.patch({
+      startId: "0000000018",
+      endId: "0000000026",
+      group: "/group/2"
+    } as any);
+
+    chai.expect(result.data).equal("OK");
   });
 
   it("return members as json", async () => {

@@ -7,6 +7,7 @@ import { Member, toMemberId } from "../member/Member";
 import { MemberModelFactory } from "../member/MemberModelFactory";
 import { ExternalMemberRepository } from "../member/repository/ExternalMemberRepository";
 import { AdminUserId } from "../user/AdminUser";
+import { Logger } from "pino";
 
 /**
  * Turn tap data into one or more journeys
@@ -17,7 +18,8 @@ export class TapProcessor {
     private readonly journeyRepository: GenericRepository<Journey>,
     private readonly memberRepository: GenericRepository<Member>,
     private readonly memberFactory: MemberModelFactory,
-    private readonly externalMemberRepository: ExternalMemberRepository
+    private readonly externalMemberRepository: ExternalMemberRepository,
+    private readonly logger: Logger
   ) {}
 
   /**
@@ -30,8 +32,20 @@ export class TapProcessor {
     }
 
     const journeyFactory = await this.getJourneyFactory(Object.keys(taps));
-    const journeyPromises = Object.entries(taps).map(t => journeyFactory.create(t, adminId, deviceId));
-    const journeys = await Promise.all(journeyPromises);
+    const results = await Promise.allSettled(
+      Object.entries(taps).map(t => journeyFactory.create(t, adminId, deviceId))
+    );
+    const journeys: Journey[] = [];
+
+    // a LORaWAN uplink is never replayed, so a tap that cannot be turned into a journey is dropped
+    // on its own rather than taking the rest of the device's batch with it
+    for (const result of results) {
+      if (result.status === "fulfilled") {
+        journeys.push(result.value);
+      } else {
+        this.logger.warn(`Discarded tap from device ${deviceId}: ${result.reason?.message}`);
+      }
+    }
 
     return this.journeyRepository.insertAll(journeys);
   }

@@ -6,6 +6,7 @@ import { MemberRepository } from "../repository/MemberRepository";
 import { GenericRepository, HttpError, HttpResponse, MemberModelFactory, NonNullId, toGroupId } from "../..";
 import { ExternalMemberRepository } from "../repository/ExternalMemberRepository";
 import { Context } from "koa";
+import { validateDistance } from "../../journey/DistanceLimit";
 
 /**
  * Controller for /member
@@ -48,6 +49,14 @@ export class MemberController {
    * Create a new member
    */
   public async post(request: MemberPostRequest): Promise<MemberResponse> {
+    if (request.defaultDistance !== undefined && request.defaultDistance !== null) {
+      const [distanceError] = validateDistance(+request.defaultDistance, request.defaultTransportMode);
+
+      if (distanceError) {
+        return { data: { error: distanceError }, links: {}, code: 400 };
+      }
+    }
+
     const member = this.modelFactory.createFromPartial(request);
     const memberWithId = await this.genericRepository.save(member);
 
@@ -78,6 +87,14 @@ export class MemberController {
     member.previous_transport_mode = request.previousTransportMode ?? member.previous_transport_mode;
     member.default_distance = request.defaultDistance ?? member.default_distance;
 
+    if (request.defaultDistance !== undefined || request.defaultTransportMode !== undefined) {
+      const [distanceError] = validateDistance(+member.default_distance, member.default_transport_mode);
+
+      if (distanceError) {
+        return { data: { error: distanceError }, links, code: 400 };
+      }
+    }
+
     if (ctx.method === "PUT") {
       member.carbon_saving = request.carbonSaving ?? member.carbon_saving;
       member.rewards = request.rewards ?? member.rewards;
@@ -95,7 +112,7 @@ export class MemberController {
 
 type AMember = NonNullId<Member> | undefined;
 
-export type MemberResponse = HttpResponse<MemberJsonView>;
+export type MemberResponse = HttpResponse<MemberJsonView | HttpError>;
 export type PutResponse = HttpResponse<MemberJsonView | HttpError>;
 
 export interface MemberPostRequest {

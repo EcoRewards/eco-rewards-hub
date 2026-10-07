@@ -451,7 +451,7 @@ export class ServiceContainer {
 
     return new TapController(
       reader,
-      new TapProcessor(journeyRepository, memberRepository, memberFactory, externalApi),
+      new TapProcessor(journeyRepository, memberRepository, memberFactory, externalApi, this.getLogger()),
       new JourneyViewFactory(userRepository),
       statusRepository,
       axios.default.create(),
