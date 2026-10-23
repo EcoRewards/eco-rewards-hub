@@ -5,25 +5,37 @@ on:
     branches:
       - master
 
+# 16 is what production runs: the server is Ubuntu 18.04 and its glibc 2.27 is
+# below the 2.28 that Node 18+ requires, so the runtime cannot move until the
+# box does. 22 is the target, and is tested alongside so the migration does not
+# have to start by finding out whether the code still works.
 jobs:
   unit:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [16, 22]
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: ${{ matrix.node-version }}
           cache: npm
       - run: npm ci
       - run: npm run coverage
 
   runtime-deps:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [16, 22]
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: ${{ matrix.node-version }}
           cache: npm
       - run: npm ci
       - run: npm run prepublishOnly
@@ -32,11 +44,15 @@ jobs:
 
   functional:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [16, 22]
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: ${{ matrix.node-version }}
           cache: npm
       - run: npm ci
       - uses: shogo82148/actions-setup-mysql@v1
