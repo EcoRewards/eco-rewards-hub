@@ -27,7 +27,7 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run prepublishOnly
-      - run: npm install --omit=dev --no-audit --no-fund
+      - run: npm ci --omit=dev --no-audit --no-fund
       - run: npm run verify-runtime-deps
 
   functional:

@@ -35,7 +35,12 @@ jobs:
       # Prune to what the server will have and check the build still loads. A
       # runtime import of a devDependency resolves fine here until this point,
       # then fails on boot in production.
-      - run: npm install --omit=dev --no-audit --no-fund
+      #
+      # ci, not install: "npm install --omit=dev" rewrites package-lock.json,
+      # and pm2 deploy refuses to run with a dirty working copy ("commit or
+      # stash your changes before deploying"). ci is also the right thing for
+      # a deploy -- it installs exactly what the lockfile says.
+      - run: npm ci --omit=dev --no-audit --no-fund
       - run: npm run verify-runtime-deps
 
       - name: Set up SSH
