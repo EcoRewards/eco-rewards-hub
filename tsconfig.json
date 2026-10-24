@@ -1,6 +1,12 @@
 {
   "compilerOptions": {
     "moduleResolution": "node",
+    // sharp 0.33+ declares its CommonJS types only under the "exports" map,
+    // which "moduleResolution": "node" does not read. Without this it picks the
+    // ESM types instead, where sharp is a default export, and the CommonJS
+    // import below stops being callable. Resolution mode stays as it is because
+    // node16 would change how every other import in the project resolves.
+    "paths": { "sharp": ["./node_modules/sharp/dist/index.d.cts"] },
     "module": "commonjs",
     "target": "ES2018",
     "sourceMap": false,
