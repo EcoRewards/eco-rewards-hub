@@ -7,15 +7,16 @@ on:
 
 # 16 is what production runs: the server is Ubuntu 18.04 and its glibc 2.27 is
 # below the 2.28 that Node 18+ requires, so the runtime cannot move until the
-# box does. 22 is the target, and is tested alongside so the migration does not
-# have to start by finding out whether the code still works.
+# box does. 24 is the target, and is tested alongside so the migration does not
+# have to start by finding out whether the code still works. Not 22: it reaches
+# end of life in April 2027, which is the mistake this work exists to undo.
 jobs:
   unit:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        node-version: [16, 22]
+        node-version: [16, 24]
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -30,7 +31,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [16, 22]
+        node-version: [16, 24]
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -47,7 +48,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [16, 22]
+        node-version: [16, 24]
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
