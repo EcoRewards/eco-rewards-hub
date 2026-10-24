@@ -116,5 +116,8 @@
       "src/cli/CliContainer.ts",
       "bdd/**/*.ts"
     ]
+  },
+  "overrides": {
+    "mysql2": "3.23.1"
   }
 }
