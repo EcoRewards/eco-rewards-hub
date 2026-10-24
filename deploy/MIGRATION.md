@@ -131,6 +131,18 @@ around the clock at 12-34/hour, so taps should appear within minutes.
 - Nothing health-checks the app once the ALB is gone — add an uptime check on
   `/health`.
 
+## Done
+
+Cut over on 2026-10-24. **117 seconds of downtime**, against an estimate of 1-2
+minutes. Final dump 8s, transfer 32s, restore and migrate 58s, DNS and Caddy
+the rest. 295,562 journeys on both sides, exactly.
+
+One hitch worth knowing about: Caddy failed to start because an earlier
+root-run had left `/var/log/caddy/api.log` owned by root, which reads as a
+certificate failure in the middle of a cutover and is not. `provision.sh` now
+chowns the directory contents. The Let's Encrypt certificate itself issued on
+the first attempt, about 30 seconds after the DNS change.
+
 ## Rollback
 
 Before DNS is changed: nothing to undo, the old box is still live.

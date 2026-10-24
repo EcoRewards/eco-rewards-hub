@@ -64,6 +64,10 @@ curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' \
 sudo apt-get update -qq
 sudo apt-get install -y -qq caddy
 sudo install -d -o caddy -g caddy /var/log/caddy
+# chown the contents too: a log file left behind by a root-run caddy makes the
+# service fail to start with "permission denied", which during a cutover looks
+# like a certificate problem and is not.
+sudo chown -R caddy:caddy /var/log/caddy
 sudo cp "$(dirname "$0")/Caddyfile" /etc/caddy/Caddyfile
 sudo caddy validate --config /etc/caddy/Caddyfile
 sudo systemctl enable -q caddy
