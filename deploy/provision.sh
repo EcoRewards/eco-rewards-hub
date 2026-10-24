@@ -58,7 +58,7 @@ sudo mariadb -e "alter user 'root'@'localhost' identified via mysql_native_passw
 
 echo "==> Caddy (official repo, not the 2.6.2 in the Ubuntu archive)"
 curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/gpg.key' \
-  | sudo gpg --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg
+  | sudo gpg --batch --yes --dearmor -o /usr/share/keyrings/caddy-stable-archive-keyring.gpg
 curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' \
   | sudo tee /etc/apt/sources.list.d/caddy-stable.list >/dev/null
 sudo apt-get update -qq
@@ -72,7 +72,11 @@ sudo systemctl stop caddy 2>/dev/null || true
 
 echo "==> pm2"
 sudo npm install -g pm2@latest
-pm2 startup systemd -u ubuntu --hp /home/ubuntu | tail -1 | sudo bash
+# pm2 7.x runs the systemctl command itself when it can sudo, and its last
+# line of output is prose, so the old "| tail -1 | sudo bash" trick now feeds
+# prose to a shell. Run it, then make sure the unit really is enabled.
+pm2 startup systemd -u ubuntu --hp /home/ubuntu >/dev/null || true
+sudo systemctl enable -q pm2-ubuntu
 
 echo "==> deploy layout (what pm2 deploy expects)"
 mkdir -p "${APP_DIR}"/{source,incoming-dist,shared}
