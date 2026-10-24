@@ -1,4 +1,4 @@
-const host = process.env.DEPLOY_HOST || "35.178.105.63";
+const host = process.env.DEPLOY_HOST || "13.42.142.195";
 const path = "/home/ubuntu/eco-rewards-hub";
 
 // The build is compiled by the deploy workflow and uploaded to incoming-dist,
