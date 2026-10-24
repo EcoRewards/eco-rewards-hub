@@ -16,19 +16,20 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
-      DEPLOY_HOST: 35.178.105.63
+      DEPLOY_HOST: 13.42.142.195
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 24
           cache: npm
       - run: npm ci
       - run: npm run coverage
 
-      # Compile here rather than on the server, which cannot spare the ~370MB
-      # that tsc needs. Only the emitted JavaScript is shipped; native modules
-      # are still installed on the server, which runs an older glibc.
+      # Compile here rather than on the server: tsc needs ~370MB and the box has
+      # other things to do with its 2GB. Only the emitted JavaScript is shipped.
+      # node_modules is never shipped -- this runner is x86_64 and the server is
+      # arm64 (Graviton), so native modules must be built where they will run.
       - run: npm run prepublishOnly
 
       # Prune to what the server will have and check the build still loads. A
