@@ -10,6 +10,7 @@ import { MemberModelFactory } from "../../member/MemberModelFactory";
 import { validateDistance } from "../DistanceLimit";
 import { ExternalMemberRepository } from "../../member/repository/ExternalMemberRepository";
 import sharp = require("sharp");
+import { Readable } from "stream";
 import ReadableStream = NodeJS.ReadableStream;
 
 @autobind
@@ -149,5 +150,5 @@ interface PostJourneyRequest {
 export type RemoteFileStorage = (opts: {
   Bucket: string,
   Key: string,
-  Body: ReadableStream
+  Body: Readable
 }) => Promise<any>;
