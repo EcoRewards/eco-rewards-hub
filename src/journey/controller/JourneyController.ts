@@ -8,6 +8,8 @@ import { MultiPartFormReader } from "./MultiPartFormReader";
 import autobind from "autobind-decorator";
 import { MemberModelFactory } from "../../member/MemberModelFactory";
 import { validateDistance } from "../DistanceLimit";
+import { parseTravelDate, travelDateInvalidError } from "../JourneyDate";
+import { LocalDateTime, ZoneId } from "@js-joda/core";
 import { ExternalMemberRepository } from "../../member/repository/ExternalMemberRepository";
 import sharp = require("sharp");
 import { Readable } from "stream";
@@ -86,19 +88,19 @@ export class JourneyController {
       errors.push("Member ID must be set");
     }
 
-    if (!form.date || form.date.match(/\d{4}-\d{2}-\d{2}/) === null) {
-      errors.push("Travel date must be set");
+    const travelDate = parseTravelDate(form.date);
+
+    if (!travelDate) {
+      errors.push(travelDateInvalidError);
     }
     else {
-      const travelDate = new Date(form.date);
-      const now = new Date();
-      const eightDaysAgo = new Date(now.getTime() - (1000 * 3600 * 24 * 8));
+      const now = LocalDateTime.now(ZoneId.UTC);
 
-      if (travelDate.getTime() > now.getTime()) {
+      if (travelDate.isAfter(now)) {
         errors.push("Travel date cannot be in the future");
       }
 
-      if (travelDate.getTime() < eightDaysAgo.getTime()) {
+      if (travelDate.isBefore(now.minusDays(8))) {
         errors.push("Travel date must be within the last 7 days");
       }
     }
