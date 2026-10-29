@@ -5,6 +5,8 @@ import { GenericRepository, NonNullId } from "../database/GenericRepository";
 import { MemberModelFactory } from "../member/MemberModelFactory";
 import { ExternalMemberRepository } from "../member/repository/ExternalMemberRepository";
 import { validateDistance } from "./DistanceLimit";
+import { parseTravelDate, toMySqlDateTime } from "./JourneyDate";
+import { LocalDateTime, ZoneId } from "@js-joda/core";
 
 /**
  * Creates journeys by taking in CSV data and overlaying that with member defaults.
@@ -65,12 +67,18 @@ export class JourneyFactory {
       throw Error(`${distanceError}, ${actualDistance} given for ${memberId}`);
     }
 
+    const travelDate = parseTravelDate(date);
+
+    if (!travelDate) {
+      throw Error(`Invalid travel date: ${date} given for ${memberId}`);
+    }
+
     return {
       id: null,
       admin_user_id: adminUserId,
-      uploaded: new Date().toISOString().substr(0, 18),
+      uploaded: toMySqlDateTime(LocalDateTime.now(ZoneId.UTC)),
       processed: null,
-      travel_date: date,
+      travel_date: toMySqlDateTime(travelDate),
       member_id: member.id,
       distance: +actualDistance,
       mode: actualMode.toLowerCase(),

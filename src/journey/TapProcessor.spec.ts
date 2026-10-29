@@ -71,7 +71,7 @@ describe("TapProcessor", () => {
     const [journey] = await processor.getJourneys(taps, "123123", 1);
 
     chai.expect(journey.member_id).to.equal(222223001);
-    chai.expect(journey.travel_date).to.equal("2020-06-02");
+    chai.expect(journey.travel_date).to.equal("2020-06-02 00:00:00");
   });
 
   it("creates members that don't exist", async () => {
