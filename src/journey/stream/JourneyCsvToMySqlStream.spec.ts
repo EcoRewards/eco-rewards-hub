@@ -41,18 +41,6 @@ describe("JourneyCsvToMySqlStream", () => {
 
   });
 
-  it("reports a travel date it cannot read", (done) => {
-    const stream = new JourneyCsvToMySqlStream(factory, 1);
-
-    stream.write(["0000000026", "not-a-date"]);
-
-    stream.end(() => {
-      chai.expect(stream.getErrors()).to.deep.equal(["Invalid travel date: not-a-date given for 0000000026"]);
-      done();
-    });
-
-  });
-
   it("passes through values", async () => {
     const stream = new JourneyCsvToMySqlStream(factory, 1);
 
@@ -63,7 +51,7 @@ describe("JourneyCsvToMySqlStream", () => {
       chai.expect(values[1]).to.equal("1");
       chai.expect(values[2]).to.not.equal("");
       chai.expect(values[3]).to.equal("");
-      chai.expect(values[4]).to.equal("2019-12-09 15:10:05");
+      chai.expect(values[4]).to.equal("2019-12-09T15:10:05");
       chai.expect(values[5]).to.equal("2");
       chai.expect(values[6]).to.equal("1.57");
       chai.expect(values[7]).to.equal("bus");

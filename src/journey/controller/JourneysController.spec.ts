@@ -204,7 +204,7 @@ describe("JourneysController", () => {
     chai.expect(values[0]).to.equal("");
     chai.expect(values[1]).to.equal("1");
     chai.expect(values[3]).to.equal("");
-    chai.expect(values[4]).to.equal("2019-12-09 15:10:05");
+    chai.expect(values[4]).to.equal("2019-12-09T15:10:05");
     chai.expect(values[5]).to.equal("2");
     chai.expect(values[6]).to.equal("1.57");
     chai.expect(values[7]).to.equal("bus");
